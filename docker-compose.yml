@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./api
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/appdb
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run dev"
+    depends_on:
+      - postgres
+
+  web:
+    build:
+      context: ./web
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      NUXT_PORT: 3000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
