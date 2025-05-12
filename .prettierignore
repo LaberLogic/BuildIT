@@ -1,0 +1,6 @@
+
+**/node_modules
+**/generated
+**/.nuxt
+eslint.config.mjs
+pnpm-lock.yaml
