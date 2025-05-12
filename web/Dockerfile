@@ -1,21 +1,19 @@
-
 FROM node:18
 
 WORKDIR /app
 
-# Install PNPM globally
 RUN npm install -g pnpm
 
-# Copy the root package.json and pnpm-lock.yaml to install dependencies
-COPY package.json 
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
+COPY web/ ./web/
 
-# Install only dependencies for web workspace
 RUN pnpm install --filter web...
 
-# Copy the rest of your application files into the container (from ./web to /app)
-COPY . /app
+WORKDIR /app/web
 
-EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+EXPOSE 3001
+
+# Run Nuxt
+CMD ["pnpm", "run", "dev"]
