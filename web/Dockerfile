@@ -1,15 +1,18 @@
-
-FROM node:18
+FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+RUN npm install -g pnpm
 
-COPY . .
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-RUN npm run build
+COPY web/ ./web/
+
+RUN pnpm install --filter web...
+
+WORKDIR /app/web
+
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "run", "dev"]
