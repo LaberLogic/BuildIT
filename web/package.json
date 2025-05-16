@@ -9,9 +9,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint .",
+    "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --fix",
-    "test": "cypress run"
+    "test": "cypress run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
