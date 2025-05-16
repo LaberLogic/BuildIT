@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -13,7 +13,6 @@ RUN pnpm install --filter web...
 WORKDIR /app/web
 
 
-EXPOSE 3001
+EXPOSE 3000
 
-# Run Nuxt
 CMD ["pnpm", "run", "dev"]
