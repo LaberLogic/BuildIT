@@ -6,7 +6,8 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
-  globalIgnores(["**/node_modules/", "**/generated/"]),
+  globalIgnores(["**/node_modules/", "**/generated/", "**/.nuxt"]),
+
   {
     files: ["**/*.{js,mjs,cjs,ts,vue}"],
     plugins: { js },
