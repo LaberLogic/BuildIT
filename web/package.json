@@ -10,7 +10,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test" : "cypress run"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -19,5 +20,8 @@
     "nuxt": "^3.17.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "cypress": "^14.3.3"
   }
 }
