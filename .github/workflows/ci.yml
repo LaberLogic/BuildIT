@@ -1,9 +1,9 @@
-name: CI
+name: Continouus Integration
 
 on:
+  push:
   pull_request:
   workflow_dispatch:
-
 
 jobs:
   lint:
@@ -37,7 +37,6 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-<<<<<<< HEAD
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
@@ -62,28 +61,3 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm run --filter=api test
-=======
-    - uses: actions/checkout@v4
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 10
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-    - name: Install dependencies
-      run: pnpm install
-    - name: Install Cypress binary
-      run: npx cypress install
-    - name: Run lint
-      run: pnpm run -r lint  
-    - name: Run typecheck
-      run: pnpm run typecheck 
-    - name: Run build
-      run: pnpm run -r build
-    - name: Run test
-      run: pnpm run -r test    
-       
->>>>>>> ebc1809cd2ec80527e737cfe90c073fd5ea903e7
