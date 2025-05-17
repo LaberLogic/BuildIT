@@ -1,4 +1,4 @@
-name: CI
+name: CI-Workflow
 
 on:
   push:
@@ -34,6 +34,7 @@ jobs:
       - run: pnpm run typecheck
 
   build:
+    needs: [lint, type-check]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -48,6 +49,7 @@ jobs:
       - run: pnpm run -r build
 
   test-api:
+    needs: build
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -62,8 +64,8 @@ jobs:
       - run: pnpm run --filter=api test
 
   cypress-run:
+    needs: test-api
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
