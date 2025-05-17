@@ -1,9 +1,8 @@
-name: Continouus Integration
+name: CI
 
 on:
   push:
   pull_request:
-  workflow_dispatch:
 
 jobs:
   lint:
@@ -48,7 +47,7 @@ jobs:
       - run: pnpm install
       - run: pnpm run -r build
 
-  test:
+  test-api:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -61,3 +60,13 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm run --filter=api test
+
+  cypress-run:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: docker-compose up -d --build
