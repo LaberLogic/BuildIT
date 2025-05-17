@@ -7,7 +7,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
-  globalIgnores(["**/node_modules/", "**/generated/", "**/.nuxt","**/coverage"]),
+  globalIgnores(["**/node_modules/", "**/generated/", "**/.nuxt","**/coverage","**/dist/","**/.output/"]),
 
 
   {
