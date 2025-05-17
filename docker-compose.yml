@@ -8,7 +8,6 @@ services:
       - "3001:3001"
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://user:password@db:5432/mydb
     depends_on:
       - db
 
