@@ -21,11 +21,14 @@ jobs:
         cache: 'pnpm'
     - name: Install dependencies
       run: pnpm install
+    - name: Install Cypress binary
+      run: npx cypress install
+    - name: Run lint
+      run: pnpm run -r lint  
+    - name: Run typecheck
+      run: pnpm run typecheck 
     - name: Run build
       run: pnpm run -r build
-    - name: Run lint
-      run: pnpm run -r lint
     - name: Run test
       run: pnpm run -r test    
-    - name: Run typecheck
-      run: pnpm run typecheck        
+       
