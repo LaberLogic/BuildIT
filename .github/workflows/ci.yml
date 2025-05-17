@@ -76,7 +76,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
@@ -85,13 +85,13 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build web image locally
-        run: docker buildx build --load -t myorg/web:latest ./web
+        run: docker buildx build --load -t buildit/web:latest -f web/Dockerfile .
 
       - name: Build api image locally
-        run: docker buildx build --load -t myorg/api:latest ./api
+        run: docker buildx build --load -t buildit/api:latest -f api/Dockerfile .
 
       - name: Start app using Docker Compose
-        run: docker compose up -d
+        run: docker-compose -f docker-compose.ci.yml up -d --build
 
       - name: Install Cypress binary in web/
         run: pnpm --filter web exec cypress install
