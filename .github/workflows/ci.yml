@@ -61,44 +61,44 @@ jobs:
       - run: pnpm install
       - run: pnpm run --filter=api test
 
-cypress-run:
-  runs-on: ubuntu-24.04
+  cypress-run:
+    runs-on: ubuntu-24.04
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js and pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 10
+      - name: Set up Node.js and pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'pnpm'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
-    - name: Install dependencies
-      run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Build web image locally
-      run: docker buildx build --load -t myorg/web:latest ./web
+      - name: Build web image locally
+        run: docker buildx build --load -t myorg/web:latest ./web
 
-    - name: Build api image locally
-      run: docker buildx build --load -t myorg/api:latest ./api
+      - name: Build api image locally
+        run: docker buildx build --load -t myorg/api:latest ./api
 
-    - name: Start app using Docker Compose
-      run: docker compose up -d
+      - name: Start app using Docker Compose
+        run: docker compose up -d
 
-    - name: Install Cypress binary in web/
-      run: pnpm --filter web exec cypress install
+      - name: Install Cypress binary in web/
+        run: pnpm --filter web exec cypress install
 
-    - name: Run Cypress tests in web/
-      run: pnpm --filter web exec cypress run
+      - name: Run Cypress tests in web/
+        run: pnpm --filter web exec cypress run
 
-    - name: Stop Docker containers
-      if: always()
-      run: docker-compose down
+      - name: Stop Docker containers
+        if: always()
+        run: docker-compose down
