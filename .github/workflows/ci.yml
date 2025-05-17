@@ -90,13 +90,9 @@ jobs:
       - name: Start app using Docker Compose
         run: docker-compose up -d --build
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: echo "App already running via Docker"
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 60
 
+      - name: Run Cypress tests in web/
+        run: pnpm --filter web exec cypress run
       - name: Stop Docker containers
         if: always()
         run: docker-compose down
