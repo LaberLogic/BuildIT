@@ -61,8 +61,6 @@ jobs:
       - run: pnpm install
       - run: pnpm run --filter=api test
 
-
-jobs:
   cypress-run:
     runs-on: ubuntu-24.04
 
