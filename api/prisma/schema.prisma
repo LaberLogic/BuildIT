@@ -15,28 +15,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
+model User {
+  id          String           @id @default(cuid())
+  email       String           @unique
+  firstNane   String
+  lastName    String
+  password    String
+  role        Role             @default(WORKER)
+  companyId   String?
+  company     Company?         @relation(fields: [companyId], references: [id])
+  assignments SiteAssignment[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Company {
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  name      String
+  address   Address  @relation(fields: [addressId], references: [id])
+  users     User[]
+  sites     Site[]
+  addressId String
 }
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
+model Address {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Company   Company[]
+  Site      Site[]
 }
 
-model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+model Site {
+  id          String           @id @default(cuid())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  name        String
+  address     Address          @relation(fields: [addressId], references: [id])
+  companyId   String
+  company     Company          @relation(fields: [companyId], references: [id])
+  assignments SiteAssignment[]
+  addressId   String
+}
+
+model SiteAssignment {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  site   Site   @relation(fields: [siteId], references: [id])
+  siteId String
+
+  @@unique([userId, siteId])
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  WORKER
 }
