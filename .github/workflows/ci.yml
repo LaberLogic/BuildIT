@@ -111,7 +111,7 @@ jobs:
 
 
   test-web:
-    needs: [build-wen]
+    needs: [build-web]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
