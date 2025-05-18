@@ -1,7 +1,6 @@
 name: CI Workflow
 
 on:
-
   pull_request:
 
 jobs:
@@ -33,7 +32,6 @@ jobs:
       - run: pnpm install
       - run: pnpm --filter web run lint
 
-
   typecheck-api:
     runs-on: ubuntu-22.04
     steps:
@@ -47,6 +45,7 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install
+      - run: pnpm --filter=api prisma:generate
       - run: pnpm --filter api run typecheck
 
   typecheck-web:
@@ -93,7 +92,6 @@ jobs:
       - run: pnpm install
       - run: pnpm --filter web run build
 
-
   test-api:
     needs: build-api
     runs-on: ubuntu-22.04
@@ -108,7 +106,6 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm --filter api run test
-
 
   test-web:
     needs: [build-web]
