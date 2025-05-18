@@ -5,11 +5,79 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String           @id @default(cuid())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  email       String           @unique
+  firstNane   String
+  lastName    String
+  password    String
+  role        Role             @default(WORKER)
+  companyId   String?
+  company     Company?         @relation(fields: [companyId], references: [id])
+  assignments SiteAssignment[]
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  address   Address  @relation(fields: [addressId], references: [id])
+  users     User[]
+  sites     Site[]
+  addressId String
+}
+
+model Address {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  company       Company[]
+  site          Site[]
+  streetNumber  String
+  street        String
+  city          String
+  country       String
+  postalCode    String
+  googlePlaceId String?
+}
+
+model Site {
+  id          String           @id @default(cuid())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  name        String
+  address     Address          @relation(fields: [addressId], references: [id])
+  companyId   String
+  company     Company          @relation(fields: [companyId], references: [id])
+  assignments SiteAssignment[]
+  addressId   String
+}
+
+model SiteAssignment {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  site   Site   @relation(fields: [siteId], references: [id])
+  siteId String
+
+  @@unique([userId, siteId])
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  WORKER
 }
