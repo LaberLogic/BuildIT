@@ -1,11 +1,10 @@
-name: CI-Workflow
+name: CI Workflow
 
 on:
-  push:
   pull_request:
 
 jobs:
-  lint:
+  lint-api:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -17,9 +16,9 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - run: pnpm install
-      - run: pnpm run -r lint
+      - run: pnpm --filter api run lint
 
-  type-check:
+  lint-web:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -31,10 +30,9 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - run: pnpm install
-      - run: pnpm run typecheck
+      - run: pnpm --filter web run lint
 
-  build:
-    needs: [lint, type-check]
+  typecheck-api:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -46,10 +44,54 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - run: pnpm install
-      - run: pnpm run -r build
+      - run: pnpm --filter api run typecheck
+
+  typecheck-web:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - run: pnpm install
+      - run: pnpm --filter web run typecheck
+
+  build-api:
+    needs: typecheck-api
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - run: pnpm install
+      - run: pnpm --filter api run build
+
+  build-web:
+    needs: typecheck-web
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - run: pnpm install
+      - run: pnpm --filter web run build
 
   test-api:
-    needs: build
+    needs: build-api
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -61,17 +103,15 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - run: pnpm install
-      - run: pnpm run --filter=api test
+      - run: pnpm --filter api run test
 
-  cypress-run:
-    needs: test-api
+  test-web:
+    needs: [build-wen]
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js and pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
 
@@ -80,18 +120,13 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install
 
-      - name: Start app using Docker Compose
-        run: docker compose up -d --build
+      - run: docker compose up -d --build
 
-      - name: Install Cypress binary in web/
-        run: pnpm --filter web exec cypress install
+      - run: pnpm --filter web exec cypress install
 
-      - name: Run Cypress tests in web/
-        run: pnpm --filter web exec cypress run
+      - run: pnpm --filter web exec cypress run
 
-      - name: Stop Docker containers
-        if: always()
+      - if: always()
         run: docker compose down
