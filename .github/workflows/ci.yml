@@ -75,6 +75,7 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - run: pnpm install
+      - run: pnpm --filter=api prisma:generate
       - run: pnpm --filter api run build
 
   build-web:
