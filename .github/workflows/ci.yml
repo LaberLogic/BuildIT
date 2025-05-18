@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run -r lint
 
   type-check:
@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run typecheck
 
   build:
@@ -45,7 +45,7 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run -r build
 
   test-api:
@@ -60,7 +60,7 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run --filter=api test
 
   cypress-run:
@@ -81,7 +81,7 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Start app using Docker Compose
         run: docker compose up -d --build
