@@ -19,6 +19,13 @@
       "@prisma/*": ["generated/*"]
     }
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "jest.config.ts", "utils/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts",
+    "jest.config.ts",
+    "utils/*.ts",
+    "middlewares/**/*.ts"
+  ],
+  "exclude": ["node_modules"],
+  "files": ["types.d.ts"]
 }

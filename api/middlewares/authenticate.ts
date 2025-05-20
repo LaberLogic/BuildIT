@@ -1,26 +1,36 @@
 import { Request, Response, NextFunction } from "express";
+import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import { env } from "../env";
+
+const { verify } = jwt;
 
 export const verifyToken = (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const tokenFromHeader = req.headers["authorization"];
+  const authHeader = req.headers?.authorization;
 
-  if (!tokenFromHeader) {
-    return res.status(403).json({ message: "No token provided!" });
+  if (!authHeader || !authHeader?.startsWith("Bearer ")) {
+    return res.sendStatus(httpStatus.UNAUTHORIZED);
   }
-  const token = tokenFromHeader.startsWith("Bearer ")
-    ? tokenFromHeader.slice(7, tokenFromHeader.length)
-    : tokenFromHeader;
 
-  jwt.verify(token, env.JWT_SECRET, (err, decoded) => {
+  const token: string | undefined = authHeader.split(" ")[1];
+
+  if (!token) return res.sendStatus(httpStatus.UNAUTHORIZED);
+
+  verify(token, env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: "Unauthorized!" });
+      return res.sendStatus(httpStatus.FORBIDDEN);
     }
     console.log(decoded);
+    req.user = decoded as {
+      id: string;
+      role: string;
+      exp: number;
+      iat: number;
+    };
     next();
   });
 };

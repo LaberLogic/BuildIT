@@ -4,9 +4,10 @@ import jwt from "jsonwebtoken";
 import { ChainedError } from "@utils/chainedError";
 import { env } from "@env";
 import { createUser, getUser } from "../repositories/user.repository";
+import { RegisterDto, SignInDto } from "@src/schemas/authSchema";
 
 export const authService = {
-  signIn: (data: { email: string; password: string }) =>
+  signIn: (data: SignInDto) =>
     ResultAsync.fromPromise(
       getUser({ email: data.email }),
       (e) => new ChainedError(e),
@@ -21,26 +22,21 @@ export const authService = {
         .andThen(({ user, isMatch }) => {
           if (!isMatch) return errAsync(new ChainedError("Invalid Password"));
 
-          const token = jwt.sign({ id: user.id }, env.JWT_SECRET, {
-            expiresIn: 86400,
-          });
+          const token = jwt.sign(
+            { id: user.id, role: user.role },
+            env.JWT_SECRET,
+            {
+              expiresIn: 86400,
+            },
+          );
 
           return okAsync({
-            id: user.id,
-            email: user.email,
-            role: user.role,
             accessToken: token,
           });
         });
     }),
 
-  register: (data: {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-  }) => {
-    console.log(data);
+  register: (data: RegisterDto) => {
     return ResultAsync.fromPromise(
       hash(data.password, 10),
       (e) => new ChainedError(e),
