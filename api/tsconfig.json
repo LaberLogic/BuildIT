@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "resolveJsonModule": true,
+    "target": "ES2024",
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
@@ -8,8 +9,16 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "types": ["jest"]
+    "types": ["jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"],
+      "@src/*": ["src/*"],
+      "@env": ["env.ts"],
+      "@prisma/*": ["generated/*"]
+    }
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "jest.config.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "jest.config.ts", "utils/*.ts"],
   "exclude": ["node_modules"]
 }

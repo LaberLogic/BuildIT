@@ -20,7 +20,7 @@ model User {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   email       String           @unique
-  firstNane   String
+  firstName   String
   lastName    String
   password    String
   role        Role             @default(WORKER)
@@ -67,7 +67,7 @@ model Site {
 }
 
 model SiteAssignment {
-  id     Int    @id @default(autoincrement())
+  id     String @id @default(cuid())
   user   User   @relation(fields: [userId], references: [id])
   userId String
   site   Site   @relation(fields: [siteId], references: [id])
