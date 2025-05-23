@@ -12,8 +12,10 @@ export const signInController = (
       res
         .status(httpStatus.OK)
         .json({ message: "Signed in successfully", user: result }),
-    (error) =>
-      res.status(httpStatus.UNAUTHORIZED).json({ error: error.message }),
+    (error) => {
+      console.log(error);
+      return res.status(httpStatus.UNAUTHORIZED).json({ error: error.message });
+    },
   );
 };
 
