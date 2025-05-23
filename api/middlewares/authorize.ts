@@ -26,7 +26,7 @@ export const isWorker = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export const canCreateRole = (
+export const canCreateUser = (
   req: Request,
   res: Response,
   next: NextFunction,

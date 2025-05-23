@@ -3,19 +3,16 @@ import { compare, hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ChainedError } from "@utils/chainedError";
 import { env } from "@env";
-import { createUser, getUser } from "../repositories/user.repository";
+import { createUser, getUserUnsafe } from "../repositories/user.repository";
 import { RegisterDto, SignInDto } from "@src/schemas/authSchema";
 
 export const authService = {
-  signIn: (data: SignInDto) =>
-    ResultAsync.fromPromise(
-      getUser({ email: data.email }),
-      (e) => new ChainedError(e),
-    ).andThen((user) => {
+  signIn: (data: SignInDto) => {
+    return getUserUnsafe({ email: data.email }).andThen((user) => {
       if (!user) return errAsync(new ChainedError("Cannot find related User"));
 
       return ResultAsync.fromPromise(
-        compare(data.password, user.password),
+        compare(data.password, user?.password || ""),
         (e) => new ChainedError(e),
       )
         .map((isMatch) => ({ user, isMatch }))
@@ -34,7 +31,8 @@ export const authService = {
             accessToken: token,
           });
         });
-    }),
+    });
+  },
 
   register: (data: RegisterDto) => {
     return ResultAsync.fromPromise(

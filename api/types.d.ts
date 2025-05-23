@@ -1,6 +1,7 @@
 declare namespace Express {
   interface UserObject {
     id: string;
+    companyId: string;
     role: string;
     exp: number;
     iat: number;
