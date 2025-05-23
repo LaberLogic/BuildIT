@@ -24,8 +24,8 @@ export const verifyToken = (
     if (err) {
       return res.sendStatus(httpStatus.FORBIDDEN);
     }
-    console.log(decoded);
     req.user = decoded as {
+      companyId: string;
       id: string;
       role: string;
       exp: number;
