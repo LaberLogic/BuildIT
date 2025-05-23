@@ -1,6 +1,6 @@
 import { okAsync } from "neverthrow";
 import { Role } from "@prisma/prisma";
-import { signInController } from "@src/user/controllers/user.controller";
+import { signInController } from "@src/user/controllers/auth.controller";
 import { authService } from "@src/user/services/auth.service";
 import { Request } from "express";
 jest.mock("@src/user/services/auth.service");
