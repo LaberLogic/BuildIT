@@ -46,50 +46,46 @@ export const userService = {
   },
 
   updateUser: (currentUser: UserObject, id: string, data: UpdateUserDto) => {
-    return ResultAsync.fromPromise(
-      getUser(scopedUserWhere(currentUser, { id })),
-      (e) => new ChainedError(e),
-    ).andThen((targetUser) => {
-      if (!targetUser) {
-        return errAsync(new ChainedError("User not found or access denied"));
-      }
+    return getUser(scopedUserWhere(currentUser, { id })).andThen(
+      (targetUser) => {
+        if (!targetUser) {
+          return errAsync(new ChainedError("User not found or access denied"));
+        }
 
-      const updateData = { ...data };
+        const updateData = { ...data };
 
-      if (data.password) {
-        return ResultAsync.fromPromise(
-          hash(data.password, 12),
-          (e) => new ChainedError(e),
-        ).andThen((hashedPassword) => {
-          updateData.password = hashedPassword;
+        if (data.password) {
+          return ResultAsync.fromPromise(
+            hash(data.password, 12),
+            (e) => new ChainedError(e),
+          ).andThen((hashedPassword) => {
+            updateData.password = hashedPassword;
+            return ResultAsync.fromPromise(
+              updateUser(id, updateData),
+              (e) => new ChainedError(e),
+            );
+          });
+        } else {
           return updateUser(id, updateData);
-        });
-      } else {
-        return ResultAsync.fromPromise(
-          updateUser(id, updateData),
-          (e) => new ChainedError(e),
-        );
-      }
-    });
+        }
+      },
+    );
   },
 
   deleteUser: (currentUser: UserObject, id: string) => {
-    return ResultAsync.fromPromise(
-      getUser(scopedUserWhere(currentUser, { id })),
-      (e) => new ChainedError(e),
-    ).andThen((targetUser) => {
-      if (!targetUser) {
-        return errAsync(new ChainedError("User not found or access denied"));
-      }
-      return deleteUser(id);
-    });
+    return getUser(scopedUserWhere(currentUser, { id })).andThen(
+      (targetUser) => {
+        if (!targetUser) {
+          return errAsync(new ChainedError("User not found or access denied"));
+        }
+
+        return deleteUser(id);
+      },
+    );
   },
 
   getUserById: (currentUser: UserObject, id: string) => {
-    return ResultAsync.fromPromise(
-      getUser(scopedUserWhere(currentUser, { id })),
-      (e) => new ChainedError(e),
-    ).andThen((user) => {
+    return getUser(scopedUserWhere(currentUser, { id })).andThen((user) => {
       if (!user) {
         return errAsync(new ChainedError("User not found or access denied"));
       }
