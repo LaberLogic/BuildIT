@@ -148,6 +148,7 @@ describe("Sign Up tests", () => {
       lastName: mockData.lastName,
       password: hashedPassword,
       company: { connect: { id: createdCompany.id } },
+      role: "MANAGER",
     });
   });
 
@@ -166,6 +167,7 @@ describe("Sign Up tests", () => {
       lastName: mockData.lastName,
       password: hashedPassword,
       company: { connect: { id: createdCompany.id } },
+      role: "MANAGER",
     });
   });
 });

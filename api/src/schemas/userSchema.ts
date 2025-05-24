@@ -1,4 +1,5 @@
 import { Role } from "@prisma/prisma";
+import { buildJsonSchemas } from "fastify-zod";
 import z from "zod";
 const roleSchema = z.enum([Role.ADMIN, Role.MANAGER, Role.WORKER]);
 
@@ -22,3 +23,11 @@ export const updateUserSchema = z
     companyId: z.string(),
   })
   .partial();
+
+export const { schemas: userSchemas, $ref } = buildJsonSchemas(
+  {
+    createUserSchema,
+    updateUserSchema,
+  },
+  { $id: "userSchema" },
+);

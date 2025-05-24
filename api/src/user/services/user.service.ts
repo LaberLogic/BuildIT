@@ -11,14 +11,15 @@ import { ChainedError } from "@utils/chainedError";
 import { CreateUserDto, UpdateUserDto } from "@src/schemas/userSchema";
 import { hash } from "bcryptjs";
 import { Prisma } from "../../../generated/prisma";
+import { UserObject } from "types";
 
 const isSameCompany = (
-  currentUser: Express.UserObject,
+  currentUser: UserObject,
   targetCompanyId: string | null | undefined,
 ) => currentUser.role === "ADMIN" || currentUser.companyId === targetCompanyId;
 
 const scopedUserWhere = (
-  currentUser: Express.UserObject,
+  currentUser: UserObject,
   baseWhere: Prisma.UserWhereUniqueInput,
 ) => {
   if (currentUser.role === "ADMIN") {
@@ -28,7 +29,7 @@ const scopedUserWhere = (
 };
 
 export const userService = {
-  createUser: (currentUser: Express.UserObject, data: CreateUserDto) => {
+  createUser: (currentUser: UserObject, data: CreateUserDto) => {
     if (!isSameCompany(currentUser, data.companyId)) {
       return errAsync(
         new ChainedError("Cannot create user in another company"),
@@ -44,11 +45,7 @@ export const userService = {
     });
   },
 
-  updateUser: (
-    currentUser: Express.UserObject,
-    id: string,
-    data: UpdateUserDto,
-  ) => {
+  updateUser: (currentUser: UserObject, id: string, data: UpdateUserDto) => {
     return ResultAsync.fromPromise(
       getUser(scopedUserWhere(currentUser, { id })),
       (e) => new ChainedError(e),
@@ -76,7 +73,7 @@ export const userService = {
     });
   },
 
-  deleteUser: (currentUser: Express.UserObject, id: string) => {
+  deleteUser: (currentUser: UserObject, id: string) => {
     return ResultAsync.fromPromise(
       getUser(scopedUserWhere(currentUser, { id })),
       (e) => new ChainedError(e),
@@ -88,7 +85,7 @@ export const userService = {
     });
   },
 
-  getUserById: (currentUser: Express.UserObject, id: string) => {
+  getUserById: (currentUser: UserObject, id: string) => {
     return ResultAsync.fromPromise(
       getUser(scopedUserWhere(currentUser, { id })),
       (e) => new ChainedError(e),
@@ -102,10 +99,7 @@ export const userService = {
 
   getAllUsers: () => getAllUsers(),
 
-  getAllUsersByCompany: (
-    currentUser: Express.UserObject,
-    companyId: string,
-  ) => {
+  getAllUsersByCompany: (currentUser: UserObject, companyId: string) => {
     if (!isSameCompany(currentUser, companyId)) {
       return errAsync(
         new ChainedError("Cannot access users from another company"),
