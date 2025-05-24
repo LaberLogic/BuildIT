@@ -49,6 +49,7 @@ export const authService = {
           ...rest,
           password: hashedPassword,
           company: { connect: { id } },
+          role: "MANAGER",
         });
       });
     });

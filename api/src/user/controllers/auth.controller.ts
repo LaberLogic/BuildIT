@@ -1,36 +1,35 @@
-import { Request, Response } from "express";
+// src/user/controllers/auth.controller.ts
+import { FastifyRequest, FastifyReply } from "fastify";
 import httpStatus from "http-status";
-import { RegisterDto } from "@src/schemas/authSchema";
+import { RegisterDto, SignInDto } from "@src/schemas/authSchema";
 import { authService } from "../services/auth.service";
 
-export const signInController = (
-  req: Request<unknown, unknown, RegisterDto>,
-  res: Response,
+export const registerController = async (
+  req: FastifyRequest<{ Body: RegisterDto }>,
+  reply: FastifyReply,
 ) => {
-  authService.signIn(req.body).match(
-    (result) =>
-      res
-        .status(httpStatus.OK)
-        .json({ message: "Signed in successfully", user: result }),
-    (error) => {
-      console.log(error);
-      return res.status(httpStatus.UNAUTHORIZED).json({ error: error.message });
-    },
+  return authService.register(req.body).match(
+    (user) =>
+      reply
+        .status(httpStatus.CREATED)
+        .send({ message: "User registered successfully", user }),
+    (error) =>
+      reply
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ error: error.message }),
   );
 };
 
-export const registerController = (
-  req: Request<unknown, unknown, RegisterDto>,
-  res: Response,
+export const signInController = async (
+  req: FastifyRequest<{ Body: SignInDto }>,
+  reply: FastifyReply,
 ) => {
-  authService.register(req.body).match(
+  return authService.signIn(req.body).match(
     (user) =>
-      res
-        .status(httpStatus.CREATED)
-        .json({ message: "User registered successfully", user }),
+      reply
+        .code(httpStatus.OK)
+        .send({ message: "Signed in successfully", user }),
     (error) =>
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message }),
+      reply.status(httpStatus.UNAUTHORIZED).send({ error: error.message }),
   );
 };

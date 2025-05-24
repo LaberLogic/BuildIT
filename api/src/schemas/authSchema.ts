@@ -1,3 +1,4 @@
+import { buildJsonSchemas } from "fastify-zod";
 import { z } from "zod";
 
 export type RegisterDto = z.infer<typeof registerSchema>;
@@ -20,6 +21,13 @@ export const registerSchema = z.object({
 
 export type SignInDto = z.infer<typeof signInSchema>;
 export const signInSchema = z.object({
-  email: z.string().email(),
+  email: z.string(),
   password: z.string(),
 });
+export const { schemas: authSchemas, $ref } = buildJsonSchemas(
+  {
+    signInSchema,
+    registerSchema,
+  },
+  { $id: "authSchema" },
+);

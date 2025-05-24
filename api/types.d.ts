@@ -1,16 +1,30 @@
-declare namespace Express {
-  interface UserObject {
-    id: string;
-    companyId: string;
-    role: string;
-    exp: number;
-    iat: number;
-  }
-  export interface Request {
+import "@fastify/jwt";
+
+declare module "fastify" {
+  interface FastifyRequest {
     user: UserObject;
   }
-
-  export interface Response {
-    user?: { id: string; role: string };
+  interface FastifyInstance {
+    authenticate: (
+      request: import("fastify").FastifyRequest,
+      reply: import("fastify").FastifyReply,
+    ) => Promise<void>;
   }
+}
+
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    payload: {
+      id: string;
+      companyId: string;
+      role: "ADMIN" | "MANAGER" | "WORKER";
+    };
+    user: UserObject;
+  }
+}
+
+export interface UserObject {
+  id: string;
+  role: "ADMIN" | "MANAGER" | "WORKER";
+  companyId?: string;
 }

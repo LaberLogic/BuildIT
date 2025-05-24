@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   registerController,
   signInController,
 } from "@src/user/controllers/auth.controller";
 import { authService } from "@src/user/services/auth.service";
-import { Request, Response } from "express";
 import { okAsync, errAsync } from "neverthrow";
 import { Role } from "@prisma/prisma";
 import httpStatus from "http-status";
@@ -19,8 +19,8 @@ const mockUser = {
 };
 
 describe("signInController", () => {
-  let req: Partial<Request>;
-  let res: Partial<Response>;
+  let req: any;
+  let reply: any;
 
   beforeEach(() => {
     req = {
@@ -30,9 +30,10 @@ describe("signInController", () => {
       },
     };
 
-    res = {
+    reply = {
+      code: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      send: jest.fn(),
     };
   });
 
@@ -43,11 +44,11 @@ describe("signInController", () => {
   it("should respond with 200 and return user on success", async () => {
     (authService.signIn as jest.Mock).mockReturnValue(okAsync(mockUser));
 
-    await signInController(req as Request, res as Response);
+    await signInController(req, reply);
 
     expect(authService.signIn).toHaveBeenCalledWith(req.body);
-    expect(res.status).toHaveBeenCalledWith(httpStatus.OK);
-    expect(res.json).toHaveBeenCalledWith({
+    expect(reply.code).toHaveBeenCalledWith(httpStatus.OK);
+    expect(reply.send).toHaveBeenCalledWith({
       message: "Signed in successfully",
       user: mockUser,
     });
@@ -57,11 +58,11 @@ describe("signInController", () => {
     const error = new Error("Invalid credentials");
     (authService.signIn as jest.Mock).mockReturnValue(errAsync(error));
 
-    await signInController(req as Request, res as Response);
+    await signInController(req, reply);
 
     expect(authService.signIn).toHaveBeenCalledWith(req.body);
-    expect(res.status).toHaveBeenCalledWith(httpStatus.UNAUTHORIZED);
-    expect(res.json).toHaveBeenCalledWith({
+    expect(reply.status).toHaveBeenCalledWith(httpStatus.UNAUTHORIZED);
+    expect(reply.send).toHaveBeenCalledWith({
       error: "Invalid credentials",
     });
   });
@@ -76,8 +77,8 @@ const mockUserCreate = {
 };
 
 describe("registerController", () => {
-  let req: Partial<Request>;
-  let res: Partial<Response>;
+  let req: any;
+  let reply: any;
 
   beforeEach(() => {
     req = {
@@ -89,9 +90,9 @@ describe("registerController", () => {
       },
     };
 
-    res = {
+    reply = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      send: jest.fn(),
     };
   });
 
@@ -104,11 +105,11 @@ describe("registerController", () => {
       okAsync(mockUserCreate),
     );
 
-    await registerController(req as Request, res as Response);
+    await registerController(req, reply);
 
     expect(authService.register).toHaveBeenCalledWith(req.body);
-    expect(res.status).toHaveBeenCalledWith(httpStatus.CREATED);
-    expect(res.json).toHaveBeenCalledWith({
+    expect(reply.status).toHaveBeenCalledWith(httpStatus.CREATED);
+    expect(reply.send).toHaveBeenCalledWith({
       message: "User registered successfully",
       user: mockUserCreate,
     });
@@ -118,11 +119,11 @@ describe("registerController", () => {
     const error = new Error("Database connection failed");
     (authService.register as jest.Mock).mockReturnValue(errAsync(error));
 
-    await registerController(req as Request, res as Response);
+    await registerController(req, reply);
 
     expect(authService.register).toHaveBeenCalledWith(req.body);
-    expect(res.status).toHaveBeenCalledWith(httpStatus.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
+    expect(reply.status).toHaveBeenCalledWith(httpStatus.INTERNAL_SERVER_ERROR);
+    expect(reply.send).toHaveBeenCalledWith({
       error: "Database connection failed",
     });
   });
