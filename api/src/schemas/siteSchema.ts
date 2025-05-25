@@ -47,9 +47,6 @@ export const sitesResponseSchema = z.array(siteResponseSchema);
 export const errorResponseSchema = z.object({
   error: z.string(),
 });
-export const userIdParamsSchema = z.object({
-  userId: z.string(),
-});
 
 export const companyIdParamsSchema = z.object({
   companyId: z.string(),
@@ -76,3 +73,4 @@ export const { schemas: siteSchemas, $ref } = buildJsonSchemas(
 export type UpdateSiteDto = z.infer<typeof updateSiteSchema>;
 export type CreateSiteDto = z.infer<typeof createSiteSchema>;
 export type SiteResponseDto = z.infer<typeof siteResponseSchema>;
+export type SiteIdParams = z.infer<typeof siteIdParamsSchema>;
