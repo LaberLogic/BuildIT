@@ -2,6 +2,13 @@ import { FastifyInstance } from "fastify";
 
 import { isAdminOrManager } from "@src/plugins/roleGuards";
 import { $ref } from "@src/schemas/siteSchema";
+import {
+  createSiteController,
+  getSiteByIdController,
+  getSitesByCompanyIdController,
+  getSitesByUserIdController,
+  updateSiteController,
+} from "../controllers/site.controller";
 
 const siteRoutes = async (app: FastifyInstance) => {
   app.route({
@@ -26,7 +33,7 @@ const siteRoutes = async (app: FastifyInstance) => {
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
       params: $ref("siteIdParamsSchema"),
-      body: $ref("updateSiteUsersSchema"),
+      body: $ref("updateSiteSchema"),
       response: {
         200: $ref("siteResponseSchema"),
         400: $ref("errorResponseSchema"),
@@ -34,38 +41,22 @@ const siteRoutes = async (app: FastifyInstance) => {
       },
       tags: ["Site"],
     },
-    handler: updateSiteUsersController,
-  });
-
-  app.route({
-    method: "PATCH",
-    url: "/:siteId/deactivate",
-    preHandler: [app.authenticate, isAdminOrManager],
-    schema: {
-      params: $ref("siteIdParamsSchema"),
-      response: {
-        204: { type: "object" },
-        403: $ref("errorResponseSchema"),
-        404: $ref("errorResponseSchema"),
-      },
-      tags: ["Site"],
-    },
-    handler: deactivateSiteController,
+    handler: updateSiteController,
   });
 
   app.route({
     method: "GET",
     url: "/user/:userId",
-    preHandler: [app.authenticate, canViewSite],
+    preHandler: [app.authenticate],
     schema: {
       params: $ref("userIdParamsSchema"),
       response: {
-        200: $ref("siteResponseSchema"),
+        200: $ref("sitesResponseSchema"),
         404: $ref("errorResponseSchema"),
       },
       tags: ["Site"],
     },
-    handler: getSitesByUserController,
+    handler: getSitesByUserIdController,
   });
 
   app.route({
@@ -79,7 +70,7 @@ const siteRoutes = async (app: FastifyInstance) => {
       },
       tags: ["Site"],
     },
-    handler: getSitesByCompanyController,
+    handler: getSitesByCompanyIdController,
   });
 
   app.route({
