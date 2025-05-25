@@ -2,19 +2,19 @@ const inspect = Symbol.for("nodejs.util.inspect.custom");
 
 export class ChainedError extends Error {
   public static readonly INDENTATION = "  ";
-
   public static readonly DELIMITER = "\n";
-
   public static readonly PREAMBLE = "Full Trace:\n";
 
   private messageStack: string[] = [];
+  public errorCode?: number;
 
-  constructor(error?: unknown) {
+  constructor(error?: unknown, errorCode?: number) {
     super();
     Error.captureStackTrace(this, ChainedError);
     this.name = "ChainedError";
     this.message = `${ChainedError.PREAMBLE}empty`;
     if (error) this.chain(error);
+    if (errorCode !== undefined) this.errorCode = errorCode;
   }
 
   get getMessageStack() {
@@ -28,15 +28,22 @@ export class ChainedError extends Error {
       this.messageStack = messageOrError.getMessageStack.concat(
         this.messageStack,
       );
+      if (
+        this.errorCode === undefined &&
+        messageOrError.errorCode !== undefined
+      ) {
+        this.errorCode = messageOrError.errorCode;
+      }
     } else if (messageOrError instanceof Error) {
       this.stack = messageOrError.stack;
       this.messageStack.push(
         `${messageOrError.name}: ${messageOrError.message}`,
       );
-    } else
+    } else {
       throw new Error(
         `Received something else than an error or a string: ${messageOrError}`,
       );
+    }
     this.updateMessage();
     return this;
   }

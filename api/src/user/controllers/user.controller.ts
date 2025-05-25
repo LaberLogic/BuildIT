@@ -1,34 +1,67 @@
-import { Request, Response } from "express";
+// src/user/controllers/user.controller.ts
+import { FastifyRequest, FastifyReply } from "fastify";
 import httpStatus from "http-status";
-import { RegisterDto } from "@src/schemas/authSchema";
-import { authService } from "../services/auth.service";
+import {
+  CompanyIdParams,
+  CreateUserDto,
+  UpdateUserDto,
+  UserIdParams,
+} from "@src/schemas/userSchema";
+import { userService } from "../services/user.service";
+import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 
-export const signInController = (
-  req: Request<unknown, unknown, RegisterDto>,
-  res: Response,
+export const createUserController = async (
+  req: FastifyRequest<{ Body: CreateUserDto }>,
+  reply: FastifyReply,
 ) => {
-  authService.signIn(req.body).match(
-    (result) =>
-      res
-        .status(httpStatus.OK)
-        .json({ message: "Signed in successfully", user: result }),
-    (error) =>
-      res.status(httpStatus.UNAUTHORIZED).json({ error: error.message }),
+  return userService.createUser(req.user, req.body).match(
+    (user) => {
+      return reply.status(httpStatus.CREATED).send(user);
+    },
+    (error) => sendChainedErrorReply(reply, error),
   );
 };
 
-export const registerController = (
-  req: Request<unknown, unknown, RegisterDto>,
-  res: Response,
+export const updateUserController = async (
+  req: FastifyRequest<{ Params: UserIdParams; Body: UpdateUserDto }>,
+  reply: FastifyReply,
 ) => {
-  authService.register(req.body).match(
-    (user) =>
-      res
-        .status(httpStatus.CREATED)
-        .json({ message: "User registered successfully", user }),
-    (error) =>
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message }),
+  const id = req.params.userId;
+  return userService.updateUser(req.user, id, req.body).match(
+    (user) => reply.status(httpStatus.OK).send(user),
+    (error) => sendChainedErrorReply(reply, error),
+  );
+};
+
+export const deleteUserController = async (
+  req: FastifyRequest<{ Params: UserIdParams }>,
+  reply: FastifyReply,
+) => {
+  const id = req.params.userId;
+  return userService.deleteUser(req.user, id).match(
+    ({ id }) => reply.status(httpStatus.NO_CONTENT).send({ id }),
+    (error) => sendChainedErrorReply(reply, error),
+  );
+};
+
+export const getUserByIdController = async (
+  req: FastifyRequest<{ Params: UserIdParams }>,
+  reply: FastifyReply,
+) => {
+  const id = req.params.userId;
+  return userService.getUserById(req.user, id).match(
+    (user) => reply.status(httpStatus.OK).send(user),
+    (error) => sendChainedErrorReply(reply, error),
+  );
+};
+
+export const getAllUsersByCompanyController = async (
+  req: FastifyRequest<{ Params: CompanyIdParams }>,
+  reply: FastifyReply,
+) => {
+  const companyId = req.params.companyId;
+  return userService.getAllUsersByCompany(req.user, companyId).match(
+    (users) => reply.status(httpStatus.OK).send(users),
+    (error) => sendChainedErrorReply(reply, error),
   );
 };
