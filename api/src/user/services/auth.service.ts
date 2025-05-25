@@ -3,19 +3,17 @@ import { compare, hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ChainedError } from "@utils/chainedError";
 import { env } from "@env";
-import { createUser, getUser } from "../repositories/user.repository";
+import { createUser, getUserUnsafe } from "../repositories/user.repository";
 import { RegisterDto, SignInDto } from "@src/schemas/authSchema";
+import { createCompany } from "@src/company/company.repository";
 
 export const authService = {
-  signIn: (data: SignInDto) =>
-    ResultAsync.fromPromise(
-      getUser({ email: data.email }),
-      (e) => new ChainedError(e),
-    ).andThen((user) => {
+  signIn: (data: SignInDto) => {
+    return getUserUnsafe({ email: data.email }).andThen((user) => {
       if (!user) return errAsync(new ChainedError("Cannot find related User"));
 
       return ResultAsync.fromPromise(
-        compare(data.password, user.password),
+        compare(data.password, user?.password ?? ""),
         (e) => new ChainedError(e),
       )
         .map((isMatch) => ({ user, isMatch }))
@@ -23,7 +21,7 @@ export const authService = {
           if (!isMatch) return errAsync(new ChainedError("Invalid Password"));
 
           const token = jwt.sign(
-            { id: user.id, role: user.role },
+            { id: user.id, role: user.role, companyId: user.companyId },
             env.JWT_SECRET,
             {
               expiresIn: 86400,
@@ -34,18 +32,25 @@ export const authService = {
             accessToken: token,
           });
         });
-    }),
+    });
+  },
 
   register: (data: RegisterDto) => {
-    return ResultAsync.fromPromise(
-      hash(data.password, 10),
-      (e) => new ChainedError(e),
-    ).andThen((hashedPassword) => {
-      return createUser({
-        email: data.email,
-        password: hashedPassword,
-        firstName: data.firstName,
-        lastName: data.lastName,
+    const { companyName, address, ...rest } = data;
+    return createCompany({
+      name: companyName,
+      address,
+    }).andThen(({ id }) => {
+      return ResultAsync.fromPromise(
+        hash(data.password, 10),
+        (e) => new ChainedError(e),
+      ).andThen((hashedPassword) => {
+        return createUser({
+          ...rest,
+          password: hashedPassword,
+          company: { connect: { id } },
+          role: "MANAGER",
+        });
       });
     });
   },
