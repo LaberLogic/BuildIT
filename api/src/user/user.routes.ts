@@ -9,7 +9,12 @@ import {
 
 import { $ref } from "@src/schemas/userSchema";
 
-import { canCreateUser, canManageUser } from "@src/plugins/roleGuards";
+import {
+  canCreateUser,
+  canManageUser,
+  canViewUser,
+  isAdminOrManager,
+} from "@src/plugins/roleGuards";
 
 const userRoutes = async (app: FastifyInstance) => {
   app.route({
@@ -20,18 +25,8 @@ const userRoutes = async (app: FastifyInstance) => {
       body: $ref("createUserSchema"),
       response: {
         201: $ref("userResponseSchema"),
-        400: {
-          type: "object",
-          properties: {
-            error: { type: "string" },
-          },
-        },
-        403: {
-          type: "object",
-          properties: {
-            error: { type: "string" },
-          },
-        },
+        400: $ref("errorResponseSchema"),
+        403: $ref("errorResponseSchema"),
       },
     },
     handler: createUserController,
@@ -46,18 +41,8 @@ const userRoutes = async (app: FastifyInstance) => {
       body: $ref("updateUserSchema"),
       response: {
         200: $ref("userResponseSchema"),
-        400: {
-          type: "object",
-          properties: { error: { type: "string" } },
-        },
-        403: {
-          type: "object",
-          properties: { error: { type: "string" } },
-        },
-        404: {
-          type: "object",
-          properties: { error: { type: "string" } },
-        },
+        400: $ref("errorResponseSchema"),
+        403: $ref("errorResponseSchema"),
       },
     },
     handler: updateUserController,
@@ -71,18 +56,8 @@ const userRoutes = async (app: FastifyInstance) => {
       params: $ref("userIdParamsSchema"),
       response: {
         204: { type: "object" },
-        403: {
-          type: "object",
-          properties: {
-            error: { type: "string" },
-            message: { type: "string" },
-            statusCode: { type: "string" },
-          },
-        },
-        404: {
-          type: "object",
-          properties: { error: { type: "string" } },
-        },
+        403: $ref("errorResponseSchema"),
+        404: $ref("errorResponseSchema"),
       },
     },
     handler: deleteUserController,
@@ -91,15 +66,12 @@ const userRoutes = async (app: FastifyInstance) => {
   app.route({
     method: "GET",
     url: "/:userId",
-    preHandler: [app.authenticate],
+    preHandler: [app.authenticate, canViewUser],
     schema: {
       params: $ref("userIdParamsSchema"),
       response: {
         200: $ref("userResponseSchema"),
-        404: {
-          type: "object",
-          properties: { error: { type: "string" } },
-        },
+        404: $ref("errorResponseSchema"),
       },
     },
     handler: getUserByIdController,
@@ -108,7 +80,7 @@ const userRoutes = async (app: FastifyInstance) => {
   app.route({
     method: "GET",
     url: "/company/:companyId",
-    preHandler: [app.authenticate],
+    preHandler: [app.authenticate, isAdminOrManager],
     schema: {
       params: $ref("companyIdParamsSchema"),
       response: {
