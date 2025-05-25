@@ -1,3 +1,4 @@
+import { getUserUnsafe } from "@src/user/repositories/user.repository";
 import { FastifyRequest, FastifyReply } from "fastify";
 import httpStatus from "http-status";
 
@@ -7,21 +8,37 @@ const rolePriority: Record<string, number> = {
   WORKER: 1,
 };
 
+const sendForbidden = (reply: FastifyReply, message: string) => {
+  return reply.status(httpStatus.FORBIDDEN).send({
+    statusCode: httpStatus.FORBIDDEN,
+    error: "Forbidden",
+    message,
+  });
+};
+
+const sendBadRequest = (reply: FastifyReply, message: string) => {
+  return reply.status(httpStatus.BAD_REQUEST).send({
+    statusCode: httpStatus.BAD_REQUEST,
+    error: "Bad Request",
+    message,
+  });
+};
+
 export const isAdmin = async (req: FastifyRequest, reply: FastifyReply) => {
   if (req.user?.role !== "ADMIN") {
-    return reply.status(httpStatus.FORBIDDEN).send();
+    return sendForbidden(reply, "Admin role required.");
   }
 };
 
 export const isManager = async (req: FastifyRequest, reply: FastifyReply) => {
   if (req.user?.role !== "MANAGER") {
-    return reply.status(httpStatus.FORBIDDEN).send();
+    return sendForbidden(reply, "Manager role required.");
   }
 };
 
 export const isWorker = async (req: FastifyRequest, reply: FastifyReply) => {
   if (req.user?.role !== "WORKER") {
-    return reply.status(httpStatus.FORBIDDEN).send();
+    return sendForbidden(reply, "Worker role required.");
   }
 };
 
@@ -35,15 +52,24 @@ export const canCreateUser = async (
   const targetRole = req.body?.role;
 
   if (!currentUser || !targetRole || !rolePriority[targetRole]) {
-    return reply.status(httpStatus.BAD_REQUEST).send();
+    return sendBadRequest(reply, "Invalid user role or request payload.");
   }
 
   const currentPriority = rolePriority[currentUser.role];
   const targetPriority = rolePriority[targetRole];
 
-  if (currentPriority > targetPriority) return;
-  return reply.status(httpStatus.FORBIDDEN).send();
+  if (currentPriority >= targetPriority) return;
+  return sendForbidden(
+    reply,
+    `Insufficient privileges to create role '${targetRole}'.`,
+  );
 };
+
+const isInvalidRole = (role?: string): boolean =>
+  !role || !Object.hasOwn(rolePriority, role);
+
+const hasHigherPriority = (a: string, b: string): boolean =>
+  rolePriority[a] > rolePriority[b];
 
 export const canManageUser = async (
   req: FastifyRequest<{
@@ -54,16 +80,55 @@ export const canManageUser = async (
 ) => {
   const currentUser = req.user;
   const targetUserId = req.params.userId;
-  const targetRole = req.body?.role || req.body?.targetRole;
+  const requestedRole = req.body?.role || req.body?.targetRole;
 
   if (!currentUser || !targetUserId) {
-    return reply.status(httpStatus.BAD_REQUEST).send();
+    return sendForbidden(reply, "Missing authentication or user ID.");
   }
 
   const isSelf = currentUser.id === targetUserId;
-  const currentPriority = rolePriority[currentUser.role];
-  const targetPriority = targetRole ? rolePriority[targetRole] : undefined;
+  const currentRole = currentUser.role;
 
-  if (isSelf || (targetPriority && currentPriority > targetPriority)) return;
-  return reply.status(httpStatus.FORBIDDEN).send();
+  const targetUserResult = await getUserUnsafe({ id: targetUserId });
+  if (targetUserResult.isErr() || !targetUserResult.value) {
+    return reply.status(404).send({ error: "Target user not found." });
+  }
+
+  const targetRole = targetUserResult.value.role;
+
+  if (isSelf) {
+    if (requestedRole) {
+      if (isInvalidRole(requestedRole)) {
+        return sendBadRequest(reply, `Invalid role: '${requestedRole}'`);
+      }
+      if (!hasHigherPriority(currentRole, requestedRole)) {
+        return sendForbidden(
+          reply,
+          "You cannot assign yourself a role equal or higher than your current role.",
+        );
+      }
+    }
+    return;
+  }
+
+  if (!hasHigherPriority(currentRole, targetRole)) {
+    return sendForbidden(
+      reply,
+      "You cannot manage users with equal or higher roles.",
+    );
+  }
+
+  if (requestedRole) {
+    if (isInvalidRole(requestedRole)) {
+      return sendBadRequest(reply, `Invalid role: '${requestedRole}'`);
+    }
+    if (!hasHigherPriority(currentRole, requestedRole)) {
+      return sendForbidden(
+        reply,
+        `You cannot assign role '${requestedRole}' equal or higher than your own.`,
+      );
+    }
+  }
+
+  return;
 };
