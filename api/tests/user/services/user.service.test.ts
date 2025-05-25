@@ -1,4 +1,4 @@
-import { Role } from "@prisma/prisma";
+import { ROLE } from "@prisma/prisma";
 import {
   createUser,
   deleteUser,
@@ -17,13 +17,13 @@ jest.mock("@src/company/company.repository");
 
 const mockUser = {
   id: "1",
-  role: Role.WORKER,
+  role: ROLE.WORKER,
   companyId: "company-1",
 };
 
 const mockAdmin = {
   id: "admin-1",
-  role: Role.ADMIN,
+  role: ROLE.ADMIN,
   companyId: "admin-company",
 };
 
@@ -35,7 +35,7 @@ describe("userService.createUser", () => {
       email: "test@test.com",
       firstName: "First",
       lastName: "Last",
-      role: Role.WORKER,
+      role: ROLE.WORKER,
       companyId: "company-1",
     });
 
@@ -47,7 +47,7 @@ describe("userService.createUser", () => {
       email: "x@test.com",
       firstName: "X",
       lastName: "Y",
-      role: Role.WORKER,
+      role: ROLE.WORKER,
       companyId: "another-company",
     });
 
@@ -65,7 +65,7 @@ describe("userService.createUser", () => {
       email: "test@test.com",
       firstName: "Test",
       lastName: "User",
-      role: Role.WORKER,
+      role: ROLE.WORKER,
       companyId: "company-1",
     });
 

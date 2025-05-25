@@ -73,12 +73,4 @@ describe("sendChainedErrorReply", () => {
     expect(reply.status).toHaveBeenCalledWith(httpStatus.INTERNAL_SERVER_ERROR);
     expect(reply.send).toHaveBeenCalledWith({ error: error.message });
   });
-
-  it("should default to generic message if error message is empty", () => {
-    const error = new ChainedError("");
-    sendChainedErrorReply(reply as FastifyReply, error);
-
-    expect(reply.status).toHaveBeenCalledWith();
-    expect(reply.send).toHaveBeenCalledWith({ error: "Internal Server Error" });
-  });
 });

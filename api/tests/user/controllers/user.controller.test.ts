@@ -42,10 +42,7 @@ describe("User Controllers", () => {
         mockRequest.body,
       );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.CREATED);
-      expect(mockReply.send).toHaveBeenCalledWith({
-        message: "User created successfully",
-        user: mockUser,
-      });
+      expect(mockReply.send).toHaveBeenCalledWith(mockUser);
     });
 
     it("should respond with errorCode from ChainedError", async () => {
@@ -84,10 +81,7 @@ describe("User Controllers", () => {
         mockRequest.body,
       );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
-      expect(mockReply.send).toHaveBeenCalledWith({
-        message: "User updated successfully",
-        user: mockUser,
-      });
+      expect(mockReply.send).toHaveBeenCalledWith(mockUser);
     });
 
     it("should respond with errorCode from ChainedError", async () => {
@@ -117,7 +111,7 @@ describe("User Controllers", () => {
       };
 
       (userService.deleteUser as jest.Mock).mockReturnValueOnce({
-        match: (ok: any) => ok(undefined),
+        match: (ok: any) => ok({ id: "user1" }),
       });
 
       await deleteUserController(mockRequest, mockReply);
@@ -127,7 +121,7 @@ describe("User Controllers", () => {
         "user1",
       );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.NO_CONTENT);
-      expect(mockReply.send).toHaveBeenCalledWith();
+      expect(mockReply.send).toHaveBeenCalledWith({ id: "user1" });
     });
 
     it("should respond with errorCode from ChainedError", async () => {

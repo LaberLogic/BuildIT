@@ -26,7 +26,7 @@ const siteRoutes = async (app: FastifyInstance) => {
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
       params: $ref("siteIdParamsSchema"),
-      body: $ref("updateSiteUsers"),
+      body: $ref("updateSiteUsersSchema"),
       response: {
         200: $ref("siteResponseSchema"),
         400: $ref("errorResponseSchema"),

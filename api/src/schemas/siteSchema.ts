@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { companyAddressSchema } from "./authSchema";
 import { buildJsonSchemas } from "fastify-zod";
-import { userResponseSchema } from "./userSchema";
 
 export const createSiteSchema = z.object({
   name: z.string().min(1),
@@ -10,29 +9,37 @@ export const createSiteSchema = z.object({
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   notes: z.string().optional(),
-  userIds: z.array(z.string().cuid()).nonempty(),
+  userIds: z.array(z.string().cuid()),
 });
 
-export const updateSiteUsersSchema = z
+export const updateSiteSchema = z
   .object({
     name: z.string().min(1),
     address: companyAddressSchema,
     startDate: z.coerce.date(),
     endDate: z.coerce.date(),
     notes: z.string(),
-    userIds: z.array(z.string().cuid()).nonempty(),
+    userIds: z.array(z.string().cuid()),
   })
   .partial();
+
+const assignmentsSchema = z.array(
+  z.object({
+    userId: z.string().cuid(),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+  }),
+);
 
 export const siteResponseSchema = z.object({
   id: z.string().cuid(),
   name: z.string().min(1),
-  address: companyAddressSchema,
+  address: companyAddressSchema.nullable(),
   companyId: z.string().cuid(),
-  startDate: z.coerce.date().optional(),
-  endDate: z.coerce.date().optional(),
-  notes: z.string().optional(),
-  users: userResponseSchema,
+  startDate: z.coerce.date().optional().nullable(),
+  endDate: z.coerce.date().optional().nullable(),
+  notes: z.string().optional().nullable(),
+  assignments: assignmentsSchema,
 });
 
 export const sitesResponseSchema = z.array(siteResponseSchema);
@@ -55,7 +62,7 @@ export const siteIdParamsSchema = z.object({
 export const { schemas: siteSchemas, $ref } = buildJsonSchemas(
   {
     createSiteSchema,
-    updateSiteUsersSchema,
+    updateSiteSchema,
     siteResponseSchema,
     errorResponseSchema,
     userIdParamsSchema,
@@ -66,5 +73,6 @@ export const { schemas: siteSchemas, $ref } = buildJsonSchemas(
   { $id: "siteSchema" },
 );
 
-export type UpdateSiteUsersDto = z.infer<typeof updateSiteUsersSchema>;
+export type UpdateSiteDto = z.infer<typeof updateSiteSchema>;
 export type CreateSiteDto = z.infer<typeof createSiteSchema>;
+export type SiteResponseDto = z.infer<typeof siteResponseSchema>;

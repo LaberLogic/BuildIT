@@ -1,8 +1,8 @@
-import { Role } from "@prisma/prisma";
+import { ROLE } from "@prisma/prisma";
 import { buildJsonSchemas } from "fastify-zod";
 import z from "zod";
 
-const roleSchema = z.enum([Role.ADMIN, Role.MANAGER, Role.WORKER]);
+const roleSchema = z.enum([ROLE.ADMIN, ROLE.MANAGER, ROLE.WORKER]);
 
 export const createUserSchema = z.object({
   email: z.string().email(),
