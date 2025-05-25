@@ -43,6 +43,10 @@ export const companyIdParamsSchema = z.object({
   companyId: z.string(),
 });
 
+export const errorResponseSchema = z.object({
+  error: z.string(),
+});
+
 export const { schemas: userSchemas, $ref } = buildJsonSchemas(
   {
     createUserSchema,
@@ -51,6 +55,7 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas(
     usersResponseSchema,
     userIdParamsSchema,
     companyIdParamsSchema,
+    errorResponseSchema,
   },
   { $id: "userSchema" },
 );

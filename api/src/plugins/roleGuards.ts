@@ -10,17 +10,13 @@ const rolePriority: Record<string, number> = {
 
 const sendForbidden = (reply: FastifyReply, message: string) => {
   return reply.status(httpStatus.FORBIDDEN).send({
-    statusCode: httpStatus.FORBIDDEN,
-    error: "Forbidden",
-    message,
+    error: message,
   });
 };
 
 const sendBadRequest = (reply: FastifyReply, message: string) => {
   return reply.status(httpStatus.BAD_REQUEST).send({
-    statusCode: httpStatus.BAD_REQUEST,
-    error: "Bad Request",
-    message,
+    error: message,
   });
 };
 
@@ -33,6 +29,15 @@ export const isAdmin = async (req: FastifyRequest, reply: FastifyReply) => {
 export const isManager = async (req: FastifyRequest, reply: FastifyReply) => {
   if (req.user?.role !== "MANAGER") {
     return sendForbidden(reply, "Manager role required.");
+  }
+};
+
+export const isAdminOrManager = async (
+  req: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  if (req.user?.role !== "ADMIN" && req.user?.role !== "MANAGER") {
+    return sendForbidden(reply, "Admin or Manager role required.");
   }
 };
 
@@ -131,4 +136,22 @@ export const canManageUser = async (
   }
 
   return;
+};
+
+export const canViewUser = async (
+  req: FastifyRequest<{ Params: { userId: string } }>,
+  reply: FastifyReply,
+) => {
+  const loggedInUser = req.user;
+  const targetUserId = req.params.userId;
+
+  if (["ADMIN", "MANAGER"].includes(loggedInUser.role)) {
+    return;
+  }
+
+  if (loggedInUser.id === targetUserId) {
+    return;
+  }
+
+  return sendForbidden(reply, "Missing Permissions.");
 };
