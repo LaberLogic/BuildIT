@@ -5,7 +5,12 @@ import userRoutes from "./user/user.routes";
 import authRoutes from "./user/auth.routes";
 import { env } from "@env";
 import jwtPlugin from "./plugins/jwt";
-import { authSchemas, userSchemas } from "./schemas";
+import {
+  authSchemas,
+  materialSchemas,
+  siteSchemas,
+  userSchemas,
+} from "./schemas";
 
 const app = Fastify({
   logger: {
@@ -16,6 +21,9 @@ const app = Fastify({
 });
 userSchemas.forEach((schema) => app.addSchema(schema));
 authSchemas.forEach((schema) => app.addSchema(schema));
+siteSchemas.forEach((schema) => app.addSchema(schema));
+materialSchemas.forEach((schema) => app.addSchema(schema));
+
 app.register(jwtPlugin);
 
 app.register(userRoutes, { prefix: "/users" });
