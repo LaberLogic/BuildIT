@@ -15,10 +15,9 @@ export const createUserController = async (
   reply: FastifyReply,
 ) => {
   return userService.createUser(req.user, req.body).match(
-    (result) =>
-      reply
-        .status(httpStatus.CREATED)
-        .send({ message: "User created successfully", user: result }),
+    (user) => {
+      return reply.status(httpStatus.CREATED).send(user);
+    },
     (error) => sendChainedErrorReply(reply, error),
   );
 };
@@ -29,10 +28,7 @@ export const updateUserController = async (
 ) => {
   const id = req.params.userId;
   return userService.updateUser(req.user, id, req.body).match(
-    (result) =>
-      reply
-        .status(httpStatus.OK)
-        .send({ message: "User updated successfully", user: result }),
+    (user) => reply.status(httpStatus.OK).send(user),
     (error) => sendChainedErrorReply(reply, error),
   );
 };
@@ -43,7 +39,7 @@ export const deleteUserController = async (
 ) => {
   const id = req.params.userId;
   return userService.deleteUser(req.user, id).match(
-    () => reply.status(httpStatus.NO_CONTENT).send(),
+    ({ id }) => reply.status(httpStatus.NO_CONTENT).send({ id }),
     (error) => sendChainedErrorReply(reply, error),
   );
 };

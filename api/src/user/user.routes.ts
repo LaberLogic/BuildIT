@@ -70,10 +70,14 @@ const userRoutes = async (app: FastifyInstance) => {
     schema: {
       params: $ref("userIdParamsSchema"),
       response: {
-        204: { type: "object", properties: { id: { type: "string" } } },
+        204: { type: "object" },
         403: {
           type: "object",
-          properties: { error: { type: "string" } },
+          properties: {
+            error: { type: "string" },
+            message: { type: "string" },
+            statusCode: { type: "string" },
+          },
         },
         404: {
           type: "object",
