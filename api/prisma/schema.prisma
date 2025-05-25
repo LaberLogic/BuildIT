@@ -23,7 +23,7 @@ model User {
   firstName   String
   lastName    String
   password    String?
-  role        Role             @default(WORKER)
+  role        ROLE             @default(WORKER)
   companyId   String?
   company     Company?         @relation(fields: [companyId], references: [id])
   assignments SiteAssignment[]
@@ -68,6 +68,7 @@ model Site {
   startDate   DateTime?
   endDate     DateTime?
   notes       String?
+  status      SITE_STATUS   @default(ACTIVE)
 }
 
 model Material {
@@ -92,8 +93,13 @@ model SiteAssignment {
   @@unique([userId, siteId])
 }
 
-enum Role {
+enum ROLE {
   ADMIN
   MANAGER
   WORKER
+}
+
+enum SITE_STATUS {
+  ACTIVE
+  INACTIVE
 }
