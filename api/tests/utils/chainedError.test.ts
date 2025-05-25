@@ -1,4 +1,4 @@
-import { ChainedError } from "../utils/chainedError";
+import { ChainedError } from "@utils/chainedError";
 import { inspect } from "util";
 
 const firstIndent = ChainedError.INDENTATION;

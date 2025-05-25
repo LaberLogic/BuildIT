@@ -1,4 +1,3 @@
-// src/user/controllers/auth.controller.ts
 import { FastifyRequest, FastifyReply } from "fastify";
 import httpStatus from "http-status";
 import { RegisterDto, SignInDto } from "@src/schemas/authSchema";

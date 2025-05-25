@@ -32,7 +32,7 @@ export const userService = {
   createUser: (currentUser: UserObject, data: CreateUserDto) => {
     if (!isSameCompany(currentUser, data.companyId)) {
       return errAsync(
-        new ChainedError("Cannot create user in another company"),
+        new ChainedError("Cannot create user in another company", 403),
       );
     }
 
@@ -49,7 +49,9 @@ export const userService = {
     return getUser(scopedUserWhere(currentUser, { id })).andThen(
       (targetUser) => {
         if (!targetUser) {
-          return errAsync(new ChainedError("User not found or access denied"));
+          return errAsync(
+            new ChainedError("User not found or access denied", 404),
+          );
         }
 
         const updateData = { ...data };
@@ -57,12 +59,12 @@ export const userService = {
         if (data.password) {
           return ResultAsync.fromPromise(
             hash(data.password, 12),
-            (e) => new ChainedError(e),
+            (e) => new ChainedError(e, 500),
           ).andThen((hashedPassword) => {
             updateData.password = hashedPassword;
             return ResultAsync.fromPromise(
               updateUser(id, updateData),
-              (e) => new ChainedError(e),
+              (e) => new ChainedError(e, 500),
             );
           });
         } else {
@@ -76,7 +78,9 @@ export const userService = {
     return getUser(scopedUserWhere(currentUser, { id })).andThen(
       (targetUser) => {
         if (!targetUser) {
-          return errAsync(new ChainedError("User not found or access denied"));
+          return errAsync(
+            new ChainedError("User not found or access denied", 404),
+          );
         }
 
         return deleteUser(id);
@@ -87,7 +91,9 @@ export const userService = {
   getUserById: (currentUser: UserObject, id: string) => {
     return getUser(scopedUserWhere(currentUser, { id })).andThen((user) => {
       if (!user) {
-        return errAsync(new ChainedError("User not found or access denied"));
+        return errAsync(
+          new ChainedError("User not found or access denied", 404),
+        );
       }
       return okAsync(user);
     });
@@ -98,7 +104,7 @@ export const userService = {
   getAllUsersByCompany: (currentUser: UserObject, companyId: string) => {
     if (!isSameCompany(currentUser, companyId)) {
       return errAsync(
-        new ChainedError("Cannot access users from another company"),
+        new ChainedError("Cannot access users from another company", 403),
       );
     }
     return getUsersByCompanyId(companyId);

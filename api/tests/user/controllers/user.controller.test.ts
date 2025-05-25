@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ChainedError } from "@utils/chainedError";
+import httpStatus from "http-status";
 import {
   createUserController,
   updateUserController,
@@ -7,7 +9,6 @@ import {
   getAllUsersByCompanyController,
 } from "@src/user/controllers/user.controller";
 import { userService } from "@src/user/services/user.service";
-import httpStatus from "http-status";
 
 jest.mock("@src/user/services/user.service");
 
@@ -40,24 +41,24 @@ describe("User Controllers", () => {
         mockRequest.user,
         mockRequest.body,
       );
-      expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
+      expect(mockReply.status).toHaveBeenCalledWith(httpStatus.CREATED);
       expect(mockReply.send).toHaveBeenCalledWith({
         message: "User created successfully",
         user: mockUser,
       });
     });
 
-    it("should respond 400 on error", async () => {
-      const error = new Error("Invalid data");
+    it("should respond with errorCode from ChainedError", async () => {
+      const error = new ChainedError("Invalid data", 400);
       mockRequest = { user: {}, body: {} };
 
       (userService.createUser as jest.Mock).mockReturnValueOnce({
-        match: (ok: any, err: any) => err(error),
+        match: (_ok: any, err: any) => err(error),
       });
 
       await createUserController(mockRequest, mockReply);
 
-      expect(mockReply.status).toHaveBeenCalledWith(httpStatus.BAD_REQUEST);
+      expect(mockReply.status).toHaveBeenCalledWith(400);
       expect(mockReply.send).toHaveBeenCalledWith({ error: error.message });
     });
   });
@@ -89,8 +90,8 @@ describe("User Controllers", () => {
       });
     });
 
-    it("should respond 400 on error", async () => {
-      const error = new Error("Update failed");
+    it("should respond with errorCode from ChainedError", async () => {
+      const error = new ChainedError("Update failed", 403);
       mockRequest = {
         user: {},
         params: { userId: "user1" },
@@ -98,12 +99,12 @@ describe("User Controllers", () => {
       };
 
       (userService.updateUser as jest.Mock).mockReturnValueOnce({
-        match: (ok: any, err: any) => err(error),
+        match: (_ok: any, err: any) => err(error),
       });
 
       await updateUserController(mockRequest, mockReply);
 
-      expect(mockReply.status).toHaveBeenCalledWith(httpStatus.BAD_REQUEST);
+      expect(mockReply.status).toHaveBeenCalledWith(403);
       expect(mockReply.send).toHaveBeenCalledWith({ error: error.message });
     });
   });
@@ -129,20 +130,20 @@ describe("User Controllers", () => {
       expect(mockReply.send).toHaveBeenCalledWith();
     });
 
-    it("should respond 400 on error", async () => {
-      const error = new Error("Delete failed");
+    it("should respond with errorCode from ChainedError", async () => {
+      const error = new ChainedError("Delete failed", 403);
       mockRequest = {
         user: {},
         params: { userId: "user1" },
       };
 
       (userService.deleteUser as jest.Mock).mockReturnValueOnce({
-        match: (ok: any, err: any) => err(error),
+        match: (_ok: unknown, err: any) => err(error),
       });
 
       await deleteUserController(mockRequest, mockReply);
 
-      expect(mockReply.status).toHaveBeenCalledWith(httpStatus.BAD_REQUEST);
+      expect(mockReply.status).toHaveBeenCalledWith(403);
       expect(mockReply.send).toHaveBeenCalledWith({ error: error.message });
     });
   });
@@ -169,20 +170,20 @@ describe("User Controllers", () => {
       expect(mockReply.send).toHaveBeenCalledWith(mockUser);
     });
 
-    it("should respond 404 on error", async () => {
-      const error = new Error("Not found");
+    it("should respond with errorCode from ChainedError", async () => {
+      const error = new ChainedError("Not found", 404);
       mockRequest = {
         user: {},
         params: { userId: "user1" },
       };
 
       (userService.getUserById as jest.Mock).mockReturnValueOnce({
-        match: (ok: any, err: any) => err(error),
+        match: (_ok: any, err: any) => err(error),
       });
 
       await getUserByIdController(mockRequest, mockReply);
 
-      expect(mockReply.status).toHaveBeenCalledWith(httpStatus.NOT_FOUND);
+      expect(mockReply.status).toHaveBeenCalledWith(404);
       expect(mockReply.send).toHaveBeenCalledWith({ error: error.message });
     });
   });
@@ -212,20 +213,20 @@ describe("User Controllers", () => {
       expect(mockReply.send).toHaveBeenCalledWith(mockUsers);
     });
 
-    it("should respond 403 on error", async () => {
-      const error = new Error("Forbidden");
+    it("should respond with errorCode from ChainedError", async () => {
+      const error = new ChainedError("Forbidden", 403);
       mockRequest = {
         user: {},
         params: { companyId: "company1" },
       };
 
       (userService.getAllUsersByCompany as jest.Mock).mockReturnValueOnce({
-        match: (ok: any, err: any) => err(error),
+        match: (_ok: unknown, err: any) => err(error),
       });
 
       await getAllUsersByCompanyController(mockRequest, mockReply);
 
-      expect(mockReply.status).toHaveBeenCalledWith(httpStatus.FORBIDDEN);
+      expect(mockReply.status).toHaveBeenCalledWith(403);
       expect(mockReply.send).toHaveBeenCalledWith({ error: error.message });
     });
   });
