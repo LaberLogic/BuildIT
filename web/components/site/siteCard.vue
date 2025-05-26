@@ -128,7 +128,7 @@
         >
           <span>Last visit: {{ site.lastVisit }}</span>
           <div
-            :class="`w-2 h-2 rounded-full ${getPriorityColor(site.priority)}`"
+            :class="`w-2 h-2 rounded-full ${getPriorityIndicator(site.priority)}`"
             :title="`${site.priority} priority`"
           ></div>
         </div>
