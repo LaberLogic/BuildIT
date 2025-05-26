@@ -5,7 +5,7 @@ import {
 } from "@src/user/controllers/auth.controller";
 import { authService } from "@src/user/services/auth.service";
 import { okAsync, errAsync } from "neverthrow";
-import { Role } from "@prisma/prisma";
+import { ROLE } from "@prisma/prisma";
 import httpStatus from "http-status";
 
 jest.mock("@src/user/services/auth.service");
@@ -14,7 +14,7 @@ const mockUser = {
   id: "userId",
   email: "test@example.com",
   companyId: "companyId",
-  role: Role.ADMIN,
+  role: ROLE.ADMIN,
   accessToken: "fake-jwt-token",
 };
 
@@ -72,7 +72,7 @@ const mockUserCreate = {
   id: "userId",
   email: "newuser@example.com",
   companyId: "companyId",
-  role: Role.MANAGER,
+  role: ROLE.MANAGER,
   accessToken: "new-jwt-token",
 };
 
@@ -86,7 +86,7 @@ describe("registerController", () => {
         email: "newuser@example.com",
         password: "securepassword",
         companyId: "companyId",
-        role: Role.MANAGER,
+        role: ROLE.MANAGER,
       },
     };
 
