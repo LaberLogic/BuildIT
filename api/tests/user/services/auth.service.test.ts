@@ -1,7 +1,7 @@
 import { authService } from "@src/user/services/auth.service";
 import jwt from "jsonwebtoken";
 import { errAsync, okAsync } from "neverthrow";
-import { Role } from "@prisma/prisma";
+import { ROLE } from "@prisma/prisma";
 import { env } from "@env";
 import {
   createUser,
@@ -23,7 +23,7 @@ describe("Sign In tests", () => {
   const user = {
     id: "userId",
     email,
-    role: Role.MANAGER,
+    role: ROLE.MANAGER,
     password: hashedPassword,
   };
 
