@@ -122,7 +122,6 @@
           </NuxtLink>
         </div>
 
-        <!-- Footer -->
         <div
           class="flex justify-between items-center mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500"
         >
