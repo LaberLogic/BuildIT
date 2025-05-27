@@ -78,25 +78,9 @@ const submitForm = async () => {
 const login = async (credentials) => {
   const { signIn } = useAuth();
 
-  try {
-    isLoading.value = true;
+  const result = await signIn(credentials);
 
-    const response = await signIn(credentials);
-
-    const token = response.user.accessToken;
-
-    useCookie("token", { maxAge: 60 * 60 * 24 * 7 }).value = token;
-    isLoading.value = false;
-
-    return true;
-  } catch (error) {
-    if (error?.status === 404) {
-      console.error("Invalid credentials");
-    } else {
-      console.error("Login failed:", error);
-    }
-    return false;
-  }
+  return result.success;
 };
 </script>
 
