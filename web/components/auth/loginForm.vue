@@ -23,7 +23,7 @@
         </el-form-item>
 
         <div class="flex items-center justify-between mb-4">
-          <el-checkbox v-model="form.remember">Remember me</el-checkbox>
+          <el-checkbox>Remember me</el-checkbox>
           <router-link
             to="/auth/forgot-password"
             class="text-sm text-blue-500 hover:underline"
@@ -40,6 +40,9 @@
         >
           Sign in
         </el-button>
+        <div v-if="errorMessage" class="text-red-600 text-sm mb-4">
+          {{ errorMessage }}
+        </div>
       </el-form>
     </div>
   </el-card>
@@ -49,9 +52,9 @@
 const form = ref({
   email: "",
   password: "",
-  remember: false,
 });
-
+const errorMessage = ref("");
+const router = useRouter();
 const isLoading = ref(false);
 const showPassword = ref(false);
 
@@ -59,9 +62,41 @@ const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   isLoading.value = true;
-  setTimeout(() => (isLoading.value = false), 1500);
+  errorMessage.value = "";
+
+  const success = await login(form.value);
+
+  if (!success) {
+    errorMessage.value = "Wrong email or password.";
+  }
+
+  isLoading.value = false;
+  router.push("/");
+};
+
+const login = async (credentials) => {
+  try {
+    isLoading.value = true;
+    const response = await $fetch("http://localhost:3001/auth/signIn", {
+      method: "POST",
+      body: credentials,
+    });
+
+    const token = response.user.accessToken;
+
+    useCookie("token", { maxAge: 60 * 60 * 24 * 7 }).value = token;
+    isLoading.value = false;
+    return true;
+  } catch (error) {
+    if (error?.status === 404) {
+      console.error("Invalid credentials");
+    } else {
+      console.error("Login failed:", error);
+    }
+    return false;
+  }
 };
 </script>
 

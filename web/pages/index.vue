@@ -15,6 +15,9 @@
   <app-footer class="h-20" />
 </template>
 <script setup lang="ts">
+definePageMeta({
+  middleware: ["auth"],
+});
 const sites = [
   {
     id: "1",
