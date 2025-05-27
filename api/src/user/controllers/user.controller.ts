@@ -6,6 +6,7 @@ import {
   CreateUserDto,
   UpdateUserDto,
   UserIdParams,
+  UserResponseDto,
 } from "shared";
 import { userService } from "../services/user.service";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
@@ -62,6 +63,18 @@ export const getAllUsersByCompanyController = async (
   const companyId = req.params.companyId;
   return userService.getAllUsersByCompany(req.user, companyId).match(
     (users) => reply.status(httpStatus.OK).send(users),
+    (error) => sendChainedErrorReply(reply, error),
+  );
+};
+
+export const getCurrentUser = async (
+  req: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  return userService.getUserById(req.user, req.user.id).match(
+    (user: UserResponseDto) => {
+      return reply.status(httpStatus.OK).send(user);
+    },
     (error) => sendChainedErrorReply(reply, error),
   );
 };

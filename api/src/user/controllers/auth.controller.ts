@@ -22,10 +22,7 @@ export const signInController = async (
   reply: FastifyReply,
 ) => {
   return authService.signIn(req.body).match(
-    (user) =>
-      reply
-        .code(httpStatus.OK)
-        .send({ message: "Signed in successfully", user }),
+    (userInfo) => reply.code(httpStatus.OK).send(userInfo),
     (error) => sendChainedErrorReply(reply, error),
   );
 };

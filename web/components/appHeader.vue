@@ -19,17 +19,31 @@
       {{ title }}
     </h1>
 
-    <div v-if="showBackButton" class="w-8"></div>
+    <el-button
+      v-if="showBackButton"
+      size="small"
+      type="text"
+      class="ml-auto"
+      @click="logout"
+    >
+      Logout
+    </el-button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { ArrowLeft } from "@element-plus/icons-vue";
 
 const showBackButton = ref(true);
 const title = "Construx";
+
 const goBack = () => {
-  // Back navigation logic here
   console.log("Go back");
+};
+
+const logout = () => {
+  const { signOut } = useAuth();
+  signOut();
 };
 </script>

@@ -27,8 +27,8 @@ export const userResponseSchema = z.object({
   email: z.string().email(),
   firstName: z.string(),
   lastName: z.string(),
-  role: roleSchema,
-  companyId: z.string(),
+  role: z.string(),
+  companyId: z.string().nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -58,3 +58,4 @@ export type CreateUserDto = z.infer<typeof createUserSchema>;
 export type UpdateUserDto = z.infer<typeof updateUserSchema>;
 export type UserIdParams = z.infer<typeof userIdParamsSchema>;
 export type CompanyIdParams = z.infer<typeof companyIdParamsSchema>;
+export type UserResponseDto = z.infer<typeof userResponseSchema>;
