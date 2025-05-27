@@ -77,12 +77,24 @@ const handlePreviousStep = () => {
   currentStep.value = 1;
 };
 
-const submitRegistration = () => {
+const submitRegistration = async () => {
   const payload = {
     ...userFormData.value,
     ...companyFormData.value,
   };
+  const { register } = useAuth();
 
-  console.log("Submitting full registration payload:", payload);
+  try {
+    const response = await register(payload);
+    console.log(response);
+    return true;
+  } catch (error) {
+    if (error?.status === 404) {
+      console.error("Invalid credentials");
+    } else {
+      console.error("Register failed:", error);
+    }
+    return false;
+  }
 };
 </script>

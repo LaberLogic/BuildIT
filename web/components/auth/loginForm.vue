@@ -76,17 +76,18 @@ const submitForm = async () => {
 };
 
 const login = async (credentials) => {
+  const { signIn } = useAuth();
+
   try {
     isLoading.value = true;
-    const response = await $fetch("http://localhost:3001/auth/signIn", {
-      method: "POST",
-      body: credentials,
-    });
+
+    const response = await signIn(credentials);
 
     const token = response.user.accessToken;
 
     useCookie("token", { maxAge: 60 * 60 * 24 * 7 }).value = token;
     isLoading.value = false;
+
     return true;
   } catch (error) {
     if (error?.status === 404) {

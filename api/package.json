@@ -2,10 +2,11 @@
   "name": "api",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --watch ./ --ext ts,json --ignore node_modules --ignore dist --exec \"ts-node -r tsconfig-paths/register src/index.ts\"",
+    "dev": "nodemon --watch ./ --ext ts,json --ignore node_modules --ignore dist --exec tsx src/index.ts",
     "start:prod": "node dist/index.js",
     "test": "jest",
     "typecheck": "tsc --noEmit",
