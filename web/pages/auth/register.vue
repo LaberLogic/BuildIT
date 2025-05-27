@@ -77,6 +77,8 @@ const handlePreviousStep = () => {
   currentStep.value = 1;
 };
 
+const router = useRouter();
+
 const submitRegistration = async () => {
   const payload = {
     ...userFormData.value,
@@ -85,15 +87,31 @@ const submitRegistration = async () => {
   const { register } = useAuth();
 
   try {
-    const response = await register(payload);
-    console.log(response);
-    return true;
+    await register(payload);
+
+    ElNotification({
+      title: "Success",
+      message: "You can now log in",
+      type: "success",
+    });
+
+    router.push("/auth/login");
   } catch (error) {
-    if (error?.status === 404) {
-      console.error("Invalid credentials");
+    if (error.response && error.response.status === 409) {
+      ElNotification({
+        title: "Error",
+        message: "Email already in use. Reset Password if necessary",
+        type: "error",
+      });
     } else {
-      console.error("Register failed:", error);
+      ElNotification({
+        title: "Error",
+        message: "Registration failed. Please try again later.",
+        type: "error",
+      });
     }
+
+    console.error("Register failed:", error);
     return false;
   }
 };

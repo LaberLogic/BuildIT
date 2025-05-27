@@ -72,7 +72,7 @@
 import { ArrowLeft } from "@element-plus/icons-vue";
 
 const formRef = ref();
-
+const errorMessage = ref("");
 // Form model
 const form = ref({
   companyName: "",
