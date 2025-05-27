@@ -7,6 +7,7 @@ import { authService } from "@src/user/services/auth.service";
 import { okAsync, errAsync } from "neverthrow";
 import { ROLE } from "@prisma/prisma";
 import httpStatus from "http-status";
+import { ChainedError } from "@utils/chainedError";
 
 jest.mock("@src/user/services/auth.service");
 
@@ -48,14 +49,11 @@ describe("signInController", () => {
 
     expect(authService.signIn).toHaveBeenCalledWith(req.body);
     expect(reply.code).toHaveBeenCalledWith(httpStatus.OK);
-    expect(reply.send).toHaveBeenCalledWith({
-      message: "Signed in successfully",
-      user: mockUser,
-    });
+    expect(reply.send).toHaveBeenCalledWith(mockUser);
   });
 
   it("should respond with 401 on failed sign in", async () => {
-    const error = new Error("Invalid credentials");
+    const error = new ChainedError("Invalid credentials", 401);
     (authService.signIn as jest.Mock).mockReturnValue(errAsync(error));
 
     await signInController(req, reply);
@@ -63,7 +61,7 @@ describe("signInController", () => {
     expect(authService.signIn).toHaveBeenCalledWith(req.body);
     expect(reply.status).toHaveBeenCalledWith(httpStatus.UNAUTHORIZED);
     expect(reply.send).toHaveBeenCalledWith({
-      error: "Invalid credentials",
+      error: error.message,
     });
   });
 });

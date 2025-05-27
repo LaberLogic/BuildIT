@@ -17,6 +17,7 @@ import {
 import fastifyCors from "@fastify/cors";
 import { version } from "../package.json";
 import siteRoutes from "./site/routes/site.routes";
+
 const app = Fastify({
   logger: {
     transport: {
@@ -66,9 +67,4 @@ app.register(swaggerUI, {
   staticCSP: true,
 });
 
-app.listen({ port: env.PORT }, (err) => {
-  if (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-});
+export default app;
