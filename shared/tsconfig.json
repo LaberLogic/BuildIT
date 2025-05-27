@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // modern JS supported by Node 14+ and browsers
+    "module": "ESNext", // output ES modules
+    "declaration": true, // generate type declarations (.d.ts)
+    "declarationMap": true, // useful for debugging types
+    "outDir": "dist", // output folder
+    "moduleResolution": "node", // node-style module resolution
+    "esModuleInterop": true, // allow default imports from CommonJS
+    "skipLibCheck": true, // speed up build
+    "strict": true, // strict typing
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true // helpful for debugging emitted js
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

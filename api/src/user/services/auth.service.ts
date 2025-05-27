@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { ChainedError } from "@utils/chainedError";
 import { env } from "@env";
 import { createUser, getUserUnsafe } from "../repositories/user.repository";
-import { RegisterDto, SignInDto } from "@src/schemas/authSchema";
+import { RegisterDto, SignInDto } from "shared";
 import { createCompany } from "@src/company/company.repository";
 
 export const authService = {

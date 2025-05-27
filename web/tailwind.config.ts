@@ -30,6 +30,12 @@ const config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        height: {
+          "16": "4rem",
+          "24": "6rem",
+          "26": "6.5rem",
+          "28": "7rem",
+        },
       },
       borderRadius: {
         DEFAULT: "var(--radius)",

@@ -1,4 +1,5 @@
 <template>
+  <app-header class="h-16" />
   <div class="flex justify-center">
     <div class="w-1/3 space-y-4 pb-4">
       <div
@@ -11,8 +12,12 @@
       </div>
     </div>
   </div>
+  <app-footer class="h-20" />
 </template>
 <script setup lang="ts">
+definePageMeta({
+  middleware: ["auth"],
+});
 const sites = [
   {
     id: "1",
