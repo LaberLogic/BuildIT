@@ -1,8 +1,9 @@
 import axios from "axios";
 import type { RegisterDto, SignInDto } from "shared";
+import { useAuthStore } from "@/stores/auth";
 
 export const useAuth = () => {
-  const config = useRuntimeConfig();
+  const auth = useAuthStore();
 
   const api = axios.create({
     baseURL: "http://localhost:3001/auth",
@@ -17,9 +18,32 @@ export const useAuth = () => {
   };
 
   const signIn = async (data: SignInDto) => {
-    const response = await api.post("/signin", data);
-    return response.data;
+    const { data: res } = await api.post("/signin", data);
+    const token = res.accessToken;
+
+    if (!token) return { success: false };
+
+    auth.setToken(token);
+    auth.setUser(res.user);
+
+    return { success: true, user: res.user };
   };
 
-  return { register, signIn };
+  const signOut = async () => {
+    try {
+      auth.clearAuth();
+      const router = useRouter();
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
+  };
+
+  return {
+    register,
+    signIn,
+    signOut,
+    user: computed(() => auth.user),
+    token: computed(() => auth.token),
+  };
 };

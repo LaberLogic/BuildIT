@@ -76,4 +76,9 @@ const sites = [
     deadline: "2025-08-20",
   },
 ];
+
+const authStore = useAuthStore();
+
+const user = computed(() => authStore.user().value);
+console.log(user);
 </script>
