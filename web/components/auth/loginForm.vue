@@ -31,7 +31,6 @@
           </router-link>
         </div>
 
-        <!-- Submit Button -->
         <el-button
           type="primary"
           class="w-full"

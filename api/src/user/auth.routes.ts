@@ -1,4 +1,4 @@
-import { $ref } from "@src/schemas/authSchema";
+import { userRef as $ref } from "shared";
 import { FastifyPluginAsync } from "fastify";
 import {
   registerController,

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "my-monorepo",
+  "name": "construx",
   "version": "1.0.0",
   "devDependencies": {
     "@eslint/js": "^9.26.0",

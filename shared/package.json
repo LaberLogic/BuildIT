@@ -1,0 +1,30 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "target": "ES2024",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "baseUrl": "."
+  },
+  "dependencies": {
+    "fastify-zod": "^1.4.0",
+    "zod": "^3.25.7",
+    "zod-to-json-schema": "^3.24.5"
+  }
+}

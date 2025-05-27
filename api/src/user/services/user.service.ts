@@ -8,7 +8,7 @@ import {
   updateUser,
 } from "../repositories/user.repository";
 import { ChainedError } from "@utils/chainedError";
-import { CreateUserDto, UpdateUserDto } from "@src/schemas/userSchema";
+import { CreateUserDto, UpdateUserDto } from "shared";
 import { hash } from "bcryptjs";
 import { Prisma } from "../../../generated/prisma";
 import { UserObject } from "types";

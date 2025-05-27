@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // good, modern JS output
+    "module": "ESNext", // keep ES module output
+    "declaration": true, // emit .d.ts files
+    "declarationMap": true, // emit source maps for declarations (helpful for debugging)
+    "outDir": "dist", // output directory
+    "moduleResolution": "node", // resolve node modules
+    "esModuleInterop": true, // allow import default interop
+    "skipLibCheck": true, // speed up build, skip type checks on libs
+    "strict": true, // enable strict typing (recommended)
+    "forceConsistentCasingInFileNames": true, // consistent imports
+    "sourceMap": true // emit JS source maps
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

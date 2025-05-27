@@ -1,9 +1,5 @@
 import { Prisma } from "@prisma/prisma";
-import {
-  CreateSiteDto,
-  SiteResponseDto,
-  UpdateSiteDto,
-} from "@src/schemas/siteSchema";
+import { CreateSiteDto, SiteResponseDto, UpdateSiteDto } from "shared";
 import { ChainedError } from "@utils/chainedError";
 import { UserObject } from "types";
 import {

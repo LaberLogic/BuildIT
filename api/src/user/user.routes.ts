@@ -7,7 +7,7 @@ import {
   updateUserController,
 } from "./controllers/user.controller";
 
-import { $ref } from "@src/schemas/userSchema";
+import { userRef as $ref } from "shared";
 
 import {
   canCreateUser,

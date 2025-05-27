@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import httpStatus from "http-status";
-import { RegisterDto, SignInDto } from "@src/schemas/authSchema";
 import { authService } from "../services/auth.service";
+import { RegisterDto, SignInDto } from "shared";
 
 export const registerController = async (
   req: FastifyRequest<{ Body: RegisterDto }>,
