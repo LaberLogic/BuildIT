@@ -5,11 +5,9 @@
       class="transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"
       :body-style="{ padding: '0' }"
     >
-      <!-- Priority indicator -->
       <div :class="`h-0.5 w-full ${getPriorityIndicator(site.priority)}`" />
 
       <div class="p-4">
-        <!-- Header -->
         <div class="flex justify-between items-start mb-3">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-1">
@@ -30,7 +28,6 @@
           <el-icon class="text-gray-400 ml-2"><ArrowRight /></el-icon>
         </div>
 
-        <!-- Progress -->
         <div class="mb-4">
           <div class="flex justify-between items-center mb-2">
             <span class="text-sm font-medium text-gray-700">Progress</span>
@@ -77,7 +74,6 @@
           </div>
         </div>
 
-        <!-- Alerts Section -->
         <div
           v-if="hasWarningsOrChats"
           class="bg-gray-50 rounded-lg p-3 space-y-2 border border-gray-100"
