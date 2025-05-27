@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import httpStatus from "http-status";
 import { authService } from "../services/auth.service";
 import { RegisterDto, SignInDto } from "shared";
+import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 
 export const registerController = async (
   req: FastifyRequest<{ Body: RegisterDto }>,
@@ -12,10 +13,7 @@ export const registerController = async (
       reply
         .status(httpStatus.CREATED)
         .send({ message: "User registered successfully", user }),
-    (error) =>
-      reply
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: error.message }),
+    (error) => sendChainedErrorReply(reply, error),
   );
 };
 
@@ -28,7 +26,6 @@ export const signInController = async (
       reply
         .code(httpStatus.OK)
         .send({ message: "Signed in successfully", user }),
-    (error) =>
-      reply.status(httpStatus.UNAUTHORIZED).send({ error: error.message }),
+    (error) => sendChainedErrorReply(reply, error),
   );
 };
