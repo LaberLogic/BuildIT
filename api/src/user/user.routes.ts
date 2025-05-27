@@ -22,6 +22,7 @@ const userRoutes = async (app: FastifyInstance) => {
     url: "/",
     preHandler: [app.authenticate, canCreateUser],
     schema: {
+      tags: ["Users"],
       body: $ref("createUserSchema"),
       response: {
         201: $ref("userResponseSchema"),
@@ -37,6 +38,7 @@ const userRoutes = async (app: FastifyInstance) => {
     url: "/:userId",
     preHandler: [app.authenticate, canManageUser],
     schema: {
+      tags: ["Users"],
       params: $ref("userIdParamsSchema"),
       body: $ref("updateUserSchema"),
       response: {
@@ -53,6 +55,7 @@ const userRoutes = async (app: FastifyInstance) => {
     url: "/:userId",
     preHandler: [app.authenticate, canManageUser],
     schema: {
+      tags: ["Users"],
       params: $ref("userIdParamsSchema"),
       response: {
         204: { type: "object" },
@@ -68,6 +71,7 @@ const userRoutes = async (app: FastifyInstance) => {
     url: "/:userId",
     preHandler: [app.authenticate, canViewUser],
     schema: {
+      tags: ["Users"],
       params: $ref("userIdParamsSchema"),
       response: {
         200: $ref("userResponseSchema"),
@@ -82,6 +86,7 @@ const userRoutes = async (app: FastifyInstance) => {
     url: "/company/:companyId",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
+      tags: ["Users"],
       params: $ref("companyIdParamsSchema"),
       response: {
         200: $ref("usersResponseSchema"),

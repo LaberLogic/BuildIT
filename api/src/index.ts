@@ -5,6 +5,9 @@ import userRoutes from "./user/user.routes";
 import authRoutes from "./user/auth.routes";
 import { env } from "@env";
 import jwtPlugin from "./plugins/jwt";
+import swagger from "@fastify/swagger";
+import swaggerUI from "@fastify/swagger-ui";
+import { withRefResolver } from "fastify-zod";
 import {
   authSchemas,
   materialSchemas,
@@ -12,7 +15,8 @@ import {
   userSchemas,
 } from "../schemas";
 import fastifyCors from "@fastify/cors";
-
+import { version } from "../package.json";
+import siteRoutes from "./site/routes/site.routes";
 const app = Fastify({
   logger: {
     transport: {
@@ -27,6 +31,19 @@ app.register(fastifyCors, {
   credentials: true,
 });
 
+app.register(
+  swagger,
+  withRefResolver({
+    openapi: {
+      info: {
+        title: "Costrux API",
+        description: "Costrux API Documentation",
+        version,
+      },
+    },
+  }),
+);
+
 userSchemas.forEach((schema) => app.addSchema(schema));
 authSchemas.forEach((schema) => app.addSchema(schema));
 siteSchemas.forEach((schema) => app.addSchema(schema));
@@ -36,10 +53,17 @@ app.register(jwtPlugin);
 
 app.register(userRoutes, { prefix: "/users" });
 app.register(authRoutes, { prefix: "/auth" });
+app.register(siteRoutes, { prefix: "/sites" });
+
 app.post("/auth/signin", signInController);
 
 app.get("/moderator", async (req, reply) => {
   return reply.status(200).send("Moderator Content.");
+});
+
+app.register(swaggerUI, {
+  routePrefix: "/docs",
+  staticCSP: true,
 });
 
 app.listen({ port: env.PORT }, (err) => {
