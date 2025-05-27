@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ESNext", // good, modern JS output
-    "module": "ESNext", // keep ES module output
-    "declaration": true, // emit .d.ts files
-    "declarationMap": true, // emit source maps for declarations (helpful for debugging)
-    "outDir": "dist", // output directory
-    "moduleResolution": "node", // resolve node modules
-    "esModuleInterop": true, // allow import default interop
-    "skipLibCheck": true, // speed up build, skip type checks on libs
-    "strict": true, // enable strict typing (recommended)
-    "forceConsistentCasingInFileNames": true, // consistent imports
-    "sourceMap": true // emit JS source maps
+    "target": "ES2020", // modern JS supported by Node 14+ and browsers
+    "module": "ESNext", // output ES modules
+    "declaration": true, // generate type declarations (.d.ts)
+    "declarationMap": true, // useful for debugging types
+    "outDir": "dist", // output folder
+    "moduleResolution": "node", // node-style module resolution
+    "esModuleInterop": true, // allow default imports from CommonJS
+    "skipLibCheck": true, // speed up build
+    "strict": true, // strict typing
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true // helpful for debugging emitted js
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
