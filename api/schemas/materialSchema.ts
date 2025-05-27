@@ -33,7 +33,7 @@ export const { schemas: materialSchemas, $ref } = buildJsonSchemas(
     deleteMaterialSchema,
     materialResponseSchema,
   },
-  { $id: "siteSchema" },
+  { $id: "materialSchema" },
 );
 export type CreateMaterialDto = z.infer<typeof createMaterialSchema>;
 export type UpdateMaterialDto = z.infer<typeof updateMaterialSchema>;

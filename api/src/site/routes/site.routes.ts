@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 
 import { isAdminOrManager } from "@src/plugins/roleGuards";
-import { $ref } from "@src/schemas/siteSchema";
+import { siteRef as $ref, userRef } from "shared";
 import {
   createSiteController,
   getSiteByIdController,
@@ -49,7 +49,7 @@ const siteRoutes = async (app: FastifyInstance) => {
     url: "/user/:userId",
     preHandler: [app.authenticate],
     schema: {
-      params: $ref("userIdParamsSchema"),
+      params: userRef("userIdParamsSchema"),
       response: {
         200: $ref("sitesResponseSchema"),
         404: $ref("errorResponseSchema"),
@@ -64,7 +64,7 @@ const siteRoutes = async (app: FastifyInstance) => {
     url: "/company/:companyId",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
-      params: $ref("companyIdParamsSchema"),
+      params: userRef("companyIdParamsSchema"),
       response: {
         200: $ref("sitesResponseSchema"),
       },

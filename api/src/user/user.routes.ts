@@ -7,7 +7,7 @@ import {
   updateUserController,
 } from "./controllers/user.controller";
 
-import { $ref } from "@src/schemas/userSchema";
+import { userRef as $ref, siteRef } from "shared";
 
 import {
   canCreateUser,
@@ -25,8 +25,8 @@ const userRoutes = async (app: FastifyInstance) => {
       body: $ref("createUserSchema"),
       response: {
         201: $ref("userResponseSchema"),
-        400: $ref("errorResponseSchema"),
-        403: $ref("errorResponseSchema"),
+        400: siteRef("errorResponseSchema"),
+        403: siteRef("errorResponseSchema"),
       },
     },
     handler: createUserController,
@@ -41,8 +41,8 @@ const userRoutes = async (app: FastifyInstance) => {
       body: $ref("updateUserSchema"),
       response: {
         200: $ref("userResponseSchema"),
-        400: $ref("errorResponseSchema"),
-        403: $ref("errorResponseSchema"),
+        400: siteRef("errorResponseSchema"),
+        403: siteRef("errorResponseSchema"),
       },
     },
     handler: updateUserController,
@@ -56,8 +56,8 @@ const userRoutes = async (app: FastifyInstance) => {
       params: $ref("userIdParamsSchema"),
       response: {
         204: { type: "object" },
-        403: $ref("errorResponseSchema"),
-        404: $ref("errorResponseSchema"),
+        403: siteRef("errorResponseSchema"),
+        404: siteRef("errorResponseSchema"),
       },
     },
     handler: deleteUserController,
@@ -71,7 +71,7 @@ const userRoutes = async (app: FastifyInstance) => {
       params: $ref("userIdParamsSchema"),
       response: {
         200: $ref("userResponseSchema"),
-        404: $ref("errorResponseSchema"),
+        404: siteRef("errorResponseSchema"),
       },
     },
     handler: getUserByIdController,

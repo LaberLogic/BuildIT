@@ -10,6 +10,8 @@ export default defineConfig([
   globalIgnores(["**/node_modules/", "**/generated/", "**/.nuxt","**/coverage","**/dist/","**/.output/"]),
 
 
+
+
   {
     files: ["**/*.{js,mjs,cjs,ts,vue}"],
     plugins: { js },
@@ -24,6 +26,10 @@ export default defineConfig([
   {
     files: ["**/*.vue"],
     languageOptions: { parserOptions: { parser: tseslint.parser } },
+    rules: {
+      "no-undef": "off",
+       "vue/multi-word-component-names": "off",
+    },
   },
   {
     files: ["**/*.ts"],
@@ -41,7 +47,9 @@ export default defineConfig([
     rules: {
       ...pluginJest.configs.recommended.rules,
     },
+
   },
+
 
   eslintConfigPrettier,
 ]);

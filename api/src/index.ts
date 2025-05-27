@@ -10,7 +10,8 @@ import {
   materialSchemas,
   siteSchemas,
   userSchemas,
-} from "./schemas";
+} from "../schemas";
+import fastifyCors from "@fastify/cors";
 
 const app = Fastify({
   logger: {
@@ -19,6 +20,13 @@ const app = Fastify({
     },
   },
 });
+
+app.register(fastifyCors, {
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+});
+
 userSchemas.forEach((schema) => app.addSchema(schema));
 authSchemas.forEach((schema) => app.addSchema(schema));
 siteSchemas.forEach((schema) => app.addSchema(schema));
