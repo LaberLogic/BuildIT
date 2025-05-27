@@ -64,7 +64,7 @@ import { useAuthStore } from "@/stores/auth";
 const auth = useAuthStore();
 const user = computed(() => auth.user);
 
-const avatarSrc = computed(() => user.value?.avatar || "/placeholder.svg");
+const avatarSrc = computed(() => "/placeholder.svg");
 
 const fullName = computed(() =>
   user.value ? `${user.value.firstName} ${user.value.lastName}` : "",
