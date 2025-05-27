@@ -9,6 +9,7 @@ const authRoutes: FastifyPluginAsync = async (app) => {
   app.post("/register", {
     schema: {
       body: authRef("registerSchema"),
+      tags: ["Authentication"],
     },
     handler: registerController,
   });
@@ -16,6 +17,7 @@ const authRoutes: FastifyPluginAsync = async (app) => {
   app.post("/signIn", {
     schema: {
       body: authRef("signInSchema"),
+      tags: ["Authentication"],
     },
     handler: signInController,
   });
