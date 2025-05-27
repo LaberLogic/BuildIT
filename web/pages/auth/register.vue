@@ -38,6 +38,17 @@
           @next-step="handleNextStep"
           @previous-step="handlePreviousStep"
         />
+        <div class="text-center mt-6">
+          <p class="text-sm text-gray-600">
+            Already have an account?
+            <NuxtLink
+              href="/auth/login"
+              class="text-blue-500 hover:text-blue-600 font-medium"
+            >
+              Sign in
+            </NuxtLink>
+          </p>
+        </div>
       </div>
     </el-card>
   </div>
@@ -57,7 +68,6 @@ const handleNextStep = (data) => {
     userFormData.value = data;
     currentStep.value = 2;
   } else if (currentStep.value === 2) {
-    console.log(data);
     companyFormData.value = data;
     submitRegistration();
   }

@@ -1,3 +1,4 @@
+/** eslint-disable no-undef */
 <template>
   <el-form
     ref="formRef"

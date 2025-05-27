@@ -6,15 +6,11 @@ import {
   getSitesByCompanyId,
   getSiteById,
 } from "../services/site.service";
-import {
-  CreateSiteDto,
-  SiteIdParams,
-  UpdateSiteDto,
-} from "@src/schemas/siteSchema";
+import { CreateSiteDto, SiteIdParams, UpdateSiteDto } from "shared";
 import { UserObject } from "types";
 import httpStatus from "http-status";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
-import { CompanyIdParams, UserIdParams } from "@src/schemas/userSchema";
+import { CompanyIdParams, UserIdParams } from "shared";
 
 export const createSiteController = async (
   req: FastifyRequest<{ Body: CreateSiteDto }>,

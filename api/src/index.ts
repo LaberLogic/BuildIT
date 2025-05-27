@@ -10,7 +10,7 @@ import {
   materialSchemas,
   siteSchemas,
   userSchemas,
-} from "./schemas";
+} from "../schemas";
 import fastifyCors from "@fastify/cors";
 
 const app = Fastify({
