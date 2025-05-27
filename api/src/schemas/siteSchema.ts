@@ -62,7 +62,6 @@ export const { schemas: siteSchemas, $ref } = buildJsonSchemas(
     updateSiteSchema,
     siteResponseSchema,
     errorResponseSchema,
-    userIdParamsSchema,
     companyIdParamsSchema,
     siteIdParamsSchema,
     sitesResponseSchema,
