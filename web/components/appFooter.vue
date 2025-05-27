@@ -3,10 +3,12 @@
     class="fixed z-40 w-full bottom-0 bg-white border-t border-gray-200 px-4 flex items-center justify-center h-24"
   >
     <div class="w-80 flex justify-between items-center h-full text-gray-600">
-      <NuxtLink v-for="item in navItems" :key="item.href" class="">
+      <NuxtLink v-for="item in navItems" :key="item.href" :to="item.href">
         <div
           class="hover:bg-gray-100 p-4 rounded-lg"
-          :class="isActiveRoute(item.active)"
+          :class="{
+            'text-blue-400 bg-gray-50': isActiveRoute(item.href),
+          }"
         >
           <el-icon :size="25">
             <component :is="item.icon"></component>
@@ -25,39 +27,50 @@ import {
   MessageBox,
   Avatar,
 } from "@element-plus/icons-vue";
-const showBackButton = ref(true);
 
+import { useRoute } from "vue-router";
+
+const showBackButton = ref(true);
 const route = useRoute();
-const pathName = route.fullPath?.toString();
-function isActiveRoute(isActive: boolean): string {
-  return isActive ? "text-blue-400 bg-gray-50" : "";
-}
-console.log(pathName);
-const navItems = [
+
+const auth = useAuthStore();
+const user = computed(() => auth.user);
+
+const allNavItems = [
   {
     href: "/",
     icon: OfficeBuilding,
     label: "Sites",
-    active: pathName === "/" || pathName?.startsWith("/sites"),
+    roles: ["ADMIN", "MANAGER", "WORKER"],
   },
   {
     href: "/users",
     icon: User,
     label: "Users",
-    active: pathName === "/users",
+    roles: ["ADMIN", "MANAGER"],
   },
   {
     href: "/chat",
     icon: MessageBox,
     label: "Chat",
-    active: pathName === "/chat" || pathName?.startsWith("/chat"),
     badge: false,
+    roles: ["ADMIN", "MANAGER", "WORKER"],
   },
   {
     href: "/profile",
     icon: Avatar,
     label: "Profile",
-    active: pathName === "/profile" || pathName === "/company",
+    roles: ["ADMIN", "MANAGER", "WORKER"],
   },
 ];
+
+const navItems = computed(() =>
+  allNavItems.filter((item) =>
+    item.roles.includes(user?.value?.role ?? "FAILED"),
+  ),
+);
+
+const isActiveRoute = (itemHref: string) => {
+  return route.path === itemHref || route.path.startsWith(itemHref + "/");
+};
 </script>

@@ -3,6 +3,7 @@ import {
   createUserController,
   deleteUserController,
   getAllUsersByCompanyController,
+  getCurrentUser,
   getUserByIdController,
   updateUserController,
 } from "./controllers/user.controller";
@@ -93,6 +94,19 @@ const userRoutes = async (app: FastifyInstance) => {
       },
     },
     handler: getAllUsersByCompanyController,
+  });
+
+  app.route({
+    method: "GET",
+    url: "/me",
+    preHandler: [app.authenticate],
+    schema: {
+      tags: ["Users"],
+      response: {
+        200: $ref("userResponseSchema"),
+      },
+    },
+    handler: getCurrentUser,
   });
 };
 

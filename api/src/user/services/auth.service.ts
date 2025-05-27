@@ -27,9 +27,11 @@ export const authService = {
               expiresIn: 86400,
             },
           );
-
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { password, updatedAt, ...rest } = user;
           return okAsync({
             accessToken: token,
+            user: rest,
           });
         });
     });
