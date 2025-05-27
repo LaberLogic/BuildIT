@@ -18,6 +18,7 @@
           type="primary"
           plain
           class="mt-4 border-blue-500 text-blue-500 hover:bg-blue-50"
+          @click="editOpen = true"
         >
           Edit Profile
         </el-button>
@@ -53,16 +54,24 @@
         </div>
       </div>
     </el-card>
+
+    <users-update-profile-modal
+      v-model="editOpen"
+      :userData="user"
+      @save="handleUserUpdate"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { Message, Calendar } from "@element-plus/icons-vue";
 import { useAuthStore } from "@/stores/auth";
 
 const auth = useAuthStore();
 const user = computed(() => auth.user);
+
+const editOpen = ref(false);
 
 const avatarSrc = computed(() => "/placeholder.svg");
 
@@ -80,4 +89,9 @@ const companyName = computed(
 
 const formatDate = (date?: string | Date | null) =>
   date ? new Date(date).toLocaleDateString() : "";
+
+async function handleUserUpdate(updatedUser: UpdateUserDto) {
+  console.log("User updated:", updatedUser);
+  editOpen.value = false;
+}
 </script>
