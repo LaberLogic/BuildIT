@@ -1,4 +1,4 @@
-import { userRef as $ref } from "shared";
+import { authRef } from "shared";
 import { FastifyPluginAsync } from "fastify";
 import {
   registerController,
@@ -8,14 +8,14 @@ import {
 const authRoutes: FastifyPluginAsync = async (app) => {
   app.post("/register", {
     schema: {
-      body: $ref("registerSchema"),
+      body: authRef("registerSchema"),
     },
     handler: registerController,
   });
 
   app.post("/signIn", {
     schema: {
-      body: $ref("signInSchema"),
+      body: authRef("signInSchema"),
     },
     handler: signInController,
   });
