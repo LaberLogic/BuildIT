@@ -35,7 +35,6 @@ export const userService = {
         new ChainedError("Cannot create user in another company", 403),
       );
     }
-    console.log("here");
     return createUser({
       email: data.email,
       firstName: data.firstName,

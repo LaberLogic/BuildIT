@@ -105,7 +105,6 @@ describe("userService.updateUser", () => {
     const result = await userService.updateUser(mockUser, "VAR", {
       firstName: "Name",
     });
-    console.log(result);
 
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr().message).toMatch(/not found/);
@@ -152,7 +151,6 @@ describe("userService.deleteUser", () => {
     );
 
     const result = await userService.deleteUser(mockUser, "1");
-    console.log(result);
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr().message).toMatch(/Delete failed/);
   });

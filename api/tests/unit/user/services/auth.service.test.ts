@@ -77,9 +77,12 @@ describe("Sign In tests", () => {
       env.JWT_SECRET,
       { expiresIn: 86400 },
     );
-
+    const { password: _, ...userWithoutPassword } = user;
     expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toEqual({ accessToken: "mock-jwt-token" });
+    expect(result._unsafeUnwrap()).toEqual({
+      accessToken: "mock-jwt-token",
+      user: userWithoutPassword,
+    });
   });
 });
 
