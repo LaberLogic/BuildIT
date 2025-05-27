@@ -1,46 +1,83 @@
 <template>
-  <el-card class="box-card mb-6" shadow="hover">
-    <div class="text-center p-6">
-      <el-avatar :src="avatarSrc" size="large" class="mx-auto mb-4">
-        {{ userInitials }}
-      </el-avatar>
+  <div class="flex flex-col items-center gap-6 mt-10">
+    <el-card
+      class="w-96 border shadow-sm rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"
+    >
+      <div class="text-center p-6">
+        <el-avatar :src="avatarSrc" size="large" class="mx-auto mb-4">
+          {{ userInitials }}
+        </el-avatar>
 
-      <h1 class="text-xl font-semibold text-gray-900">{{ fullName }}</h1>
-      <p class="text-gray-600 mt-1">{{ user.role }}</p>
-      <p class="text-sm text-gray-500 mt-1">{{ companyName }}</p>
+        <h1 class="text-xl font-semibold text-gray-900">{{ fullName }}</h1>
+        <p class="text-gray-600 mt-1 capitalize">
+          {{ user?.role.toLowerCase() }}
+        </p>
+        <p class="text-sm text-gray-500 mt-1">{{ companyName }}</p>
 
-      <el-button type="primary" plain class="mt-4"> Edit Profile </el-button>
-    </div>
-  </el-card>
+        <el-button
+          type="primary"
+          plain
+          class="mt-4 border-blue-500 text-blue-500 hover:bg-blue-50"
+        >
+          Edit Profile
+        </el-button>
+      </div>
+    </el-card>
+
+    <el-card
+      class="w-96 border shadow-sm rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"
+    >
+      <div class="p-6 space-y-4">
+        <h3 class="font-medium text-gray-900 mb-2">Contact Information</h3>
+
+        <div class="flex items-center">
+          <el-icon class="mr-3 text-gray-500">
+            <Message />
+          </el-icon>
+          <div>
+            <p class="text-sm font-medium text-gray-900">{{ user?.email }}</p>
+            <p class="text-xs text-gray-500">Email</p>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <el-icon class="mr-3 text-gray-500">
+            <Calendar />
+          </el-icon>
+          <div>
+            <p class="text-sm font-medium text-gray-900">
+              {{ formatDate(user?.createdAt) }}
+            </p>
+            <p class="text-xs text-gray-500">Member since</p>
+          </div>
+        </div>
+      </div>
+    </el-card>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { Message, Calendar } from "@element-plus/icons-vue";
 import { useAuthStore } from "@/stores/auth";
 
-const authStore = useAuthStore();
-
-const user = computed(() => authStore.user);
-
-console.log(user.value);
+const auth = useAuthStore();
+const user = computed(() => auth.user);
 
 const avatarSrc = computed(() => user.value?.avatar || "/placeholder.svg");
 
-const fullName = computed(() => {
-  const u = user.value;
-  if (!u) return "";
-  return `${u.firstName || ""} ${u.lastName || ""}`.trim();
-});
+const fullName = computed(() =>
+  user.value ? `${user.value.firstName} ${user.value.lastName}` : "",
+);
 
-const userInitials = computed(() => {
-  const u = user.value;
-  if (!u) return "";
-  const firstInitial = u.firstName?.[0] ?? "";
-  const lastInitial = u.lastName?.[0] ?? "";
-  return (firstInitial + lastInitial).toUpperCase();
-});
+const userInitials = computed(() =>
+  `${user.value?.firstName?.[0] ?? ""}${user.value?.lastName?.[0] ?? ""}`.toUpperCase(),
+);
 
 const companyName = computed(
-  () => user.value?.company || "Company not specified",
+  () => user.value?.companyId || "Company not specified",
 );
+
+const formatDate = (date?: string | Date | null) =>
+  date ? new Date(date).toLocaleDateString() : "";
 </script>
