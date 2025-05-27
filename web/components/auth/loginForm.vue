@@ -75,7 +75,7 @@ const submitForm = async () => {
   router.push("/");
 };
 
-const login = async (credentials) => {
+const login = async (credentials: { email: string; password: string }) => {
   const { signIn } = useAuth();
 
   const result = await signIn(credentials);
