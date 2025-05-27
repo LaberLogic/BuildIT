@@ -8,7 +8,7 @@ import {
   getSites,
   updateSite,
 } from "../repositories/site.repository";
-import { extendSiteWhere, scopeCheckSite } from "@src/scopeCheck";
+import { extendSiteWhere, scopeCheckSite } from "@utils/scopeCheck";
 import { ResultAsync } from "neverthrow";
 export const createNewSite = (
   currentUser: UserObject,
