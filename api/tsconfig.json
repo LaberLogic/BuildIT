@@ -9,14 +9,15 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "types": ["jest"],
+    "types": ["jest", "supertest"],
     "baseUrl": ".",
     "paths": {
       "@types/*": ["types/*"],
       "@utils/*": ["utils/*"],
       "@src/*": ["src/*"],
       "@env": ["env.ts"],
-      "@prisma/*": ["generated/*"]
+      "@prisma/*": ["generated/*"],
+      "shared": ["../shared/src/index.ts"]
     }
   },
   "include": [
