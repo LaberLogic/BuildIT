@@ -10,7 +10,8 @@ import { createCompany } from "@src/company/company.repository";
 export const authService = {
   signIn: (data: SignInDto) => {
     return getUserUnsafe({ email: data.email }).andThen((user) => {
-      if (!user) return errAsync(new ChainedError("Cannot find related User"));
+      if (!user)
+        return errAsync(new ChainedError("Cannot find related User", 401));
 
       return ResultAsync.fromPromise(
         compare(data.password, user?.password ?? ""),

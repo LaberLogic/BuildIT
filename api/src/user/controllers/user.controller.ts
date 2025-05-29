@@ -72,7 +72,7 @@ export const getCurrentUser = async (
   reply: FastifyReply,
 ) => {
   return userService.getUserById(req.user, req.user.id).match(
-    (user: UserResponseDto) => {
+    (user) => {
       return reply.status(httpStatus.OK).send(user);
     },
     (error) => sendChainedErrorReply(reply, error),
