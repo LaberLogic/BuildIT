@@ -8,13 +8,13 @@ import {
   getSites,
   updateSite,
 } from "../repositories/site.repository";
-import { extendSiteWhere, scopeCheckSite } from "@utils/scopeCheck";
+import { extendSiteWhere, scopeCheckCompany } from "@utils/scopeCheck";
 import { ResultAsync } from "neverthrow";
 export const createNewSite = (
   currentUser: UserObject,
   data: CreateSiteDto,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
-  return scopeCheckSite(currentUser, data.companyId).andThen(() =>
+  return scopeCheckCompany(currentUser, data.companyId).andThen(() =>
     createSite(mapSiteCreatePayload(data)),
   );
 };
@@ -25,7 +25,7 @@ export const updateSiteById = (
   data: UpdateSiteDto,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
   return getSite({ id }).andThen((site) =>
-    scopeCheckSite(currentUser, site.companyId).andThen(() =>
+    scopeCheckCompany(currentUser, site.companyId).andThen(() =>
       updateSite({ id }, mapSiteUpdateUserPayload(id, data)),
     ),
   );

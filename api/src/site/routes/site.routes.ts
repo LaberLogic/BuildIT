@@ -29,7 +29,7 @@ const siteRoutes = async (app: FastifyInstance) => {
 
   app.route({
     method: "PATCH",
-    url: "/:siteId/users",
+    url: "/:siteId",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
       params: $ref("siteIdParamsSchema"),
@@ -67,6 +67,7 @@ const siteRoutes = async (app: FastifyInstance) => {
       params: userRef("companyIdParamsSchema"),
       response: {
         200: $ref("sitesResponseSchema"),
+        404: $ref("errorResponseSchema"),
       },
       tags: ["Site"],
     },
