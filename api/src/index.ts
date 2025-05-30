@@ -3,17 +3,11 @@ import Fastify from "fastify";
 import { signInController } from "./user/controllers/auth.controller";
 import userRoutes from "./user/user.routes";
 import authRoutes from "./user/auth.routes";
-import { env } from "@env";
 import jwtPlugin from "./plugins/jwt";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import { withRefResolver } from "fastify-zod";
-import {
-  authSchemas,
-  materialSchemas,
-  siteSchemas,
-  userSchemas,
-} from "../schemas";
+import { authSchemas, materialSchemas, siteSchemas, userSchemas } from "shared";
 import fastifyCors from "@fastify/cors";
 import { version } from "../package.json";
 import siteRoutes from "./site/routes/site.routes";

@@ -77,6 +77,7 @@ describe("Sign In tests", () => {
       env.JWT_SECRET,
       { expiresIn: 86400 },
     );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = user;
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({

@@ -1,16 +1,50 @@
-import { Prisma } from "@prisma/prisma";
+import { Prisma, PrismaClient } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
 import { ResultAsync, errAsync, okAsync } from "neverthrow";
 import { UserObject } from "types";
 
-export const scopeCheckSite = (
+const prisma = new PrismaClient();
+
+export const scopeCheckCompany = (
   currentUser: UserObject,
   companyId: string,
-): ResultAsync<true, ChainedError> => {
+): ResultAsync<void, ChainedError> => {
   if (currentUser.companyId !== companyId) {
-    return errAsync(new ChainedError("Unauthorized", 403));
+    return errAsync(new ChainedError("Unauthorized"));
   }
-  return okAsync(true);
+  return okAsync(undefined);
+};
+
+export const scopeCheckMaterial = (currentUser: UserObject, siteId: string) => {
+  return ResultAsync.fromPromise(
+    prisma.site.findFirst({
+      where: {
+        id: siteId,
+        assignments: {
+          some: {
+            user: {
+              id: currentUser.id,
+            },
+          },
+        },
+      },
+    }),
+    () => new ChainedError("Failed to check material scope"),
+  );
+};
+
+export const scopeCheckSite = (currentUser: UserObject, siteId: string) => {
+  return ResultAsync.fromPromise(
+    prisma.site.findFirst({
+      where: {
+        id: siteId,
+        company: {
+          id: currentUser.companyId as string,
+        },
+      },
+    }),
+    () => new ChainedError("Failed to check material scope"),
+  );
 };
 
 export const extendSiteWhere = (
