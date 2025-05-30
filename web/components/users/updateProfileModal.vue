@@ -44,7 +44,7 @@
 
     <template #footer>
       <div class="flex justify-end space-x-2">
-        <el-button variant="outline" @click="onCancel">Cancel</el-button>
+        <el-button @click="onCancel">Cancel</el-button>
         <el-button type="primary" @click="handleSave">Save Changes</el-button>
       </div>
     </template>
