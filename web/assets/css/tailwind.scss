@@ -67,6 +67,52 @@
   }
 }
 
+@layer components {
+  .card-container {
+    @apply p-4 space-y-4;
+  }
+
+  .card-header {
+    @apply flex justify-between items-center mb-4;
+  }
+
+  .section-title {
+    @apply font-medium text-gray-900;
+  }
+
+  .btn-primary {
+    @apply h-8 text-blue-500 hover:bg-blue-50 p-1;
+  }
+
+  .btn-icon {
+    @apply h-7 w-7 rounded-md;
+  }
+
+  .text-label {
+    @apply text-xs text-gray-500;
+  }
+
+  .text-muted {
+    @apply text-sm text-gray-500 mt-1;
+  }
+
+  .info-block {
+    @apply flex items-center;
+  }
+
+  .info-title {
+    @apply text-xs text-gray-500;
+  }
+
+  .info-value {
+    @apply font-medium;
+  }
+
+  .alert-bar {
+    @apply transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200;
+  }
+}
+
 @layer utilities {
   .scroll-smooth {
     scroll-behavior: smooth;

@@ -44,7 +44,6 @@
           />
         </div>
 
-        <!-- Stats Grid -->
         <div class="grid grid-cols-3 gap-4 mb-4 text-center">
           <div>
             <el-icon class="mb-1 text-gray-400"><User /></el-icon>
