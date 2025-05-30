@@ -6,7 +6,6 @@ import {
   CreateUserDto,
   UpdateUserDto,
   UserIdParams,
-  UserResponseDto,
 } from "shared";
 import { userService } from "../services/user.service";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
