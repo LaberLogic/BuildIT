@@ -22,7 +22,7 @@ const mockedGetSites = getSites as jest.Mock;
 const mockedUpdateSite = updateSite as jest.Mock;
 
 jest.mock("@utils/scopeCheck", () => ({
-  scopeCheckSite: jest.fn(() => okAsync(true)),
+  scopeCheckCompany: jest.fn(() => okAsync(true)),
   extendSiteWhere: jest.fn((where) => where),
 }));
 
