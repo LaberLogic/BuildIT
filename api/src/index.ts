@@ -11,6 +11,7 @@ import { authSchemas, materialSchemas, siteSchemas, userSchemas } from "shared";
 import fastifyCors from "@fastify/cors";
 import { version } from "../package.json";
 import siteRoutes from "./site/routes/site.routes";
+import materialRoutes from "./site/routes/material.routes";
 
 const app = Fastify({
   logger: {
@@ -49,6 +50,7 @@ app.register(jwtPlugin);
 app.register(userRoutes, { prefix: "/users" });
 app.register(authRoutes, { prefix: "/auth" });
 app.register(siteRoutes, { prefix: "/sites" });
+app.register(materialRoutes, { prefix: "/materials" });
 
 app.post("/auth/signin", signInController);
 
