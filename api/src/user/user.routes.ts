@@ -10,6 +10,20 @@ import { isAdmin } from "@src/plugins/roleGuards";
 const userRoutes = async (app: FastifyInstance) => {
   app.route({
     method: "GET",
+    url: "/me",
+    preHandler: [app.authenticate],
+    schema: {
+      tags: ["Users"],
+      response: {
+        200: $ref("userResponseSchema"),
+      },
+    },
+    handler: getCurrentUser,
+  });
+
+  // (admin only)
+  app.route({
+    method: "GET",
     url: "/:userId",
     preHandler: [app.authenticate, isAdmin],
     schema: {
@@ -21,19 +35,6 @@ const userRoutes = async (app: FastifyInstance) => {
       },
     },
     handler: getUserByIdController,
-  });
-
-  app.route({
-    method: "GET",
-    url: "/me",
-    preHandler: [app.authenticate],
-    schema: {
-      tags: ["Users"],
-      response: {
-        200: $ref("userResponseSchema"),
-      },
-    },
-    handler: getCurrentUser,
   });
 };
 
