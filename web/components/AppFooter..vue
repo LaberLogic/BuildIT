@@ -56,7 +56,7 @@ const navItems = computed(() => {
 
   const items = [
     {
-      href: "/",
+      href: "/company/",
       icon: Building2,
       label: "Companies",
       show: isAdmin.value,
@@ -91,6 +91,6 @@ const navItems = computed(() => {
 });
 
 const isActiveRoute = (itemHref: string) => {
-  return route.path === itemHref || route.path.startsWith(itemHref + "/");
+  return route.path === itemHref || route.path.includes(itemHref + "/");
 };
 </script>

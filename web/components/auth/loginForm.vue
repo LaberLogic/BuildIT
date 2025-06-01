@@ -76,7 +76,7 @@ const submitForm = async () => {
 
   isLoading.value = false;
   if (user.value?.role === "ADMIN") {
-    router.push(`/company/${user.value.companyId}/`);
+    router.push(`/company/`);
   } else router.push(`/company/${user.value?.companyId}/sites`);
 };
 
