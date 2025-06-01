@@ -33,11 +33,12 @@
 
 <script setup lang="ts">
 import {
+  Building2,
   User,
-  OfficeBuilding,
-  MessageBox,
-  Avatar,
-} from "@element-plus/icons-vue";
+  Users,
+  MessageCircle,
+  Construction,
+} from "lucide-vue-next";
 
 import { useRoute } from "vue-router";
 
@@ -46,39 +47,48 @@ const route = useRoute();
 const auth = useAuthStore();
 const user = computed(() => auth.user);
 
-const allNavItems = [
-  {
-    href: "/",
-    icon: OfficeBuilding,
-    label: "Sites",
-    roles: ["ADMIN", "MANAGER", "WORKER"],
-  },
-  {
-    href: "/users",
-    icon: User,
-    label: "Users",
-    roles: ["ADMIN", "MANAGER"],
-  },
-  {
-    href: "/chat",
-    icon: MessageBox,
-    label: "Chat",
-    badge: false,
-    roles: ["SUPER ADMIN"],
-  },
-  {
-    href: "/profile",
-    icon: Avatar,
-    label: "Profile",
-    roles: ["ADMIN", "MANAGER", "WORKER"],
-  },
-];
+const isAdmin = computed(() => user.value?.role === "ADMIN");
 
-const navItems = computed(() =>
-  allNavItems.filter((item) =>
-    item.roles.includes(user?.value?.role ?? "FAILED"),
-  ),
-);
+const navItems = computed(() => {
+  if (!user.value) return [];
+
+  const companyId = user.value.companyId;
+
+  const items = [
+    {
+      href: "/",
+      icon: Building2,
+      label: "Companies",
+      show: isAdmin.value,
+    },
+    {
+      href: `/company/${companyId}/sites`,
+      icon: Construction,
+      label: "Sites",
+      show: ["MANAGER", "WORKER"].includes(user.value.role),
+    },
+    {
+      href: `/company/${companyId}/users`,
+      icon: Users,
+      label: "Users",
+      show: ["MANAGER"].includes(user.value.role),
+    },
+    {
+      href: "/chat",
+      icon: MessageCircle,
+      label: "Chat",
+      show: user.value.role === "SUPER ADMIN",
+    },
+    {
+      href: "/profile",
+      icon: User,
+      label: "Profile",
+      show: true,
+    },
+  ];
+
+  return items.filter((item) => item.show);
+});
 
 const isActiveRoute = (itemHref: string) => {
   return route.path === itemHref || route.path.startsWith(itemHref + "/");
