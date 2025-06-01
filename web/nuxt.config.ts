@@ -7,4 +7,13 @@ export default defineNuxtConfig({
   tailwindcss: {
     viewer: false,
   },
+  nitro: {
+    devProxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        prependPath: false,
+      },
+    },
+  },
 });

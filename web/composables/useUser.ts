@@ -1,47 +1,99 @@
-import axios from "axios";
 import type { CreateUserDto, UpdateUserDto, UserResponseDto } from "shared";
-export const useUser = () => {
-  const api = axios.create({
-    baseURL: "http://localhost:3001/users",
-    headers: {
-      "Content-Type": "application/json",
+
+const getToken = () => `Bearer ${useAuthStore().token}`;
+
+export const useCompanyUsers = (companyId: string) => {
+  const { data, pending, error, refresh } = useFetch<UserResponseDto[]>(
+    () => `/api/companies/${companyId}/users`,
+    {
+      headers: {
+        Authorization: getToken(),
+      },
     },
-  });
-
-  const createUser = async (data: CreateUserDto): Promise<UserResponseDto> => {
-    const response = await api.post("/", data);
-    return response.data;
-  };
-
-  const updateUser = async (
-    userId: string,
-    data: UpdateUserDto,
-  ): Promise<UserResponseDto> => {
-    const response = await api.put(`/${userId}`, data);
-    return response.data;
-  };
-
-  const deleteUser = async (userId: string): Promise<void> => {
-    await api.delete(`/${userId}`);
-  };
-
-  const getUser = async (userId: string): Promise<UserResponseDto> => {
-    const response = await api.get(`/${userId}`);
-    return response.data;
-  };
-
-  const getUsersByCompany = async (
-    companyId: string,
-  ): Promise<UserResponseDto> => {
-    const response = await api.get(`/company/${companyId}`);
-    return response.data;
-  };
+  );
 
   return {
-    createUser,
-    updateUser,
-    deleteUser,
-    getUser,
-    getUsersByCompany,
+    users: data,
+    isLoading: pending,
+    error,
+    refresh,
+  };
+};
+
+export const useUserById = (userId: string) => {
+  const { data, pending, error, refresh } = useFetch<UserResponseDto>(
+    () => `/api/users/${userId}`,
+    {
+      headers: {
+        Authorization: getToken(),
+      },
+    },
+  );
+
+  return {
+    user: data,
+    isLoading: pending,
+    error,
+    refresh,
+  };
+};
+
+export const useCreateUser = (companyId: string, payload: CreateUserDto) => {
+  const { data, pending, error } = useFetch<UserResponseDto>(
+    () => `/api/companies/${companyId}/users`,
+    {
+      method: "POST",
+      body: payload,
+      headers: {
+        Authorization: getToken(),
+      },
+    },
+  );
+
+  return {
+    user: data,
+    isLoading: pending,
+    error,
+  };
+};
+
+export const useUpdateUser = (
+  companyId: string,
+  userId: string,
+  payload: UpdateUserDto,
+) => {
+  const { data, pending, error } = useFetch<UserResponseDto>(
+    () => `/api/companies/${companyId}/users/${userId}`,
+    {
+      method: "PUT",
+      body: payload,
+      headers: {
+        Authorization: getToken(),
+      },
+    },
+  );
+
+  return {
+    user: data,
+    isLoading: pending,
+    error,
+  };
+};
+
+export const useDeleteUser = (companyId: string, userId: string) => {
+  const { data, pending, error } = useFetch<null>(
+    () => `/api/companies/${companyId}/users/${userId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: getToken(),
+      },
+    },
+  );
+
+  return {
+    result: data,
+    isLoading: pending,
+    error,
   };
 };

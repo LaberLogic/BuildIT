@@ -41,3 +41,24 @@ export const getCompanies = (where?: Prisma.CompanyWhereInput) => {
     (e) => new ChainedError(e),
   );
 };
+
+export const getCompany = (where: Prisma.CompanyWhereUniqueInput) => {
+  return ResultAsync.fromPromise(
+    prisma.company.findUnique({
+      where,
+      select: {
+        id: true,
+        address: {
+          select: {
+            streetNumber: true,
+            street: true,
+            city: true,
+            country: true,
+            postalCode: true,
+          },
+        },
+      },
+    }),
+    (e) => new ChainedError(e),
+  );
+};
