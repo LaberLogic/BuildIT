@@ -1,8 +1,6 @@
 <template>
   <div class="flex flex-col items-center gap-6 mt-10">
-    <el-card
-      class="w-96 border shadow-sm rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"
-    >
+    <el-card class="w-96">
       <div class="text-center p-6">
         <el-avatar :src="avatarSrc" size="large" class="mx-auto mb-4">
           {{ userInitials }}
@@ -25,9 +23,7 @@
       </div>
     </el-card>
 
-    <el-card
-      class="w-96 border shadow-sm rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"
-    >
+    <el-card class="w-96">
       <div class="p-6 space-y-4">
         <h3 class="font-medium text-gray-900 mb-2">Contact Information</h3>
 
@@ -55,9 +51,10 @@
       </div>
     </el-card>
 
-    <users-update-profile-modal
+    <users-modals-create-update-user
       v-model="editOpen"
-      :userData="user"
+      :user="user"
+      isProfile
       @save="handleUserUpdate"
     />
   </div>

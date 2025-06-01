@@ -57,6 +57,9 @@ const router = useRouter();
 const isLoading = ref(false);
 const showPassword = ref(false);
 
+const auth = useAuthStore();
+const user = computed(() => auth.user);
+
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
@@ -72,7 +75,9 @@ const submitForm = async () => {
   }
 
   isLoading.value = false;
-  router.push("/");
+  if (user.value?.role === "ADMIN") {
+    router.push(`/company/`);
+  } else router.push(`/company/${user.value?.companyId}/sites`);
 };
 
 const login = async (credentials: { email: string; password: string }) => {
