@@ -12,6 +12,8 @@ import fastifyCors from "@fastify/cors";
 import { version } from "../package.json";
 import siteRoutes from "./site/routes/site.routes";
 import materialRoutes from "./site/routes/material.routes";
+import companyUserRoutes from "./user/company.user.routes";
+import companyRoutes from "./company/company.routes";
 
 const app = Fastify({
   logger: {
@@ -47,10 +49,13 @@ materialSchemas.forEach((schema) => app.addSchema(schema));
 
 app.register(jwtPlugin);
 
-app.register(userRoutes, { prefix: "/users" });
 app.register(authRoutes, { prefix: "/auth" });
-app.register(siteRoutes, { prefix: "/sites" });
-app.register(materialRoutes, { prefix: "/materials" });
+app.register(companyRoutes, { prefix: "/companies" });
+
+app.register(userRoutes, { prefix: "/users" });
+app.register(companyUserRoutes, { prefix: "/companies/:companyId/users" });
+app.register(siteRoutes, { prefix: "/companies/:companyId/sites" });
+app.register(materialRoutes, { prefix: "/companies/:companyId/materials" });
 
 app.post("/auth/signin", signInController);
 
