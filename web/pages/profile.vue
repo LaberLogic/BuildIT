@@ -55,9 +55,11 @@
       </div>
     </el-card>
 
-    <users-update-profile-modal
+    <
+    <users-modals-create-update-user
       v-model="editOpen"
-      :userData="user"
+      :user="user"
+      isProfile
       @save="handleUserUpdate"
     />
   </div>
