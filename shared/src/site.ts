@@ -26,8 +26,6 @@ export const updateSiteSchema = z
 const assignmentsSchema = z.array(
   z.object({
     userId: z.string().cuid(),
-    firstName: z.string().min(1),
-    lastName: z.string().min(1),
   }),
 );
 

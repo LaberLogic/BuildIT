@@ -19,9 +19,12 @@
 definePageMeta({
   middleware: ["auth"],
 });
+
+const route = useRoute();
+const companyId = route.params.companyId as string;
 const sites = [
   {
-    id: "1",
+    id: "cmbdjbnr5000azuyls58rtcti",
     name: "Greenfield Construction",
     address: "123 Main St, Springfield",
     progress: 75,
@@ -77,4 +80,17 @@ const sites = [
     deadline: "2025-08-20",
   },
 ];
+
+onMounted(async () => {
+  const { sites: fetchedSites, error } = useCompanySites(companyId);
+
+  watchEffect(() => {
+    if (fetchedSites.value) {
+      console.log("[API] Sites fetched:", fetchedSites.value);
+    }
+    if (error.value) {
+      console.error("[API] Failed to fetch sites:", error.value);
+    }
+  });
+});
 </script>

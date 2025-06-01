@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { defineProps } from "vue";
 
@@ -90,17 +90,22 @@ const company = {
   sites,
 };
 
-const user = {
-  firstName: "Jane",
-  lastName: "Doe",
-  avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-  email: "jane.doe@example.com",
-  role: "Project Manager",
-  status: "active",
-  currentSite: "Site Alpha - Berlin",
-  hoursThisMonth: 128,
-  joinDate: "March 15, 2023",
-};
+const route = useRoute();
+const companyId = route.params.companyId;
+
+onMounted(async () => {
+  const { users, error } = useCompanyUsers(companyId);
+  const { sites: sites2, error: error2 } = useCompanySites(companyId);
+  const { company: company3, error: error3 } = useCompany(companyId);
+  watchEffect(() => {
+    if (users.value) {
+      console.log("[API] Sites fetched:", users.value);
+    }
+    if (error.value) {
+      console.error("[API] Failed to fetch sites:", error.value);
+    }
+  });
+});
 </script>
 
 <style scoped>

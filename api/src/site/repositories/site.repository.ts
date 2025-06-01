@@ -24,8 +24,6 @@ const siteSelect = {
   assignments: {
     select: {
       userId: true,
-      firstName: true,
-      lastName: true,
     },
   },
 };

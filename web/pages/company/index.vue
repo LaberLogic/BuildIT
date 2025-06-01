@@ -88,4 +88,17 @@ const companies = [
     sites,
   },
 ];
+
+onMounted(async () => {
+  const { companies, error } = useCompanies();
+
+  watchEffect(() => {
+    if (companies.value) {
+      console.log("[API] Sites fetched:", companies.value);
+    }
+    if (error.value) {
+      console.error("[API] Failed to fetch sites:", companies.value);
+    }
+  });
+});
 </script>

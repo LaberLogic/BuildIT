@@ -5,8 +5,11 @@
   </div>
 </template>
 <script lang="ts" setup>
+const route = useRoute();
+const companyId = route.params.companyId as string;
+const siteId = route.params.siteId as string;
 const site = {
-  id: "1",
+  id: "cmbdjbnr5000azuyls58rtcti",
   name: "Greenfield Construction",
   address: "123 Main St, Springfield",
   progress: 75,
@@ -20,4 +23,17 @@ const site = {
   endDate: "2025-06-15",
   startDate: "2025-05-15",
 };
+
+onMounted(async () => {
+  const { site: fetchedSite, error } = useCompanySiteDetails(companyId, siteId);
+
+  watchEffect(() => {
+    if (fetchedSite.value) {
+      console.log("[API] Sites fetched:", fetchedSite.value);
+    }
+    if (error.value) {
+      console.error("[API] Failed to fetch sites:", error.value);
+    }
+  });
+});
 </script>

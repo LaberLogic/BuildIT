@@ -1,6 +1,9 @@
 import { FastifyInstance } from "fastify";
-import { getAllCompanies } from "./company.service";
 import { isAdmin } from "@src/plugins/roleGuards";
+import {
+  getCompaniesController,
+  getCompanyController,
+} from "./company.controller";
 
 const companyRoutes = async (app: FastifyInstance) => {
   app.route({
@@ -10,7 +13,16 @@ const companyRoutes = async (app: FastifyInstance) => {
     schema: {
       tags: ["Company"],
     },
-    handler: getAllCompanies,
+    handler: getCompaniesController,
+  });
+  app.route({
+    method: "GET",
+    url: "/:companyId",
+    preHandler: [app.authenticate, isAdmin],
+    schema: {
+      tags: ["Company"],
+    },
+    handler: getCompanyController,
   });
 };
 
