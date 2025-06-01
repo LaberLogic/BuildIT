@@ -3,8 +3,6 @@ import {
   createUserController,
   deleteUserController,
   getAllUsersByCompanyController,
-  getCurrentUser,
-  getUserByIdController,
   updateUserController,
 } from "./controllers/user.controller";
 
@@ -12,7 +10,6 @@ import { userRef as $ref, siteRef } from "shared";
 import {
   canCreateUser,
   canManageUser,
-  canViewUser,
   isAdminOrManager,
 } from "@src/plugins/roleGuards";
 
@@ -68,11 +65,10 @@ const userCompanyRoutes = async (app: FastifyInstance) => {
 
   app.route({
     method: "GET",
-    url: "/company/:companyId",
+    url: "/",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
       tags: ["Users"],
-      params: $ref("companyIdParamsSchema"),
       response: {
         200: $ref("usersResponseSchema"),
       },

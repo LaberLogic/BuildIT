@@ -16,13 +16,13 @@ const siteRoutes = async (app: FastifyInstance) => {
     url: "/",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
+      tags: ["Site"],
       body: $ref("createSiteSchema"),
       response: {
         201: $ref("siteResponseSchema"),
         400: $ref("errorResponseSchema"),
         403: $ref("errorResponseSchema"),
       },
-      tags: ["Site"],
     },
     handler: createSiteController,
   });
@@ -32,6 +32,7 @@ const siteRoutes = async (app: FastifyInstance) => {
     url: "/:siteId",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
+      tags: ["Site"],
       params: $ref("siteIdParamsSchema"),
       body: $ref("updateSiteSchema"),
       response: {
@@ -39,7 +40,6 @@ const siteRoutes = async (app: FastifyInstance) => {
         400: $ref("errorResponseSchema"),
         403: $ref("errorResponseSchema"),
       },
-      tags: ["Site"],
     },
     handler: updateSiteController,
   });
@@ -49,27 +49,26 @@ const siteRoutes = async (app: FastifyInstance) => {
     url: "/user/:userId",
     preHandler: [app.authenticate],
     schema: {
+      tags: ["Site"],
       params: userRef("userIdParamsSchema"),
       response: {
         200: $ref("sitesResponseSchema"),
         404: $ref("errorResponseSchema"),
       },
-      tags: ["Site"],
     },
     handler: getSitesByUserIdController,
   });
 
   app.route({
     method: "GET",
-    url: "/company/:companyId",
+    url: "/",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
-      params: userRef("companyIdParamsSchema"),
+      tags: ["Site"],
       response: {
         200: $ref("sitesResponseSchema"),
         404: $ref("errorResponseSchema"),
       },
-      tags: ["Site"],
     },
     handler: getSitesByCompanyIdController,
   });
@@ -79,12 +78,12 @@ const siteRoutes = async (app: FastifyInstance) => {
     url: "/:siteId",
     preHandler: [app.authenticate],
     schema: {
+      tags: ["Site"],
       params: $ref("siteIdParamsSchema"),
       response: {
         200: $ref("siteResponseSchema"),
         404: $ref("errorResponseSchema"),
       },
-      tags: ["Site"],
     },
     handler: getSiteByIdController,
   });

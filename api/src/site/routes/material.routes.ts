@@ -16,7 +16,6 @@ const materialRoutes = async (app: FastifyInstance) => {
     url: "/",
     preHandler: [app.authenticate, isAdminOrManager],
     schema: {
-      params: $general("siteIdParamsSchema"),
       body: $ref("createMaterialSchema"),
       response: {
         201: $ref("materialResponseSchema"),
