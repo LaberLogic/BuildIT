@@ -52,6 +52,12 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  users: {
+    type: Array,
+  },
+  sites2: {
+    type: Array,
+  },
 });
 
 const activeTab = ref("info");

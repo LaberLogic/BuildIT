@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 
-import { signInController } from "./user/controllers/auth.controller";
 import userRoutes from "./user/user.routes";
 import authRoutes from "./user/auth.routes";
 import jwtPlugin from "./plugins/jwt";
@@ -56,12 +55,6 @@ app.register(userRoutes, { prefix: "/users" });
 app.register(companyUserRoutes, { prefix: "/companies/:companyId/users" });
 app.register(siteRoutes, { prefix: "/companies/:companyId/sites" });
 app.register(materialRoutes, { prefix: "/companies/:companyId/materials" });
-
-app.post("/auth/signin", signInController);
-
-app.get("/moderator", async (req, reply) => {
-  return reply.status(200).send("Moderator Content.");
-});
 
 app.register(swaggerUI, {
   routePrefix: "/docs",

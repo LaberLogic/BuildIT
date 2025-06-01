@@ -23,7 +23,7 @@
         Step 1 of 2
       </p>
       <p v-if="currentStep === 2" class="text-xs text-gray-500 mt-2">
-        Step 1 of 2
+        Step 2 of 2
       </p>
     </div>
 
@@ -55,21 +55,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ElNotification } from "element-plus";
+
+definePageMeta({
+  layout: "auth",
+});
 
 const registerTitle = "Create account";
-const registerSubTitle = "Tell us mor about yourself";
-const currentStep = ref(1);
-const userFormData = ref(null);
-const companyFormData = ref(null);
+const registerSubTitle = "Tell us more about yourself"; // fixed typo 'mor' → 'more'
 
-const handleNextStep = (data) => {
+const currentStep = ref(1);
+const userFormData = ref<Record<string, any> | null>(null);
+const companyFormData = ref<Record<string, any> | null>(null);
+
+const router = useRouter();
+
+const handleNextStep = (data: Record<string, any>) => {
   if (currentStep.value === 1) {
     userFormData.value = data;
     currentStep.value = 2;
   } else if (currentStep.value === 2) {
     companyFormData.value = data;
-    submitRegistration();
+    submitRegistration({ ...userFormData.value, ...companyFormData.value });
   }
 };
 
@@ -77,15 +84,7 @@ const handlePreviousStep = () => {
   currentStep.value = 1;
 };
 
-const router = useRouter();
-
-const submitRegistration = async () => {
-  const payload = {
-    ...userFormData.value,
-    ...companyFormData.value,
-  };
-  const { register } = useAuth();
-
+const submitRegistration = async (payload: RegisterDto) => {
   try {
     await register(payload);
 
@@ -96,8 +95,8 @@ const submitRegistration = async () => {
     });
 
     router.push("/auth/login");
-  } catch (error) {
-    if (error.response && error.response.status === 409) {
+  } catch (error: any) {
+    if (error?.response?.status === 409) {
       ElNotification({
         title: "Error",
         message: "Email already in use. Reset Password if necessary",
@@ -110,9 +109,7 @@ const submitRegistration = async () => {
         type: "error",
       });
     }
-
     console.error("Register failed:", error);
-    return false;
   }
 };
 </script>

@@ -23,6 +23,7 @@ model User {
   firstName   String
   lastName    String
   password    String?
+  status      String           @default("ACTIVE")
   role        ROLE             @default(WORKER)
   companyId   String?
   company     Company?         @relation(fields: [companyId], references: [id])
@@ -68,7 +69,7 @@ model Site {
   startDate   DateTime?
   endDate     DateTime?
   notes       String?
-  status      SITE_STATUS   @default(ACTIVE)
+  status      SITE_STATUS      @default(ACTIVE)
 }
 
 model Material {
@@ -79,8 +80,8 @@ model Material {
   unit      String
   amount    Int
   threshold Int
-  siteId   String
-  site     Site          @relation(fields: [siteId], references: [id])
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id])
 }
 
 model SiteAssignment {

@@ -43,7 +43,6 @@ const goBack = () => {
 };
 
 const logout = () => {
-  const { signOut } = useAuth();
   signOut();
 };
 </script>

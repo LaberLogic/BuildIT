@@ -9,33 +9,22 @@
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
+import { ref, onMounted, watchEffect } from "vue";
+import { useRoute } from "vue-router";
+
 const route = useRoute();
 const companyId = route.params.companyId as string;
 
-const users = [
-  {
-    firstName: "Jane",
-    lastName: "Doe",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    email: "jane.doe@example.com",
-    role: "Project Manager",
-    status: "active",
-    currentSite: "Site Alpha - Berlin",
-    hoursThisMonth: 128,
-    joinDate: "March 15, 2023",
-  },
-];
+const users: any = ref([]);
 
 onMounted(async () => {
-  const { users, error } = useCompanyUsers(companyId);
+  const { users: fetchedUsers, error } = useCompanyUsers(companyId);
 
   watchEffect(() => {
-    if (users.value) {
-      console.log("[API] Sites fetched:", users.value);
-    }
-    if (error.value) {
-      console.error("[API] Failed to fetch sites:", error.value);
+    if (fetchedUsers.value) {
+      users.value = fetchedUsers.value;
     }
   });
 });

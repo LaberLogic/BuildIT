@@ -2,7 +2,12 @@
   <div
     class="min-h-screen bg-gray-50 flex flex-col items-center pt-4 space-y-4"
   >
-    <company-details-card :company="company" class="w-1/3" />
+    <company-details-card
+      :company2="company"
+      :users="users"
+      sites2="sites"
+      class="w-1/3"
+    />
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4">
+  <div>
     <el-card
       shadow="hover"
       class="border border-gray-200 alert-bar w-full"
@@ -45,7 +45,7 @@
             </div>
           </div>
 
-          <p class="text-muted">{{ user.role }}</p>
+          <p class="text-sm text-gray-600">{{ user.role }}</p>
 
           <div class="info-block mt-2 text-xs text-gray-500">
             <el-icon>
@@ -71,9 +71,9 @@
               <el-icon>
                 <Clock />
               </el-icon>
-              <span>{{ user.hoursThisMonth }} hrs this month</span>
+              <span>{{ 0 }} hrs this month</span>
             </div>
-            <span>Joined {{ user.joinDate }}</span>
+            <span>Joined {{ user.createdAt }}</span>
           </div>
         </div>
       </div>
@@ -84,14 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Clock,
-  MessageSquare,
-  Building2,
-  Edit,
-  Trash2,
-  Clock10,
-} from "lucide-vue-next";
+import { Clock, MessageSquare, Building2, Edit, Trash2 } from "lucide-vue-next";
 
 const props = defineProps<{
   user: {
@@ -102,8 +95,7 @@ const props = defineProps<{
     role: string;
     status: "active" | "inactive";
     currentSite?: string;
-    hoursThisMonth: number;
-    joinDate: string;
+    createdAt: string;
   };
 }>();
 

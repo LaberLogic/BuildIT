@@ -17,6 +17,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "auth",
+});
 const loginTitle = "Welcome Back";
 
 const loginSubtitle = "Sign in to your Construxx account";
