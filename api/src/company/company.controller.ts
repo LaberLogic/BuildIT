@@ -1,5 +1,3 @@
-import { getCurrentUser } from "@src/user/controllers/user.controller";
-import { UserObject } from "types";
 import { getCompanies, getCompany } from "./company.repository";
 import httpStatus from "http-status";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";

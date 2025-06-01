@@ -52,10 +52,11 @@ const form = ref({
   email: "",
   password: "",
 });
+
 const errorMessage = ref("");
-const router = useRouter();
 const isLoading = ref(false);
 const showPassword = ref(false);
+const router = useRouter();
 
 const auth = useAuthStore();
 const user = computed(() => auth.user);
@@ -63,29 +64,20 @@ const user = computed(() => auth.user);
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
-
 const submitForm = async () => {
-  isLoading.value = true;
-  errorMessage.value = "";
+  const result = await signIn(form.value);
 
-  const success = await login(form.value);
-
-  if (!success) {
+  if (!result.success) {
     errorMessage.value = "Wrong email or password.";
+    return;
   }
 
-  isLoading.value = false;
-  if (user.value?.role === "ADMIN") {
-    router.push(`/company/`);
-  } else router.push(`/company/${user.value?.companyId}/sites`);
-};
-
-const login = async (credentials: { email: string; password: string }) => {
-  const { signIn } = useAuth();
-
-  const result = await signIn(credentials);
-
-  return result.success;
+  const role = result.user.role;
+  if (role === "ADMIN") {
+    router.push("/company/");
+  } else {
+    router.push(`/company/${result.user.companyId}/sites`);
+  }
 };
 </script>
 

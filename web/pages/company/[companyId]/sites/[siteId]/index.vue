@@ -28,8 +28,8 @@ onMounted(async () => {
   const { site: fetchedSite, error } = useCompanySiteDetails(companyId, siteId);
 
   watchEffect(() => {
-    if (fetchedSite.value) {
-      console.log("[API] Sites fetched:", fetchedSite.value);
+    if (fetchedSite?.value) {
+      console.log("[API] Sites fetched:", fetchedSite?.value);
     }
     if (error.value) {
       console.error("[API] Failed to fetch sites:", error.value);

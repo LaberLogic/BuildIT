@@ -1,49 +1,46 @@
-import axios from "axios";
 import type { RegisterDto, SignInDto } from "shared";
 import { useAuthStore } from "@/stores/auth";
 
-export const useAuth = () => {
-  const auth = useAuthStore();
+export const getToken = () => `Bearer ${useAuthStore().token}`;
 
-  const api = axios.create({
-    baseURL: "http://localhost:3001/auth",
+export const register = async (data: RegisterDto) => {
+  return await $fetch("/api/auth/register", {
+    method: "POST",
+    body: data,
     headers: {
       "Content-Type": "application/json",
     },
   });
+};
 
-  const register = async (data: RegisterDto) => {
-    const response = await api.post("/register", data);
-    return response.data;
-  };
+export const signIn = async (data: SignInDto) => {
+  const auth = useAuthStore();
 
-  const signIn = async (data: SignInDto) => {
-    const { data: res } = await api.post("/signin", data);
-    const token = res.accessToken;
+  try {
+    const res = await $fetch("/api/auth/signin", {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    if (!token) return { success: false };
+    if (!res.accessToken) return { success: false };
 
-    auth.setToken(token);
+    auth.setToken(res.accessToken);
     auth.setUser(res.user);
 
     return { success: true, user: res.user };
-  };
+  } catch (error) {
+    console.error("Sign-in failed:", error);
+    return { success: false };
+  }
+};
 
-  const signOut = async () => {
-    try {
-      auth.clearAuth();
-      const router = useRouter();
-      router.push("/auth/login");
-    } catch (error) {
-      console.error("Sign out failed:", error);
-    }
-  };
+export const signOut = () => {
+  const auth = useAuthStore();
+  const router = useRouter();
 
-  return {
-    register,
-    signIn,
-    signOut,
-    user: computed(() => auth.user),
-    token: computed(() => auth.token),
-  };
+  auth.clearAuth();
+  router.push("/auth/login");
 };

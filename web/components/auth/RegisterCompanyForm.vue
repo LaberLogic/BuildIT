@@ -73,7 +73,6 @@ import { ArrowLeft } from "@element-plus/icons-vue";
 
 const formRef = ref();
 const errorMessage = ref("");
-// Form model
 const form = ref({
   companyName: "",
   address: {
@@ -85,7 +84,6 @@ const form = ref({
   },
 });
 
-// Validation rules
 const rules = {
   companyName: [
     { required: true, message: "Company name is required", trigger: "blur" },
