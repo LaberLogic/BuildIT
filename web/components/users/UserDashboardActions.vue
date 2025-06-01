@@ -18,6 +18,7 @@
       <el-button type="primary" @click="onAddClick">
         <el-icon><Plus /></el-icon>
       </el-button>
+      <users-modals-create-update-user v-model="createOpen" />
     </div>
   </div>
 </template>
@@ -26,10 +27,12 @@
 import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 
+const createOpen = ref(false);
+
 const roleFilter = ref("all");
 
 const onAddClick = () => {
-  console.log("Add clicked");
+  createOpen.value = true;
 };
 </script>
 

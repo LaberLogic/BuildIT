@@ -1,11 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col items-center">
+  <div
+    class="min-h-screen bg-gray-50 flex flex-col items-center pt-4 space-y-4"
+  >
     <users-user-statistics class="w-1/3" />
     <users-user-dashboard-actions class="w-1/3" />
     <users-user-card :user="user" class="w-1/3" />
   </div>
 </template>
-
 <script lang="ts" setup>
 const user = {
   firstName: "Jane",

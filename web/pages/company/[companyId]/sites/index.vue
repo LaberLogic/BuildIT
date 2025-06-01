@@ -1,6 +1,8 @@
 <template>
-  <div class="flex justify-center">
-    <div class="w-1/3 space-y-4 pb-4">
+  <div
+    class="min-h-screen bg-gray-50 flex flex-col items-center pt-4 space-y-4"
+  >
+    <div class="w-1/3 space-y-4 pb-4 mb-28">
       <div
         v-for="(site, index) in sites"
         :key="site.id"
@@ -12,6 +14,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],

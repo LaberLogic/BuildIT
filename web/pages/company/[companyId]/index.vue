@@ -1,21 +1,24 @@
 <template>
-  <div class="flex justify-center mt-4">
-    <div class="w-1/3 space-y-4 pb-4">
-      <div
-        v-for="(company, index) in companies"
-        :key="company.id"
-        class="animate-in slide-in-from-bottom-4 duration-300"
-        :style="{ animationDelay: `${index * 100}ms` }"
-      >
-        <company-overview-card :company="company" />
-      </div>
-    </div>
+  <div
+    class="min-h-screen bg-gray-50 flex flex-col items-center pt-4 space-y-4"
+  >
+    <company-details-card :company="company" class="w-1/3" />
   </div>
 </template>
-<script setup lang="ts">
-definePageMeta({
-  middleware: ["auth"],
+
+<script setup>
+import { ref } from "vue";
+import { defineProps } from "vue";
+
+const props = defineProps({
+  company2: {
+    type: Object,
+    required: true,
+  },
 });
+
+const activeTab = ref("overview");
+
 const sites = [
   {
     id: "1",
@@ -75,17 +78,33 @@ const sites = [
   },
 ];
 
-const companies = [
-  {
-    id: "5",
-    name: "Test Company",
-    address: {
-      street: "123 Main St",
-      city: "Springfield",
-      streetNumber: "123",
-      postCode: "62701",
-    },
-    sites,
+const company = {
+  id: "5",
+  name: "Test Company",
+  address: {
+    street: "123 Main St",
+    city: "Springfield",
+    streetNumber: "123",
+    postCode: "62701",
   },
-];
+  sites,
+};
+
+const user = {
+  firstName: "Jane",
+  lastName: "Doe",
+  avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+  email: "jane.doe@example.com",
+  role: "Project Manager",
+  status: "active",
+  currentSite: "Site Alpha - Berlin",
+  hoursThisMonth: 128,
+  joinDate: "March 15, 2023",
+};
 </script>
+
+<style scoped>
+.el-tabs__header {
+  border: none !important;
+}
+</style>

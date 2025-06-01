@@ -70,11 +70,7 @@
     <template #footer>
       <div class="flex justify-end space-x-2">
         <el-button @click="onCancel">Cancel</el-button>
-        <el-button
-          type="primary"
-          :disabled="isCreate && !editForm.password"
-          @click="handleSave"
-        >
+        <el-button type="primary" @click="handleSave">
           {{ isCreate ? "Create User" : "Save Changes" }}
         </el-button>
       </div>
@@ -113,10 +109,10 @@ const isCreate = computed(() => {
 });
 
 const editForm = reactive({
-  firstName: props.user.firstName || "",
-  lastName: props.user.lastName || "",
-  email: props.user.email || "",
-  role: props.user.role || "",
+  firstName: props.user?.firstName || "",
+  lastName: props.user?.lastName || "",
+  email: props.user?.email || "",
+  role: props.user?.role || "",
   password: "",
   confirmPassword: "",
 });
@@ -145,9 +141,9 @@ const onCancel = () => {
 };
 
 const resetForm = () => {
-  editForm.firstName = props.user.firstName || "";
-  editForm.lastName = props.user.lastName || "";
-  editForm.email = props.user.email || "";
+  editForm.firstName = props.user?.firstName || "";
+  editForm.lastName = props.user?.lastName || "";
+  editForm.email = props.user?.email || "";
   editForm.password = "";
   editForm.confirmPassword = "";
 };
