@@ -10,28 +10,6 @@
         <el-input v-model="editForm.name" />
       </el-form-item>
 
-      <el-form-item>
-        <el-checkbox v-model="includeAddress">Include Address</el-checkbox>
-      </el-form-item>
-
-      <div v-if="includeAddress" class="grid grid-cols-2 gap-4">
-        <el-form-item label="Street" prop="address.street">
-          <el-input v-model="editForm.address.street" />
-        </el-form-item>
-
-        <el-form-item label="Street Number" prop="address.streetNumber">
-          <el-input v-model="editForm.address.streetNumber" />
-        </el-form-item>
-
-        <el-form-item label="City" prop="address.city">
-          <el-input v-model="editForm.address.city" />
-        </el-form-item>
-
-        <el-form-item label="Postal Code" prop="address.postalCode">
-          <el-input v-model="editForm.address.postalCode" />
-        </el-form-item>
-      </div>
-
       <el-form-item label="Assign User" prop="userId">
         <el-select
           v-model="editForm.userId"
@@ -80,6 +58,27 @@
             placeholder="Pick a date"
             style="width: 100%"
           />
+        </el-form-item>
+      </div>
+      <el-form-item>
+        <el-checkbox v-model="includeAddress">Include Address</el-checkbox>
+      </el-form-item>
+
+      <div v-if="includeAddress" class="grid grid-cols-2 gap-4">
+        <el-form-item label="Street" prop="address.street">
+          <el-input v-model="editForm.address.street" />
+        </el-form-item>
+
+        <el-form-item label="Street Number" prop="address.streetNumber">
+          <el-input v-model="editForm.address.streetNumber" />
+        </el-form-item>
+
+        <el-form-item label="City" prop="address.city">
+          <el-input v-model="editForm.address.city" />
+        </el-form-item>
+
+        <el-form-item label="Postal Code" prop="address.postalCode">
+          <el-input v-model="editForm.address.postalCode" />
         </el-form-item>
       </div>
     </el-form>

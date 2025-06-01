@@ -20,3 +20,24 @@ export const createCompany = (data: {
     (e) => new ChainedError(e),
   );
 };
+
+export const getCompanies = (where?: Prisma.CompanyWhereInput) => {
+  return ResultAsync.fromPromise(
+    prisma.company.findMany({
+      where,
+      select: {
+        id: true,
+        address: {
+          select: {
+            streetNumber: true,
+            street: true,
+            city: true,
+            country: true,
+            postalCode: true,
+          },
+        },
+      },
+    }),
+    (e) => new ChainedError(e),
+  );
+};

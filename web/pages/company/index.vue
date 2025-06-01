@@ -1,13 +1,13 @@
 <template>
-  <div class="flex justify-center">
+  <div class="flex justify-center mt-4">
     <div class="w-1/3 space-y-4 pb-4">
       <div
-        v-for="(site, index) in sites"
-        :key="site.id"
+        v-for="(company, index) in companies"
+        :key="company.id"
         class="animate-in slide-in-from-bottom-4 duration-300"
         :style="{ animationDelay: `${index * 100}ms` }"
       >
-        <site-card :site="site" />
+        <company-overview-card :company="company" />
       </div>
     </div>
   </div>
@@ -72,6 +72,20 @@ const sites = [
     chat: { unreadCount: 0 },
     teamSize: 8,
     deadline: "2025-08-20",
+  },
+];
+
+const companies = [
+  {
+    id: "5",
+    name: "Test Company",
+    address: {
+      street: "123 Main St",
+      city: "Springfield",
+      streetNumber: "123",
+      postCode: "62701",
+    },
+    sites,
   },
 ];
 </script>

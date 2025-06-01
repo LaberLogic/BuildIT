@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/sites/${site.id}`" class="block">
+  <NuxtLink :to="`/company/${user.companyId}/sites/${site.id}`" class="block">
     <el-card
       shadow="hover"
       class="transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"
@@ -162,6 +162,9 @@ interface Site {
 }
 
 const props = defineProps<{ site: Site }>();
+
+const auth = useAuthStore();
+const user = computed(() => auth.user);
 
 const getStatusBadge = (status: string) => {
   switch (status) {

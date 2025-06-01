@@ -54,7 +54,7 @@
       v-model="editOpen"
       :material="material"
     />
-    <general-confirm-action v-model="deleteOpen" :material="material" />
+    <general-confirm-action v-model="deleteOpen" />
   </div>
 </template>
 
