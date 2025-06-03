@@ -11,7 +11,12 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ modalOpen: boolean }>();
+const props = defineProps({
+  modalOpen: {
+    type: Boolean as PropType<boolean>,
+    required: true,
+  },
+});
 
 const modalOpen = computed(() => props.modalOpen);
 

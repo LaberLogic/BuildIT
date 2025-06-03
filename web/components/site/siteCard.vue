@@ -141,33 +141,14 @@ import {
   MessageCirclePlus,
   User,
 } from "lucide-vue-next";
+import { SiteResponseDto } from "shared";
 
-interface Site {
-  id: string;
-  name: string;
-  address: string;
-  progress: number;
-  lastVisited: string | null;
-  hoursLogged: number;
-  status: "active" | "planning" | "finishing" | "paused";
-  priority: "high" | "medium" | "low";
-  materialInfo?: {
-    total: number;
-    warnings: number;
-  };
-  chat?: {
-    unreadCount: number;
-    lastMessage?: string;
-  };
-  assignments: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  }[];
-  endDate?: string | null;
-}
-
-const props = defineProps<{ site: Site }>();
+const props = defineProps({
+  site: {
+    type: Object as PropType<SiteResponseDto>,
+    required: true,
+  },
+});
 
 const route = useRoute();
 const companyId = computed(() => route.params.companyId);

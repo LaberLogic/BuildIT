@@ -29,8 +29,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
+const props = defineProps({
+  site: {
+    type: Object as PropType<SiteResponseDto>,
+    required: true,
+  },
+});
 const activeTab = ref("materials");
 
 const tabs = [
@@ -39,9 +43,9 @@ const tabs = [
   { label: "Details", value: "details" },
 ];
 
-const props = defineProps({
-  id: String,
-  timeEntries: Array,
-  site: Object,
-});
+
+
+const timeEntries = []
+
+const site = computed(() => props.site);
 </script>

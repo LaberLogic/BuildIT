@@ -9,9 +9,15 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
-  title: String,
-  description: String,
+  title: {
+    type: String as PropType<string>,
+    required: true,
+  },
+  description: {
+    type: String as PropType<string>,
+    required: true,
+  },
 });
 </script>

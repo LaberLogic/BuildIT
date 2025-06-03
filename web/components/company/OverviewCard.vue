@@ -62,12 +62,13 @@
 
 <script setup>
 import { ArrowRight, Location,UserFilled } from "@element-plus/icons-vue";
-import { defineProps } from "vue";
 
 const props = defineProps({
   company: {
-    type: Object,
+    type: Object as PropType<CompanyResponseDto>,
     required: true,
   },
 });
+
+const company = computed(() => props.company);
 </script>

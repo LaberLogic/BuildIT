@@ -20,10 +20,11 @@
 
 <script lang="ts" setup>
 import { Plus } from "lucide-vue-next";
+import type { MaterialResponseDto } from "shared";
 
 const props = defineProps({
   materials: {
-    type: Array as PropType<any>,
+    type: Array as PropType<MaterialResponseDto[]>,
     required: true,
   },
 });

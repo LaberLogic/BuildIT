@@ -96,24 +96,13 @@
 import { computed, ref, watch } from "vue";
 
 const props = defineProps({
-  modalOpen: Boolean,
+  modalOpen: {
+    type: Boolean as PropType<boolean>,
+    required: true,
+  },
   site: {
-    type: Object as () => {
-      id: string;
-      name: string;
-      address: {
-        street: string;
-        streetNumber: string;
-        city: string;
-        postalCode: string;
-      } | null;
-      status: string;
-      priority: string;
-      endDate: string;
-      startDate: string;
-      userId?: string;
-    },
-    required: false,
+    type: Object as PropType<SiteResponseDto>,
+    required: true,
   },
 });
 

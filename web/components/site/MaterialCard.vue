@@ -1,8 +1,8 @@
 <template>
   <div
+    v-if="material"
     class="border border-gray-200 rounded-md"
     :body-style="{ padding: '16px' }"
-    v-if="material"
   >
     <div
       class="flex items-center justify-between p-3 border border-gray-200 rounded-md"

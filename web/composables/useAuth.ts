@@ -1,7 +1,5 @@
 import type { RegisterDto, SignInDto } from "shared";
 
-import { useAuthStore } from "@/stores/auth";
-
 export const getToken = () => `Bearer ${useAuthStore().token}`;
 
 export const register = async (data: RegisterDto) => {
@@ -44,4 +42,24 @@ export const signOut = () => {
 
   auth.clearAuth();
   router.push("/auth/login");
+};
+
+export type UserForm = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
+type Address = {
+  streetNumber: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
+};
+
+export type CompanyForm = {
+  companyName: string;
+  address: Address;
 };
