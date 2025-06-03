@@ -29,15 +29,15 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
+import { MaterialResponseDto } from "shared";
+
 const props = defineProps({
-  modalOpen: Boolean,
+  modalOpen: {
+    type: Boolean as PropType<boolean>,
+    required: true,
+  },
   material: {
-    type: Object as () => {
-      name: string;
-      quantity: number;
-      unit: string;
-      threshold: number;
-    },
+    type: Object as PropType<MaterialResponseDto>,
     required: false,
   },
 });

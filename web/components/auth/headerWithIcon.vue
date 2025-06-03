@@ -17,8 +17,14 @@
 <script setup lang="ts">
 import { OfficeBuilding } from "@element-plus/icons-vue";
 
-const props = defineProps<{
-  title: string;
-  subtitle: string;
-}>();
+const props = defineProps({
+  title: {
+    type: String as PropType<string>,
+    required: true,
+  },
+  subtitle: {
+    type: String as PropType<string>,
+    required: true,
+  },
+});
 </script>

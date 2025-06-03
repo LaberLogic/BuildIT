@@ -42,8 +42,8 @@
         :required="isCreate"
       >
         <el-input
-          type="password"
           v-model="editForm.password"
+          type="password"
           autocomplete="new-password"
           :placeholder="
             isCreate ? 'Enter password' : 'Enter new password (optional)'
@@ -59,8 +59,8 @@
         :required="isCreate"
       >
         <el-input
-          type="password"
           v-model="editForm.confirmPassword"
+          type="password"
           autocomplete="new-password"
           :placeholder="isCreate ? 'Confirm password' : 'Confirm new password'"
         />
@@ -79,12 +79,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed,reactive } from "vue";
+import { computed, reactive } from "vue";
 
 const props = defineProps({
   modelValue: Boolean,
   user: {
-    type: Object,
+    type: Object as PropType<UserResponseDto>,
   },
   isProfile: {
     type: Boolean,

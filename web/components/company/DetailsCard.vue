@@ -49,16 +49,19 @@
 <script setup>
 const props = defineProps({
   company: {
-    type: Object,
+    type: Object as PropType<CompanyResponseDto>,
     required: true,
   },
   users: {
-    type: Array,
+    type: Array as PropType<UserResponseDto[]>,
+    required: true,
   },
   sites: {
-    type: Array,
+    type: Array as PropType<SiteResponseDto[]>,
+    required: true,
   },
 });
+
 
 const activeTab = ref("info");
 </script>

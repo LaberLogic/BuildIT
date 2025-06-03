@@ -55,27 +55,27 @@
 </template>
 
 <script setup lang="ts">
-import { ElNotification } from "element-plus";
-
 definePageMeta({
   layout: "auth",
 });
 
+import { ElNotification } from "element-plus";
+
 const registerTitle = "Create account";
-const registerSubTitle = "Tell us more about yourself"; // fixed typo 'mor' → 'more'
+const registerSubTitle = "Tell us more about yourself";
 
 const currentStep = ref(1);
-const userFormData = ref<Record<string, any> | null>(null);
-const companyFormData = ref<Record<string, any> | null>(null);
+const userFormData = ref<UserForm | null>(null);
+const companyFormData = ref<CompanyForm | null>(null);
 
 const router = useRouter();
 
-const handleNextStep = (data: Record<string, any>) => {
+const handleNextStep = (data: UserForm | CompanyForm) => {
   if (currentStep.value === 1) {
-    userFormData.value = data;
+    userFormData.value = data as UserForm;
     currentStep.value = 2;
   } else if (currentStep.value === 2) {
-    companyFormData.value = data;
+    companyFormData.value = data as CompanyForm;
     submitRegistration({ ...userFormData.value, ...companyFormData.value });
   }
 };
@@ -95,7 +95,7 @@ const submitRegistration = async (payload: RegisterDto) => {
     });
 
     router.push("/auth/login");
-  } catch (error: any) {
+  } catch (error) {
     if (error?.response?.status === 409) {
       ElNotification({
         title: "Error",

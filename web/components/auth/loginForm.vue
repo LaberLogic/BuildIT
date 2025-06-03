@@ -58,9 +58,6 @@ const isLoading = ref(false);
 const showPassword = ref(false);
 const router = useRouter();
 
-const auth = useAuthStore();
-const user = computed(() => auth.user);
-
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
