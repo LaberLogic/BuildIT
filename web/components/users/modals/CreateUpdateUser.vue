@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from "vue";
+import { computed,reactive } from "vue";
 
 const props = defineProps({
   modelValue: Boolean,

@@ -1,5 +1,5 @@
 import { getUserUnsafe } from "@src/user/repositories/user.repository";
-import { FastifyRequest, FastifyReply } from "fastify";
+import { FastifyReply,FastifyRequest } from "fastify";
 import httpStatus from "http-status";
 
 const rolePriority: Record<string, number> = {

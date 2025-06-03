@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChainedError } from "@utils/chainedError";
-import httpStatus from "http-status";
 import {
   createUserController,
-  updateUserController,
   deleteUserController,
-  getUserByIdController,
   getAllUsersByCompanyController,
+  getUserByIdController,
+  updateUserController,
 } from "@src/user/controllers/user.controller";
 import { userService } from "@src/user/services/user.service";
+import { ChainedError } from "@utils/chainedError";
+import httpStatus from "http-status";
 
 jest.mock("@src/user/services/user.service");
 

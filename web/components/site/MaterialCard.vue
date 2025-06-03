@@ -60,14 +60,15 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Minus, Trash, Edit } from "lucide-vue-next";
+import { Edit,Minus, Plus, Trash } from "lucide-vue-next";
+import type { MaterialResponseDto } from "shared";
 
 const editOpen = ref(false);
 const deleteOpen = ref(false);
 
 const props = defineProps({
   material: {
-    type: Object as PropType<any>,
+    type: Object as PropType<MaterialResponseDto>,
     required: true,
   },
 });

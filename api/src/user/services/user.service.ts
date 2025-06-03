@@ -1,4 +1,10 @@
-import { ResultAsync, errAsync, okAsync } from "neverthrow";
+import { ChainedError } from "@utils/chainedError";
+import { hash } from "bcryptjs";
+import { errAsync, okAsync,ResultAsync } from "neverthrow";
+import { CreateUserDto, UpdateUserDto } from "shared";
+import { UserObject } from "types";
+
+import { Prisma } from "../../../generated/prisma";
 import {
   createUser,
   deleteUser,
@@ -7,11 +13,6 @@ import {
   getUsersByCompanyId,
   updateUser,
 } from "../repositories/user.repository";
-import { ChainedError } from "@utils/chainedError";
-import { CreateUserDto, UpdateUserDto } from "shared";
-import { hash } from "bcryptjs";
-import { Prisma } from "../../../generated/prisma";
-import { UserObject } from "types";
 
 const isSameCompany = (
   currentUser: UserObject,

@@ -6,11 +6,7 @@
       :body-style="{ padding: '0px' }"
     >
       <div class="p-4 flex items-start space-x-4">
-        <el-avatar
-          :src="user?.avatar || '/placeholder.svg'"
-          size="large"
-          class="h-12 w-12"
-        >
+        <el-avatar :src="'/placeholder.svg'" size="large" class="h-12 w-12">
           <template #default>
             {{ initials }}
           </template>
@@ -84,19 +80,11 @@
 </template>
 
 <script setup lang="ts">
-import { Clock, MessageSquare, Building2, Edit, Trash2 } from "lucide-vue-next";
+import { Building2, Clock, Edit, MessageSquare, Trash2 } from "lucide-vue-next";
+import type { UserResponseDto } from "shared";
 
 const props = defineProps<{
-  user: {
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-    email: string;
-    role: string;
-    status: "ACTIVE" | "INACTIVE";
-    currentSite?: string;
-    createdAt: string;
-  };
+  user: UserResponseDto;
 }>();
 
 const user = computed(() => props.user);

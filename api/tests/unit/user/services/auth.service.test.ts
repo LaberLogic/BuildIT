@@ -1,15 +1,15 @@
-import { authService } from "@src/user/services/auth.service";
-import jwt from "jsonwebtoken";
-import { errAsync, okAsync } from "neverthrow";
-import { ROLE } from "@prisma/prisma";
 import { env } from "@env";
+import { ROLE } from "@prisma/prisma";
+import { createCompany } from "@src/company/company.repository";
 import {
   createUser,
   getUserUnsafe,
 } from "@src/user/repositories/user.repository";
-import { compare, hash } from "bcryptjs";
+import { authService } from "@src/user/services/auth.service";
 import { ChainedError } from "@utils/chainedError";
-import { createCompany } from "@src/company/company.repository";
+import { compare, hash } from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { errAsync, okAsync } from "neverthrow";
 
 jest.mock("@src/user/repositories/user.repository");
 jest.mock("@src/company/company.repository");

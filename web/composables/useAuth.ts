@@ -1,4 +1,5 @@
 import type { RegisterDto, SignInDto } from "shared";
+
 import { useAuthStore } from "@/stores/auth";
 
 export const getToken = () => `Bearer ${useAuthStore().token}`;

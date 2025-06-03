@@ -1,11 +1,12 @@
-import { errAsync, okAsync, ResultAsync } from "neverthrow";
+import { env } from "@env";
+import { createCompany } from "@src/company/company.repository";
+import { ChainedError } from "@utils/chainedError";
 import { compare, hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { ChainedError } from "@utils/chainedError";
-import { env } from "@env";
-import { createUser, getUserUnsafe } from "../repositories/user.repository";
+import { errAsync, okAsync, ResultAsync } from "neverthrow";
 import { RegisterDto, SignInDto } from "shared";
-import { createCompany } from "@src/company/company.repository";
+
+import { createUser, getUserUnsafe } from "../repositories/user.repository";
 
 export const authService = {
   signIn: (data: SignInDto) => {

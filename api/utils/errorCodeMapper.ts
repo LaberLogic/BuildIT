@@ -1,7 +1,8 @@
 import { Prisma } from "@prisma/prisma";
 import { FastifyReply } from "fastify";
-import { ChainedError } from "./chainedError";
 import httpStatus from "http-status";
+
+import { ChainedError } from "./chainedError";
 export const prismaErrorCodeToHttpStatus = (error: unknown): number => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {

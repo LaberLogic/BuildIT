@@ -1,16 +1,17 @@
-import { FastifyRequest, FastifyReply } from "fastify";
+import { sendChainedErrorReply } from "@utils/errorCodeMapper";
+import { FastifyReply,FastifyRequest } from "fastify";
+import httpStatus from "http-status";
+import { CreateSiteDto, SiteIdParams, UpdateSiteDto } from "shared";
+import { CompanyIdParams, UserIdParams } from "shared";
+import { UserObject } from "types";
+
 import {
   createNewSite,
-  updateSiteById,
-  getSitesByUserId,
-  getSitesByCompanyId,
   getSiteById,
+  getSitesByCompanyId,
+  getSitesByUserId,
+  updateSiteById,
 } from "../services/site.service";
-import { CreateSiteDto, SiteIdParams, UpdateSiteDto } from "shared";
-import { UserObject } from "types";
-import httpStatus from "http-status";
-import { sendChainedErrorReply } from "@utils/errorCodeMapper";
-import { CompanyIdParams, UserIdParams } from "shared";
 
 export const createSiteController = async (
   req: FastifyRequest<{ Body: CreateSiteDto }>,

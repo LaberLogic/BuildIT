@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import { ElButton } from "element-plus";
-import { Building2, ArrowRight } from "lucide-vue-next";
+import { ArrowRight,Building2 } from "lucide-vue-next";
 
 definePageMeta({
   layout: "auth",

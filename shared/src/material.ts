@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { buildJsonSchemas } from "fastify-zod";
+import { z } from "zod";
 export const materialIdWithSiteParamsSchema = z.object({
   siteId: z.string().uuid(),
   materialId: z.string().uuid(),
@@ -49,7 +49,7 @@ const { schemas: materialSchemas, $ref: materialRef } = buildJsonSchemas(
   { $id: "materialSchema" },
 );
 
-export { materialSchemas, materialRef };
+export { materialRef,materialSchemas };
 
 export type CreateMaterialDto = z.infer<typeof createMaterialSchema>;
 export type UpdateMaterialDto = z.infer<typeof updateMaterialSchema>;

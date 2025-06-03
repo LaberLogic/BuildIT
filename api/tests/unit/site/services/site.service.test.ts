@@ -1,5 +1,11 @@
 import { ROLE } from "@prisma/prisma";
 import {
+  createSite,
+  getSite,
+  getSites,
+  updateSite,
+} from "@src/site/repositories/site.repository";
+import {
   createNewSite,
   getSiteById,
   getSitesByCompanyId,
@@ -7,12 +13,6 @@ import {
   updateSiteById,
 } from "@src/site/services/site.service";
 import { okAsync } from "neverthrow";
-import {
-  createSite,
-  getSite,
-  getSites,
-  updateSite,
-} from "@src/site/repositories/site.repository";
 
 jest.mock("@src/site/repositories/site.repository");
 

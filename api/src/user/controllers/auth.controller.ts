@@ -1,8 +1,9 @@
-import { FastifyRequest, FastifyReply } from "fastify";
-import httpStatus from "http-status";
-import { authService } from "../services/auth.service";
-import { RegisterDto, SignInDto } from "shared";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
+import { FastifyReply,FastifyRequest } from "fastify";
+import httpStatus from "http-status";
+import { RegisterDto, SignInDto } from "shared";
+
+import { authService } from "../services/auth.service";
 
 export const registerController = async (
   req: FastifyRequest<{ Body: RegisterDto }>,

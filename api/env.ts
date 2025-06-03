@@ -1,6 +1,6 @@
-import { cleanEnv, str, port } from "envalid";
 import * as dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
+import { cleanEnv, port,str } from "envalid";
 
 dotenvExpand.expand(dotenv.config());
 
