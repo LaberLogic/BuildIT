@@ -14,7 +14,6 @@
           <span>{{ site.address }}</span>
           <el-button
             class="btn-icon ml-auto text-gray-500"
-            type="text"
             @click="editOpen = true"
           >
             Edit
@@ -77,24 +76,16 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar, Clock, Edit,MapPin, Users } from "lucide-vue-next";
+import { Calendar, Clock, Edit, MapPin, Users } from "lucide-vue-next";
 
-interface Site {
-  address: string;
-  progress: number;
-  hoursLogged: string;
-  endDate: string;
-  startDate: string;
-  workers: number;
-  materials?: {
-    warnings: number;
-  };
-  assignments: {
-    id: string;
-  }[];
-}
+const props = defineProps({
+  site: {
+    type: Object as PropType<SiteResponseDto>,
+    required: true,
+  },
+});
 
-defineProps<{ site: Site }>();
+const site = computed(() => props.site);
 
 const editOpen = ref(false);
 </script>

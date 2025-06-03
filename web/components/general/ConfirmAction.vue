@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="modalOpen" title="Warning" width="500" center>
+  <el-dialog :v-model="true" title="Warning" width="500" center>
     <span> Are you sure you want to delete this item ? </span>
     <template #footer>
       <div class="dialog-footer">
@@ -11,15 +11,6 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-  modalOpen: {
-    type: Boolean as PropType<boolean>,
-    required: true,
-  },
-});
-
-const modalOpen = computed(() => props.modalOpen);
-
 const emit = defineEmits(["update:modelValue", "save"]);
 
 const onCancel = () => {

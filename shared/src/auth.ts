@@ -19,6 +19,11 @@ export const registerSchema = z.object({
   address: companyAddressSchema,
 });
 
+export const registerResponseSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+});
+
 export type SignInDto = z.infer<typeof signInSchema>;
 export const signInSchema = z.object({
   email: z.string(),

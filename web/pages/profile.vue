@@ -61,10 +61,8 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar,Message } from "@element-plus/icons-vue";
-import { computed,ref } from "vue";
-
-import { useAuthStore } from "@/stores/auth";
+import { Calendar, Message } from "@element-plus/icons-vue";
+import type { UpdateUserDto } from "shared";
 
 const auth = useAuthStore();
 const user = computed(() => auth.user);

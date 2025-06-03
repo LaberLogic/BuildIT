@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="modalOpen" :title="title" width="425px" @close="onCancel">
+  <el-dialog :v-model="true" :title="title" width="425px" @close="onCancel">
     <el-form :model="editForm" label-position="top" class="space-y-4">
       <el-form-item label="Material Name" prop="name">
         <el-input v-model="editForm.name" />
@@ -29,13 +29,9 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { MaterialResponseDto } from "shared";
+import type { MaterialResponseDto } from "shared";
 
 const props = defineProps({
-  modalOpen: {
-    type: Boolean as PropType<boolean>,
-    required: true,
-  },
   material: {
     type: Object as PropType<MaterialResponseDto>,
     required: false,
@@ -47,8 +43,6 @@ const emit = defineEmits(["update:modelValue", "save"]);
 const title = computed(() =>
   props.material ? `Edit ${props.material.name}` : "Create Material",
 );
-
-const modalOpen = computed(() => props.modalOpen);
 
 const editForm = ref({
   name: props.material?.name || "",

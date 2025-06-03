@@ -46,7 +46,13 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type {
+  CompanyResponseDto,
+  SiteResponseDto,
+  UserResponseDto,
+} from "shared";
+
 const props = defineProps({
   company: {
     type: Object as PropType<CompanyResponseDto>,
@@ -61,7 +67,6 @@ const props = defineProps({
     required: true,
   },
 });
-
 
 const activeTab = ref("info");
 </script>

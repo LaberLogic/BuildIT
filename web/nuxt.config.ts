@@ -1,3 +1,4 @@
+import path from 'path'
 export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: "2024-11-01",
@@ -13,6 +14,13 @@ export default defineNuxtConfig({
         target: "http://localhost:3001",
         changeOrigin: true,
         prependPath: false,
+      },
+    },
+  },
+  vite: {
+    resolve: {
+      alias: {
+        'shared': path.resolve(__dirname, '../shared/src'),
       },
     },
   },

@@ -22,7 +22,6 @@
     <el-button
       v-if="showBackButton"
       size="small"
-      type="text"
       class="ml-auto"
       @click="logout"
     >

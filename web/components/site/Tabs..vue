@@ -15,11 +15,11 @@
     </div>
 
     <el-tab-pane name="time">
-      <site-time-tracker :site-id="id" :time-entries="timeEntries" />
+      <site-time-tracker :site-id="site?.id" :time-entries="timeEntries" />
     </el-tab-pane>
 
     <el-tab-pane name="materials">
-      <site-material-tracker :site-id="id" :materials="site?.material" />
+      <site-material-tracker :site-id="site?.id" :materials="site?.material" />
     </el-tab-pane>
 
     <el-tab-pane name="details">
@@ -28,7 +28,9 @@
   </el-tabs>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { SiteResponseDto } from "shared";
+
 const props = defineProps({
   site: {
     type: Object as PropType<SiteResponseDto>,
@@ -43,9 +45,7 @@ const tabs = [
   { label: "Details", value: "details" },
 ];
 
-
-
-const timeEntries = []
+const timeEntries = [];
 
 const site = computed(() => props.site);
 </script>

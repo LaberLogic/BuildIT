@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    v-model="localModelValue"
+    :v-model="true"
     :title="dialogTitle"
     width="425px"
     @close="onCancel"
@@ -79,10 +79,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from "vue";
-
+import type { UserResponseDto } from "shared";
 const props = defineProps({
-  modelValue: Boolean,
   user: {
     type: Object as PropType<UserResponseDto>,
   },
@@ -98,11 +96,6 @@ const options = [
 ];
 
 const emit = defineEmits(["update:modelValue", "save"]);
-
-const localModelValue = computed({
-  get: () => props.modelValue,
-  set: (val) => emit("update:modelValue", val),
-});
 
 const isCreate = computed(() => {
   return !props.user;
