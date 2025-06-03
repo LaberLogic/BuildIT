@@ -60,6 +60,7 @@ model Site {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   name        String
+  priority    String?
   address     Address          @relation(fields: [addressId], references: [id])
   companyId   String
   company     Company          @relation(fields: [companyId], references: [id])
@@ -85,11 +86,12 @@ model Material {
 }
 
 model SiteAssignment {
-  id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-  site   Site   @relation(fields: [siteId], references: [id])
-  siteId String
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  site        Site      @relation(fields: [siteId], references: [id])
+  siteId      String
+  lastVisited DateTime?
 
   @@unique([userId, siteId])
 }
