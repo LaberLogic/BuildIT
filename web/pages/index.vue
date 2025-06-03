@@ -10,7 +10,7 @@
         <span class="text-2xl font-bold text-gray-900">Construxx</span>
       </div>
       <div class="flex items-center space-x-4">
-        <el-button type="text" tag="nuxt-link" to="/auth/login" class="p-0">
+        <el-button tag="nuxt-link" to="/auth/login" class="p-0">
           Sign In
         </el-button>
         <el-button
@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import { ElButton } from "element-plus";
-import { ArrowRight,Building2 } from "lucide-vue-next";
+import { ArrowRight, Building2 } from "lucide-vue-next";
 
 definePageMeta({
   layout: "auth",

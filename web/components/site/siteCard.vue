@@ -37,7 +37,6 @@
           </div>
           <el-progress
             :percentage="site.progress"
-            :status="getProgressStatus(site.progress)"
             :color="getProgressColor(site.progress)"
             :stroke-width="10"
           />
@@ -141,7 +140,7 @@ import {
   MessageCirclePlus,
   User,
 } from "lucide-vue-next";
-import { SiteResponseDto } from "shared";
+import type { SiteResponseDto } from "shared";
 
 const props = defineProps({
   site: {
@@ -180,13 +179,6 @@ const getProgressColor = (progress: number) => {
   if (progress >= 50) return "#3b82f6";
   if (progress >= 25) return "#facc15";
   return "#f97316";
-};
-
-const getProgressStatus = (progress: number) => {
-  if (progress >= 80) return "success";
-  if (progress >= 50) return "primary";
-  if (progress >= 25) return "warning";
-  return "exception";
 };
 
 const hasChat = computed(() => {

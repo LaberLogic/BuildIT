@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    v-model="modalOpen"
+    :v-model="true"
     title="Update Site"
     width="500px"
     @close="onCancel"
@@ -93,22 +93,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import type { SiteResponseDto } from "shared";
 
 const props = defineProps({
-  modalOpen: {
-    type: Boolean as PropType<boolean>,
-    required: true,
-  },
   site: {
     type: Object as PropType<SiteResponseDto>,
     required: true,
   },
 });
 
-const emit = defineEmits(["update:modelValue", "save"]);
+const site = computed(() => props.site);
 
-const modalOpen = computed(() => props.modalOpen);
+const emit = defineEmits(["update:modelValue", "save"]);
 
 const includeAddress = ref(!!props.site?.address);
 
@@ -126,11 +122,11 @@ const editForm = ref({
     city: "",
     postalCode: "",
   },
-  status: props.site?.status || "",
-  priority: props.site?.priority || "",
-  startDate: props.site?.startDate || "",
-  endDate: props.site?.endDate || "",
-  userId: props.site?.userId || "",
+  status: site?.status || "",
+  priority: site?.priority || "",
+  startDate: site?.startDate || "",
+  endDate: site?.endDate || "",
+  userId: site?.userId || "",
 });
 
 watch(includeAddress, (val) => {

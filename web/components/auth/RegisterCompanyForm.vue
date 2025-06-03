@@ -1,4 +1,3 @@
-/** eslint-disable no-undef */
 <template>
   <el-form
     ref="formRef"
@@ -72,7 +71,7 @@
 import { ArrowLeft } from "@element-plus/icons-vue";
 
 const formRef = ref();
-const errorMessage = ref("");
+
 const form = ref({
   companyName: "",
   address: {

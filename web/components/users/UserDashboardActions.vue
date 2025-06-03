@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <el-input type="text" placeholder="Search by name" />
+    <el-input placeholder="Search by name" />
 
     <div class="flex gap-3 mt-4">
       <el-select
