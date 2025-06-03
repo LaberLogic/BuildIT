@@ -1,13 +1,12 @@
-import { FastifyInstance } from "fastify";
-
 import { isAdminOrManager } from "@src/plugins/roleGuards";
+import { FastifyInstance } from "fastify";
 import { materialRef as $ref, siteRef as $general } from "shared";
 
 import {
-  createMaterialController,
-  updateMaterialController,
-  deleteMaterialController,
   adjustMaterialQuantityController,
+  createMaterialController,
+  deleteMaterialController,
+  updateMaterialController,
 } from "../controllers/material.controller";
 
 const materialRoutes = async (app: FastifyInstance) => {

@@ -9,7 +9,7 @@ import {
 import { userService } from "@src/user/services/user.service";
 import { ChainedError } from "@utils/chainedError";
 import { hash } from "bcryptjs";
-import { okAsync, errAsync } from "neverthrow";
+import { errAsync,okAsync } from "neverthrow";
 
 jest.mock("bcryptjs");
 jest.mock("@src/user/repositories/user.repository");

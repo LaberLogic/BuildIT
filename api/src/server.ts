@@ -1,5 +1,6 @@
-import app from "./index";
 import { env } from "@env";
+
+import app from "./index";
 
 const start = async () => {
   try {

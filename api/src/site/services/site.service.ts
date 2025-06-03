@@ -1,15 +1,16 @@
 import { Prisma } from "@prisma/prisma";
-import { CreateSiteDto, SiteResponseDto, UpdateSiteDto } from "shared";
 import { ChainedError } from "@utils/chainedError";
+import { extendSiteWhere, scopeCheckCompany } from "@utils/scopeCheck";
+import { ResultAsync } from "neverthrow";
+import { CreateSiteDto, SiteResponseDto, UpdateSiteDto } from "shared";
 import { UserObject } from "types";
+
 import {
   createSite,
   getSite,
   getSites,
   updateSite,
 } from "../repositories/site.repository";
-import { extendSiteWhere, scopeCheckCompany } from "@utils/scopeCheck";
-import { ResultAsync } from "neverthrow";
 import { toSiteDTO } from "../site.dto";
 export const createNewSite = (
   currentUser: UserObject,

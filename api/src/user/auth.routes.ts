@@ -1,5 +1,6 @@
-import { authRef } from "shared";
 import { FastifyPluginAsync } from "fastify";
+import { authRef } from "shared";
+
 import {
   registerController,
   signInController,

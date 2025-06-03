@@ -61,8 +61,8 @@
 </template>
 
 <script setup>
+import { ArrowRight, Location,UserFilled } from "@element-plus/icons-vue";
 import { defineProps } from "vue";
-import { ArrowRight, UserFilled, Location } from "@element-plus/icons-vue";
 
 const props = defineProps({
   company: {

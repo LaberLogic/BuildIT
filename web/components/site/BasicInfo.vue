@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { MapPin, Clock, Calendar, Users, Edit } from "lucide-vue-next";
+import { Calendar, Clock, Edit,MapPin, Users } from "lucide-vue-next";
 
 interface Site {
   address: string;

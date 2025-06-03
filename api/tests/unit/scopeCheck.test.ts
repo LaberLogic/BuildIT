@@ -1,11 +1,11 @@
+import { PrismaClient, ROLE } from "@prisma/prisma";
+import { ChainedError } from "@utils/chainedError";
 import {
+  extendSiteWhere,
   scopeCheckCompany,
   scopeCheckMaterial,
   scopeCheckSite,
-  extendSiteWhere,
 } from "@utils/scopeCheck";
-import { PrismaClient, ROLE } from "@prisma/prisma";
-import { ChainedError } from "@utils/chainedError";
 
 jest.mock("@prisma/prisma", () => {
   const mPrisma = {

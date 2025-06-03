@@ -1,5 +1,6 @@
-import { FastifyInstance } from "fastify";
 import { isAdmin } from "@src/plugins/roleGuards";
+import { FastifyInstance } from "fastify";
+
 import {
   getCompaniesController,
   getCompanyController,

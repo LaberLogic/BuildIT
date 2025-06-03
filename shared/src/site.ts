@@ -1,6 +1,7 @@
-import { companyAddressSchema } from "./auth";
 import { buildJsonSchemas } from "fastify-zod";
 import { z } from "zod";
+
+import { companyAddressSchema } from "./auth";
 
 export const createSiteSchema = z.object({
   name: z.string().min(1),
@@ -91,7 +92,7 @@ const { schemas: siteSchemas, $ref: siteRef } = buildJsonSchemas(
   },
   { $id: "siteSchema" },
 );
-export { siteSchemas, siteRef };
+export { siteRef,siteSchemas };
 
 export type UpdateSiteDto = z.infer<typeof updateSiteSchema>;
 export type CreateSiteDto = z.infer<typeof createSiteSchema>;

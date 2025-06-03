@@ -30,11 +30,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { PropType } from "vue";
+import type { UserResponseDto } from "shared";
 
 const props = defineProps({
   users: {
-    type: Array as PropType<any>,
+    type: Array as PropType<UserResponseDto[]>,
   },
 });
 

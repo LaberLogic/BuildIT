@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from "@prisma/prisma";
+import { Prisma,PrismaClient } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
 import { prismaErrorCodeToHttpStatus } from "@utils/errorCodeMapper";
 import { ResultAsync } from "neverthrow";

@@ -1,18 +1,18 @@
-import Fastify from "fastify";
-
-import userRoutes from "./user/user.routes";
-import authRoutes from "./user/auth.routes";
-import jwtPlugin from "./plugins/jwt";
+import fastifyCors from "@fastify/cors";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import Fastify from "fastify";
 import { withRefResolver } from "fastify-zod";
 import { authSchemas, materialSchemas, siteSchemas, userSchemas } from "shared";
-import fastifyCors from "@fastify/cors";
+
 import { version } from "../package.json";
-import siteRoutes from "./site/routes/site.routes";
-import materialRoutes from "./site/routes/material.routes";
-import companyUserRoutes from "./user/company.user.routes";
 import companyRoutes from "./company/company.routes";
+import jwtPlugin from "./plugins/jwt";
+import materialRoutes from "./site/routes/material.routes";
+import siteRoutes from "./site/routes/site.routes";
+import authRoutes from "./user/auth.routes";
+import companyUserRoutes from "./user/company.user.routes";
+import userRoutes from "./user/user.routes";
 
 const app = Fastify({
   logger: {

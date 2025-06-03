@@ -1,7 +1,8 @@
-import { getCompanies, getCompany } from "./company.repository";
-import httpStatus from "http-status";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
-import { FastifyRequest, FastifyReply } from "fastify";
+import { FastifyReply,FastifyRequest } from "fastify";
+import httpStatus from "http-status";
+
+import { getCompanies, getCompany } from "./company.repository";
 
 export const getCompaniesController = async (
   req: FastifyRequest,

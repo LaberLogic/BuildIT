@@ -1,16 +1,17 @@
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 import { FastifyReply, FastifyRequest } from "fastify";
+import httpStatus from "http-status";
 import { UpdateMaterialDto } from "shared";
 import { CreateMaterialDto } from "shared";
+import { UpdateMaterialCountDto } from "shared";
 import { UserObject } from "types";
+
 import {
   createNewMaterial,
   deleteMaterialFromSite,
   incrementDecrementMaterial,
   updateMaterialProperties,
 } from "../services/material.service";
-import httpStatus from "http-status";
-import { UpdateMaterialCountDto } from "shared";
 
 export const createMaterialController = async (
   req: FastifyRequest<{ Params: { siteId: string }; Body: CreateMaterialDto }>,
