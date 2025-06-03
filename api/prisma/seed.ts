@@ -49,7 +49,7 @@ async function main() {
     },
   });
 
-  const admin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "admin@example.com",
       firstName: "Admin",
@@ -118,7 +118,6 @@ async function main() {
     },
   });
 
-  // Assignments
   await prisma.siteAssignment.createMany({
     data: [
       {

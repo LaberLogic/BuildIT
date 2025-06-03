@@ -43,7 +43,7 @@
           </el-icon>
           <div>
             <p class="text-sm font-medium text-gray-900">
-              {{ formatDate(user?.createdAt) }}
+              {{ useFormatDate(user?.createdAt) }}
             </p>
             <p class="text-xs text-gray-500">Member since</p>
           </div>
@@ -83,9 +83,6 @@ const userInitials = computed(() =>
 const companyName = computed(
   () => user.value?.companyId || "Company not specified",
 );
-
-const formatDate = (date?: string | Date | null) =>
-  date ? new Date(date).toLocaleDateString() : "";
 
 async function handleUserUpdate(updatedUser: UpdateUserDto) {
   console.log("User updated:", updatedUser);

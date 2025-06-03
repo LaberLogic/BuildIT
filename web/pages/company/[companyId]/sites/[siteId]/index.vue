@@ -8,32 +8,5 @@
 const route = useRoute();
 const companyId = route.params.companyId as string;
 const siteId = route.params.siteId as string;
-const site = {
-  id: "cmbdjbnr5000azuyls58rtcti",
-  name: "Greenfield Construction",
-  address: "123 Main St, Springfield",
-  progress: 75,
-  lastVisit: "2025-05-20",
-  hoursLogged: 150,
-  status: "active",
-  priority: "high",
-  materials: { total: 100, warnings: 3 },
-  chat: { unreadCount: 2, lastMessage: "Please approve the new design." },
-  workers: 10,
-  endDate: "2025-06-15",
-  startDate: "2025-05-15",
-};
-
-onMounted(async () => {
-  const { site: fetchedSite, error } = useCompanySiteDetails(companyId, siteId);
-
-  watchEffect(() => {
-    if (fetchedSite?.value) {
-      console.log("[API] Sites fetched:", fetchedSite?.value);
-    }
-    if (error.value) {
-      console.error("[API] Failed to fetch sites:", error.value);
-    }
-  });
-});
+const { site, error } = useCompanySiteDetails(companyId, siteId);
 </script>
