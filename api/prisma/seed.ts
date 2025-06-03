@@ -1,5 +1,6 @@
 import { PrismaClient } from "../generated/prisma";
 import { hash } from "bcryptjs";
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -10,7 +11,7 @@ async function main() {
   await prisma.company.deleteMany();
   await prisma.address.deleteMany();
 
-  const address = await prisma.address.create({
+  const companyAddress = await prisma.address.create({
     data: {
       streetNumber: "123",
       street: "Main St",
@@ -20,14 +21,35 @@ async function main() {
     },
   });
 
-  const company = await prisma.company.create({
+  const siteAddress1 = await prisma.address.create({
     data: {
-      name: "Awesome Company Ltd",
-      addressId: address.id,
+      streetNumber: "456",
+      street: "Site Road",
+      city: "Buildtown",
+      country: "Countryland",
+      postalCode: "12345",
     },
   });
 
-  const adminUser = await prisma.user.create({
+  const siteAddress2 = await prisma.address.create({
+    data: {
+      streetNumber: "789",
+      street: "Tower St",
+      city: "Buildtown",
+      country: "Countryland",
+      postalCode: "12345",
+    },
+  });
+
+  // Company
+  const company = await prisma.company.create({
+    data: {
+      name: "Awesome Company Ltd",
+      addressId: companyAddress.id,
+    },
+  });
+
+  const admin = await prisma.user.create({
     data: {
       email: "admin@example.com",
       firstName: "Admin",
@@ -37,7 +59,7 @@ async function main() {
     },
   });
 
-  const managerUser = await prisma.user.create({
+  const manager = await prisma.user.create({
     data: {
       email: "manager@example.com",
       firstName: "Manager",
@@ -48,52 +70,100 @@ async function main() {
     },
   });
 
-  const workerUser = await prisma.user.create({
+  const worker1 = await prisma.user.create({
     data: {
-      email: "worker@example.com",
+      email: "worker1@example.com",
       firstName: "Worker",
-      lastName: "User",
+      lastName: "One",
       password: await hash("secret", 10),
       role: "WORKER",
       companyId: company.id,
     },
   });
 
-  const siteAddress = await prisma.address.create({
+  const worker2 = await prisma.user.create({
     data: {
-      streetNumber: "456",
-      street: "Site Road",
-      city: "Sample City",
-      country: "Countryland",
-      postalCode: "12345",
+      email: "worker2@example.com",
+      firstName: "Worker",
+      lastName: "Two",
+      password: await hash("secret", 10),
+      role: "WORKER",
+      companyId: company.id,
     },
   });
 
-  const site = await prisma.site.create({
+  const site1 = await prisma.site.create({
     data: {
       name: "Main Construction Site",
-      addressId: siteAddress.id,
+      addressId: siteAddress1.id,
       companyId: company.id,
       status: "ACTIVE",
-      startDate: new Date(),
+      startDate: new Date("2025-04-01"),
+      endDate: new Date("2025-07-01"),
+      priority: "high",
+      notes: "Top priority site. Requires weekly updates.",
     },
   });
 
-  await prisma.siteAssignment.create({
+  const site2 = await prisma.site.create({
     data: {
-      userId: workerUser.id,
-      siteId: site.id,
+      name: "Downtown Tower",
+      addressId: siteAddress2.id,
+      companyId: company.id,
+      status: "ACTIVE",
+      startDate: new Date("2025-05-01"),
+      endDate: new Date("2025-10-01"),
+      priority: "low",
+      notes: "Tower project awaiting permit approval.",
     },
   });
 
-  await prisma.material.create({
-    data: {
-      name: "Concrete",
-      unit: "cubic meters",
-      amount: 100,
-      threshold: 20,
-      siteId: site.id,
-    },
+  // Assignments
+  await prisma.siteAssignment.createMany({
+    data: [
+      {
+        siteId: site1.id,
+        userId: worker1.id,
+        lastVisited: new Date("2025-05-20"),
+      },
+      {
+        siteId: site1.id,
+        userId: manager.id,
+        lastVisited: new Date("2025-04-20"),
+      },
+      {
+        siteId: site2.id,
+        userId: worker2.id,
+        lastVisited: new Date("2025-03-20"),
+      },
+    ],
+  });
+
+  // Materials
+  await prisma.material.createMany({
+    data: [
+      {
+        siteId: site1.id,
+        name: "Concrete",
+        unit: "cubic meters",
+        amount: 100,
+        threshold: 25,
+      },
+      {
+        siteId: site1.id,
+        name: "Rebar",
+        unit: "tons",
+        amount: 50,
+        threshold: 10,
+      },
+      {
+        siteId: site2.id,
+        name: "Glass Panels",
+        unit: "units",
+        amount: 200,
+        threshold: 40,
+      },
+    ],
   });
 
   console.log("Database seeded successfully.");
@@ -101,7 +171,7 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("❌ Seed failed:", e);
     process.exit(1);
   })
   .finally(async () => {

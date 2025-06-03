@@ -10,13 +10,14 @@ import {
 } from "../repositories/site.repository";
 import { extendSiteWhere, scopeCheckCompany } from "@utils/scopeCheck";
 import { ResultAsync } from "neverthrow";
+import { toSiteDTO } from "../site.dto";
 export const createNewSite = (
   currentUser: UserObject,
   data: CreateSiteDto,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
-  return scopeCheckCompany(currentUser, data.companyId).andThen(() =>
-    createSite(mapSiteCreatePayload(data)),
-  );
+  return scopeCheckCompany(currentUser, data.companyId)
+    .andThen(() => createSite(mapSiteCreatePayload(data)))
+    .map((site) => toSiteDTO(site, currentUser));
 };
 
 export const updateSiteById = (
@@ -25,9 +26,9 @@ export const updateSiteById = (
   data: UpdateSiteDto,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
   return getSite({ id }).andThen((site) =>
-    scopeCheckCompany(currentUser, site.companyId).andThen(() =>
-      updateSite({ id }, mapSiteUpdateUserPayload(id, data)),
-    ),
+    scopeCheckCompany(currentUser, site.companyId)
+      .andThen(() => updateSite({ id }, mapSiteUpdateUserPayload(id, data)))
+      .map((site) => toSiteDTO(site, currentUser)),
   );
 };
 
@@ -37,14 +38,16 @@ export const getSitesByUserId = (
 ): ResultAsync<SiteResponseDto[], ChainedError> => {
   return getSites(
     extendSiteWhere({ assignments: { some: { id } } }, currentUser),
-  );
+  ).map((sites) => sites.map((site) => toSiteDTO(site, currentUser)));
 };
 
 export const getSitesByCompanyId = (
   id: string,
   currentUser: UserObject,
 ): ResultAsync<SiteResponseDto[], ChainedError> => {
-  return getSites(extendSiteWhere({ company: { id } }, currentUser));
+  return getSites(extendSiteWhere({ company: { id } }, currentUser)).map(
+    (sites) => sites.map((site) => toSiteDTO(site, currentUser)),
+  );
 };
 
 export const getSiteById = (
@@ -53,7 +56,7 @@ export const getSiteById = (
 ): ResultAsync<SiteResponseDto, ChainedError> => {
   return getSite(
     extendSiteWhere({ id }, currentUser) as Prisma.SiteWhereUniqueInput,
-  );
+  ).map((site) => toSiteDTO(site, currentUser));
 };
 
 const mapSiteCreatePayload = (data: CreateSiteDto): Prisma.SiteCreateInput => {
