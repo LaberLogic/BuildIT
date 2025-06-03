@@ -10,7 +10,9 @@
           <el-icon> <Plus /></el-icon> Add Material
         </el-button>
       </div>
-      <site-material-card />
+      <div v-for="material in props.materials" :key="material.unit">
+        <site-material-card :material="material" />
+      </div>
     </div>
     <site-modals-create-update-material v-model="createOpen" />
   </el-card>
@@ -18,6 +20,13 @@
 
 <script lang="ts" setup>
 import { Plus } from "lucide-vue-next";
+
+const props = defineProps({
+  materials: {
+    type: Array as PropType<any>,
+    required: true,
+  },
+});
 
 const createOpen = ref(false);
 </script>

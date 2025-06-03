@@ -1,6 +1,6 @@
-import { z } from "zod";
 import { companyAddressSchema } from "./auth";
 import { buildJsonSchemas } from "fastify-zod";
+import { z } from "zod";
 
 export const createSiteSchema = z.object({
   name: z.string().min(1),
@@ -25,19 +25,49 @@ export const updateSiteSchema = z
 
 const assignmentsSchema = z.array(
   z.object({
-    userId: z.string().cuid(),
+    lastVisited: z.coerce.date().nullable().optional(),
+    id: z.string().cuid(),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+  }),
+);
+
+const materialSchema = z.array(
+  z.object({
+    id: z.string().cuid(),
+    name: z.string(),
+    unit: z.string(),
+    amount: z.number(),
+    threshold: z.number(),
   }),
 );
 
 export const siteResponseSchema = z.object({
   id: z.string().cuid(),
   name: z.string().min(1),
-  address: companyAddressSchema.nullable(),
-  companyId: z.string().cuid(),
-  startDate: z.coerce.date().optional().nullable(),
-  endDate: z.coerce.date().optional().nullable(),
-  notes: z.string().optional().nullable(),
+  priority: z.string(),
+  status: z.string(),
+  address: z.string(),
+  startDate: z.coerce.date().nullable().optional(),
+  endDate: z.coerce.date().nullable().optional(),
+  notes: z.string().nullable().optional(),
+  lastVisited: z.coerce.date().nullable().optional(),
+
+  progress: z.number().min(0).max(100), // From DTO
+  hoursLogged: z.number().nonnegative(), // Dummy for now
+
+  chat: z.object({
+    unreadCount: z.number().nonnegative(),
+    lastMessage: z.string(),
+  }),
+
+  materialInfo: z.object({
+    total: z.number().nonnegative(),
+    warnings: z.number().nonnegative(),
+  }),
+
   assignments: assignmentsSchema,
+  material: materialSchema,
 });
 
 export const sitesResponseSchema = z.array(siteResponseSchema);

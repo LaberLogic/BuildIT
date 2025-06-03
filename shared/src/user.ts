@@ -31,6 +31,7 @@ export const userResponseSchema = z.object({
   companyId: z.string().nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  status: z.string(),
 });
 
 export const usersResponseSchema = z.array(userResponseSchema);

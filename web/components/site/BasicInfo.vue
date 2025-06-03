@@ -23,10 +23,10 @@
         </div>
 
         <el-alert
-          v-if="site?.materials?.warnings > 0"
+          v-if="site?.materialInfo?.warnings > 0"
           type="warning"
           show-icon
-          :title="`${site?.materials.warnings} material${site.materials.warnings > 1 ? 's' : ''} low or out of stock`"
+          :title="`${site?.materialInfo.warnings} material${site.materialInfo.warnings > 1 ? 's' : ''} low or out of stock`"
           class="mb-4"
         />
 
@@ -50,7 +50,7 @@
             <el-icon class="mr-2"><Calendar /></el-icon>
             <div>
               <p class="text-label">Completion</p>
-              <p class="info-value">{{ site.endDate }}</p>
+              <p class="info-value">{{ useFormatDate(site.endDate) }}</p>
             </div>
           </div>
 
@@ -58,7 +58,7 @@
             <el-icon class="mr-2"><Users /></el-icon>
             <div>
               <p class="text-label">Workers</p>
-              <p class="info-value">{{ site.workers }}</p>
+              <p class="info-value">{{ site.assignments?.length }}</p>
             </div>
           </div>
 
@@ -66,7 +66,7 @@
             <el-icon class="mr-2"><Calendar /></el-icon>
             <div>
               <p class="text-label">Start Date</p>
-              <p class="info-value">{{ site.startDate }}</p>
+              <p class="info-value">{{ useFormatDate(site.startDate) }}</p>
             </div>
           </div>
         </div>
@@ -89,6 +89,9 @@ interface Site {
   materials?: {
     warnings: number;
   };
+  assignments: {
+    id: string;
+  }[];
 }
 
 defineProps<{ site: Site }>();

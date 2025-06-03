@@ -1,5 +1,4 @@
 import { PrismaClient, Prisma } from "@prisma/prisma";
-import { SiteResponseDto } from "shared";
 import { ChainedError } from "@utils/chainedError";
 import { prismaErrorCodeToHttpStatus } from "@utils/errorCodeMapper";
 import { ResultAsync } from "neverthrow";

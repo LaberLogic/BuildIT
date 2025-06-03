@@ -33,7 +33,7 @@ export const useCompanySiteDetails = (companyId: string, siteId: string) => {
   );
 
   return {
-    sites: data,
+    site: data,
     isLoading: pending,
     error,
     refresh,

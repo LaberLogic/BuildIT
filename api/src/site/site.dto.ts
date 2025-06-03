@@ -67,7 +67,15 @@ export const toSiteDTO = (site: Site, user: UserObject) => {
     materialInfo: {
       total: site.material?.length ?? 0,
       warnings:
-        site.material?.filter((m: any) => m.amount < m.threshold).length ?? 0,
+        site.material?.filter(
+          (m: {
+            id: string;
+            name: string;
+            unit: string;
+            amount: number;
+            threshold: number;
+          }) => m.amount < m.threshold,
+        ).length ?? 0,
     },
     material: site.material,
     //DUMMY DATA

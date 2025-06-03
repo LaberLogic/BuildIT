@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
     <el-card
       shadow="hover"
       class="border border-gray-200 alert-bar w-full"
@@ -7,7 +7,7 @@
     >
       <div class="p-4 flex items-start space-x-4">
         <el-avatar
-          :src="user.avatar || '/placeholder.svg'"
+          :src="user?.avatar || '/placeholder.svg'"
           size="large"
           class="h-12 w-12"
         >
@@ -23,7 +23,7 @@
             </h3>
             <div class="flex items-center space-x-2">
               <el-tag
-                :type="user.status === 'active' ? 'success' : 'info'"
+                :type="user.status === 'ACTIVE' ? 'success' : 'info'"
                 effect="light"
                 size="small"
                 round
@@ -73,7 +73,7 @@
               </el-icon>
               <span>{{ 0 }} hrs this month</span>
             </div>
-            <span>Joined {{ user.createdAt }}</span>
+            <span>Joined {{ useFormatDate(user.createdAt) }}</span>
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@ const props = defineProps<{
     avatar?: string;
     email: string;
     role: string;
-    status: "active" | "inactive";
+    status: "ACTIVE" | "INACTIVE";
     currentSite?: string;
     createdAt: string;
   };

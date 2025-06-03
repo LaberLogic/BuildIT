@@ -19,7 +19,7 @@
     </el-tab-pane>
 
     <el-tab-pane name="materials">
-      <site-material-tracker :site-id="id" :materials="site.materials.items" />
+      <site-material-tracker :site-id="id" :materials="site?.material" />
     </el-tab-pane>
 
     <el-tab-pane name="details">
