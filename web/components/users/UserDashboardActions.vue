@@ -18,21 +18,44 @@
       <el-button type="primary" @click="onAddClick">
         <el-icon><Plus /></el-icon>
       </el-button>
-      <users-modals-create-update-user v-model="createOpen" />
+
+      <users-modals-create-update-user
+        v-model="createOpen"
+        @save="handleCreateUser"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Plus } from "@element-plus/icons-vue";
+import type { CreateUserDto } from "shared";
+
+import { createUser } from "../../composables/useUser";
+const route = useRoute();
+
+const companyId = route.params.companyId as string;
+const companyStore = useCompanyStore();
 
 const createOpen = ref(false);
-
 const roleFilter = ref("all");
 
 const onAddClick = () => {
   createOpen.value = true;
 };
-</script>
 
-<style scoped></style>
+const handleCreateUser = async (payload: CreateUserDto) => {
+  try {
+    const created = await createUser(companyId, payload);
+
+    if (created) {
+      createOpen.value = false;
+      companyStore.fetchUsers(companyId);
+    } else {
+      console.error("Failed to create user");
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
+};
+</script>

@@ -1,22 +1,22 @@
 <template>
   <el-dialog :v-model="true" :title="title" width="425px" @close="onCancel">
-    <el-form :model="editForm" label-position="top" class="space-y-4">
+    <el-form :model="model" label-position="top" class="space-y-4">
       <el-form-item label="Material Name" prop="name">
-        <el-input v-model="editForm.name" />
+        <el-input v-model="model.name" />
       </el-form-item>
 
       <div class="flex gap-4">
         <el-form-item label="amount" prop="amount" class="flex-1">
-          <el-input v-model="editForm.amount" type="number" />
+          <el-input v-model="model.amount" type="number" />
         </el-form-item>
 
         <el-form-item label="Unit" prop="unit" class="flex-1">
-          <el-input v-model="editForm.unit" />
+          <el-input v-model="model.unit" />
         </el-form-item>
       </div>
 
       <el-form-item label="Threshold" prop="threshold">
-        <el-input v-model="editForm.threshold" type="number" />
+        <el-input v-model="model.threshold" type="number" />
       </el-form-item>
     </el-form>
 
@@ -44,7 +44,7 @@ const title = computed(() =>
   props.material ? `Edit ${props.material.name}` : "Create Material",
 );
 
-const editForm = ref({
+const model = ref({
   name: props.material?.name || "",
   amount: props.material?.amount || 0,
   unit: props.material?.unit || "",
@@ -56,7 +56,7 @@ const onCancel = () => {
 };
 
 const handleSave = () => {
-  emit("save", { ...editForm });
+  emit("save", { ...model.value });
   emit("update:modelValue", false);
 };
 </script>
