@@ -14,15 +14,15 @@
         type="default"
         circle
         class="h-12 w-12 bg-white border border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center"
-        @click="editOpen = true"
+        @click="createOpen = true"
       >
         <Plus class="h-6 w-6 text-blue-500" />
         <span class="sr-only">Add new site</span>
       </el-button>
-      <site-modals-update-site
-        v-model="editOpen"
+      <site-modals--create-update-site
+        v-model="createOpen"
         :users="users"
-        @create="handleCreate"
+        @close="createOpen = false"
       />
     </div>
     <div class="w-1/3 space-y-4 pb-4 mb-28">
@@ -40,7 +40,6 @@
 
 <script setup lang="ts">
 import { Plus } from "lucide-vue-next";
-import type { CreateSiteDto } from "shared";
 
 import { useCompanyStore } from "../../../../stores/company";
 
@@ -54,18 +53,7 @@ const sites = computed(() => companyStore.sites);
 const users = computed(() => companyStore.users);
 const companyStore = useCompanyStore();
 
-const editOpen = ref(false);
-
-const handleCreate = async (payload: CreateSiteDto) => {
-  const createdSite = await createSite({ companyId }, payload);
-
-  if (createdSite) {
-    editOpen.value = false;
-    await companyStore.fetchSites(companyId);
-  } else {
-    console.error("Failed to update site");
-  }
-};
+const createOpen = ref(false);
 
 onMounted(async () => {
   await companyStore.fetchSites(companyId);

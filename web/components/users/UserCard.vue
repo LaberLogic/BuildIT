@@ -80,16 +80,14 @@
     <users-modals-create-update-user
       v-model="editOpen"
       :user="props.user"
-      @save="handleSave"
+      @close="editOpen = false"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { Building2, Clock, Edit, MessageSquare, Trash2 } from "lucide-vue-next";
-import type { UpdateUserDto, UserResponseDto } from "shared";
-
-import { useCompanyStore } from "../../stores/company";
+import type { UserResponseDto } from "shared";
 
 const props = defineProps<{
   user: UserResponseDto;
@@ -105,19 +103,6 @@ const deleteOpen = ref(false);
 
 const companyStore = useCompanyStore();
 const companyId = useRoute().params.companyId as string;
-
-const handleSave = async (payload: UpdateUserDto) => {
-  if (!user.value?.id) return;
-
-  const updated = await updateUser(companyId, user.value.id, payload);
-
-  if (updated) {
-    editOpen.value = false;
-    await companyStore.fetchUsers(companyId);
-  } else {
-    console.error("Failed to update user");
-  }
-};
 
 const handleDelete = async () => {
   if (!user.value?.id) return;
