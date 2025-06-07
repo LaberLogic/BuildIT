@@ -69,6 +69,7 @@
     <site-modals-create-update-material
       v-model="editOpen"
       :material="material"
+      @save="handleUpdateMaterial"
     />
     <general-confirm-action v-model="deleteOpen" />
   </div>
@@ -76,7 +77,7 @@
 
 <script setup lang="ts">
 import { Edit, Minus, Plus, Trash } from "lucide-vue-next";
-import type { MaterialResponseDto } from "shared";
+import type { MaterialResponseDto, UpdateMaterialDto } from "shared";
 
 const props = defineProps({
   material: {
@@ -102,6 +103,8 @@ const route = useRoute();
 
 const companyId = route.params.companyId as string;
 const siteId = route.params.siteId as string;
+
+const companyStore = useCompanyStore();
 
 const editOpen = ref(false);
 const deleteOpen = ref(false);
@@ -160,5 +163,25 @@ const getStatusName = (): string => {
   if (localAmount.value === 0) return "Out of Stock";
   if (localAmount.value <= props.material.threshold) return "Low Stock";
   return "In Stock";
+};
+
+const handleUpdateMaterial = async (payload: UpdateMaterialDto) => {
+  try {
+    const updated = await updateMaterial({
+      companyId,
+      siteId,
+      materialId: props.material.id,
+      payload,
+    });
+
+    if (updated) {
+      editOpen.value = false;
+      companyStore.fetchSiteDetails(companyId, siteId);
+    } else {
+      console.error("Failed to create user");
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
 };
 </script>

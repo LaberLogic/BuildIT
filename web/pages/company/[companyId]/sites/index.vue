@@ -2,8 +2,8 @@
   <div
     class="min-h-screen bg-gray-50 flex flex-col items-center pt-4 space-y-4"
   >
-    <div class="flex justify-between items-center mb-6">
-      <div>
+    <div class="flex w-1/3 justify-between items-center mb-6">
+      <div class="ml-2">
         <h1 class="text-2xl font-bold text-gray-900">My Sites</h1>
         <p class="text-sm text-gray-500 mt-1">
           {{ sites.length }} active projects
