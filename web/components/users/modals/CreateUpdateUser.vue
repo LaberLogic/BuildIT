@@ -190,8 +190,8 @@ const handleSave = async () => {
         await updateUser(companyId, props.user!.id, payload as UpdateUserDto);
         ElMessage.success("User updated successfully");
       }
-
-      await companyStore.fetchUsers(companyId);
+      if (!props.isProfile) await companyStore.fetchUsers(companyId);
+      else await useAuthStore().fetchUser();
     } catch (error) {
       console.error("Error saving user:", error);
       ElMessage.error("An error occurred");

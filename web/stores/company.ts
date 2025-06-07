@@ -1,54 +1,76 @@
 import type { SiteResponseDto, UserResponseDto } from "shared";
 
 import { useCompany } from "../composables/useCompany";
-import { useCompanySiteDetails, useCompanySites } from "../composables/useSite";
+import {
+  useCompanySiteDetails,
+  useCompanySites,
+  useCompanyUserSites,
+} from "../composables/useSite";
 import { useCompanyUsers } from "../composables/useUser";
+import { useAuthStore } from "./auth";
 
 export const useCompanyStore = defineStore("company", () => {
-  const company: Ref<any | null> = ref(null);
-  const sites: Ref<SiteResponseDto[]> = ref([]);
-  const users: Ref<UserResponseDto[]> = ref([]);
-  const siteDetails: Ref<SiteResponseDto | null> = ref(null);
+  const company = ref<any | null>(null);
+  const sites = ref<SiteResponseDto[]>([]);
+  const users = ref<UserResponseDto[]>([]);
+  const siteDetails = ref<SiteResponseDto | null>(null);
 
-  async function fetchCompany(companyId: string) {
+  const authStore = useAuthStore();
+
+  const user = computed(() => authStore.user);
+
+  const fetchCompany = async (companyId: string) => {
     const { company: c } = useCompany(companyId);
     company.value = c;
-  }
+  };
 
-  async function fetchSites(companyId: string) {
-    const { sites: s, isLoading } = useCompanySites(companyId);
+  const fetchSites = async (companyId: string) => {
+    const role = user?.value?.role;
+
+    if (!role) return;
+
+    const isWorker = role === "WORKER";
+
+    const { sites: s, isLoading } = isWorker
+      ? useCompanyUserSites(companyId, user?.value?.id)
+      : useCompanySites(companyId);
 
     while (isLoading.value) {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     sites.value = s.value ?? [];
-  }
+  };
 
-  async function fetchUsers(companyId: string) {
+  const fetchUsers = async (companyId: string) => {
+    const role = user?.value?.role;
+
+    if (role === "WORKER") return;
+
     const { users: u, isLoading } = useCompanyUsers(companyId);
+
     while (isLoading.value) {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     users.value = u.value || [];
-  }
+  };
 
-  async function fetchSiteDetails(companyId: string, siteId: string) {
+  const fetchSiteDetails = async (companyId: string, siteId: string) => {
     const { site, isLoading } = useCompanySiteDetails(companyId, siteId);
     while (isLoading.value) {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
     siteDetails.value = site.value;
-  }
+  };
 
-  async function fetchAll(companyId: string) {
+  const fetchAll = async (companyId: string) => {
     await Promise.all([
       fetchCompany(companyId),
       fetchSites(companyId),
       fetchUsers(companyId),
     ]);
-  }
+  };
 
   return {
     company,
