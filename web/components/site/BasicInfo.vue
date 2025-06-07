@@ -73,20 +73,19 @@
         </div>
       </div>
     </el-card>
-    <site-modals-update-site
+    <site-modals-create-update-site
       v-model="editOpen"
       :site="site"
       :users="users"
-      @save="handleSave"
+      @close="editOpen = false"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { Calendar, Clock, Edit, MapPin, Users } from "lucide-vue-next";
-import type { SiteResponseDto, UpdateSiteDto } from "shared";
+import type { SiteResponseDto } from "shared";
 
-import { updateSite } from "../../composables/useSite";
 import { useCompanyStore } from "../../stores/company";
 
 const props = defineProps({
@@ -100,7 +99,6 @@ const companyStore = useCompanyStore();
 
 const route = useRoute();
 const companyId = route.params.companyId as string;
-const siteId = route.params.siteId as string;
 
 const site = computed(() => props.site);
 const users = computed(() => companyStore.users);
@@ -108,17 +106,4 @@ const users = computed(() => companyStore.users);
 companyStore.fetchUsers(companyId);
 
 const editOpen = ref(false);
-
-const handleSave = async (payload: UpdateSiteDto) => {
-  if (!site.value) return;
-
-  const updated = await updateSite({ companyId, siteId }, payload);
-
-  if (updated) {
-    editOpen.value = false;
-    companyStore.fetchSiteDetails(companyId, siteId);
-  } else {
-    console.error("Failed to update site");
-  }
-};
 </script>
