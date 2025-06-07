@@ -57,7 +57,7 @@ export const getSitesByUserId = (
   currentUser: UserObject,
 ): ResultAsync<SiteResponseDto[], ChainedError> => {
   return getSites(
-    extendSiteWhere({ assignments: { some: { id } } }, currentUser),
+    extendSiteWhere({ assignments: { some: { user: { id } } } }, currentUser),
   ).map((sites) => sites.map((site) => toSiteDTO(site, currentUser)));
 };
 
