@@ -1,11 +1,14 @@
 import app from "@src/index";
 import request from "supertest";
 
-describe("POST /auth/signIn", () => {
+import { seedAdmin, seedDatabase } from "../../../prisma/seed";
+
+describe("POST /auth/signin", () => {
   beforeAll(async () => {
     if (!app.server.listening) {
       await app.listen({ port: 0 });
     }
+    await seedDatabase();
   });
 
   afterAll(async () => {
@@ -13,9 +16,9 @@ describe("POST /auth/signIn", () => {
   });
 
   it("should login successfully with valid credentials", async () => {
-    const response = await request(app.server).post("/auth/signIn").send({
-      email: "john.doe@example.com",
-      password: "Testerino",
+    const response = await request(app.server).post("/auth/signin").send({
+      email: seedAdmin.email,
+      password: seedAdmin.password,
     });
 
     expect(response.status).toBe(200);
@@ -23,7 +26,7 @@ describe("POST /auth/signIn", () => {
   });
 
   it("should fail with 401 for invalid credentials", async () => {
-    const response = await request(app.server).post("/auth/signIn").send({
+    const response = await request(app.server).post("/auth/signin").send({
       email: "wrong@example.com",
       password: "wrongpassword",
     });
@@ -34,7 +37,7 @@ describe("POST /auth/signIn", () => {
 
   it("should return 400 if email or password is missing", async () => {
     const response = await request(app.server)
-      .post("/auth/signIn")
+      .post("/auth/signin")
       .send({ email: "testuser@example.com" });
 
     expect(response.status).toBe(400);

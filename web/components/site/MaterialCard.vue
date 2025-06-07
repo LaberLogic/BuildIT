@@ -25,18 +25,33 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <el-button class="btn-icon">
-          <el-icon>
-            <Plus />
-          </el-icon>
+        <el-button
+          class="btn-icon"
+          plain
+          @mousedown="holdIncrement.start"
+          @mouseup="holdIncrement.stop"
+          @mouseleave="holdIncrement.stop"
+          @touchstart.prevent="holdIncrement.start"
+          @touchend="holdIncrement.stop"
+        >
+          <el-icon><Plus /></el-icon>
         </el-button>
+
         <span class="mx-2 min-w-[40px] text-center">
-          {{ material.amount }} {{ material.unit }}
+          {{ localAmount }} {{ material.unit }}
         </span>
-        <el-button class="btn-icon">
-          <el-icon>
-            <Minus />
-          </el-icon>
+
+        <el-button
+          class="btn-icon"
+          plain
+          :disabled="localAmount <= 0"
+          @mousedown="holdDecrement.start"
+          @mouseup="holdDecrement.stop"
+          @mouseleave="holdDecrement.stop"
+          @touchstart.prevent="holdDecrement.start"
+          @touchend="holdDecrement.stop"
+        >
+          <el-icon><Minus /></el-icon>
         </el-button>
       </div>
 
@@ -60,11 +75,8 @@
 </template>
 
 <script setup lang="ts">
-import { Edit,Minus, Plus, Trash } from "lucide-vue-next";
+import { Edit, Minus, Plus, Trash } from "lucide-vue-next";
 import type { MaterialResponseDto } from "shared";
-
-const editOpen = ref(false);
-const deleteOpen = ref(false);
 
 const props = defineProps({
   material: {
@@ -73,15 +85,80 @@ const props = defineProps({
   },
 });
 
+function debounce<T extends (...args: unknown[]) => void>(
+  fn: T,
+  delay: number,
+) {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<T>) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
+const route = useRoute();
+
+const companyId = route.params.companyId as string;
+const siteId = route.params.siteId as string;
+
+const editOpen = ref(false);
+const deleteOpen = ref(false);
+
+const localAmount = ref(props.material.amount);
+
+let accumulatedDelta = 0;
+
+const debouncedAdjust = debounce(async () => {
+  try {
+    await incrementDecrementMaterial({
+      companyId: companyId,
+      siteId: siteId,
+      materialId: props.material.id,
+      delta: accumulatedDelta,
+    });
+    accumulatedDelta = 0;
+  } catch (err) {
+    console.error("Failed to adjust quantity", err);
+    localAmount.value = props.material.amount;
+    accumulatedDelta = 0;
+  }
+}, 500);
+
+const onIncrement = () => {
+  accumulatedDelta++;
+  localAmount.value++;
+  debouncedAdjust();
+};
+
+const onDecrement = () => {
+  if (localAmount.value <= 0) return;
+  accumulatedDelta--;
+  localAmount.value--;
+  debouncedAdjust();
+};
+
+const holdIncrement = useHoldRepeat(onIncrement, 120);
+const holdDecrement = useHoldRepeat(onDecrement, 120);
+
+watch(
+  () => props.material.amount,
+  (newVal) => {
+    localAmount.value = newVal;
+    accumulatedDelta = 0;
+  },
+);
+
 const getStatusBadge = (): "warning" | "success" | "info" | "danger" => {
-  if (props.material.quantity === 0) return "danger";
-  if (props.material.quantity <= props.material.threshold) return "warning";
-  return "info";
+  if (localAmount.value === 0) return "danger";
+  if (localAmount.value <= props.material.threshold) return "warning";
+  return "success";
 };
 
 const getStatusName = (): string => {
-  if (props.material.quantity === 0) return "Out of Stock";
-  if (props.material.quantity <= props.material.threshold) return "Low Stock";
+  if (localAmount.value === 0) return "Out of Stock";
+  if (localAmount.value <= props.material.threshold) return "Low Stock";
   return "In Stock";
 };
 </script>

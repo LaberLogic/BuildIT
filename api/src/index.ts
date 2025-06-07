@@ -54,7 +54,9 @@ app.register(companyRoutes, { prefix: "/companies" });
 app.register(userRoutes, { prefix: "/users" });
 app.register(companyUserRoutes, { prefix: "/companies/:companyId/users" });
 app.register(siteRoutes, { prefix: "/companies/:companyId/sites" });
-app.register(materialRoutes, { prefix: "/companies/:companyId/materials" });
+app.register(materialRoutes, {
+  prefix: "/companies/:companyId/sites/:siteId/materials",
+});
 
 app.register(swaggerUI, {
   routePrefix: "/docs",

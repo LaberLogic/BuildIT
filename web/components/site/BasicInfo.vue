@@ -10,14 +10,16 @@
 
       <div class="p-4">
         <div class="info-block text-gray-700 mb-3">
+          <span>{{ site.name }}</span>
+        </div>
+        <div class="info-block text-gray-700 mb-3">
           <el-icon class="mr-2"><MapPin /></el-icon>
           <span>{{ site.address }}</span>
           <el-button
             class="btn-icon ml-auto text-gray-500"
             @click="editOpen = true"
           >
-            Edit
-            <el-icon class="ml-1"><Edit /></el-icon>
+            <el-icon><Edit /></el-icon>
           </el-button>
         </div>
 
@@ -71,12 +73,21 @@
         </div>
       </div>
     </el-card>
-    <site-modals-update-site v-model="editOpen" :site="site" />
+    <site-modals-update-site
+      v-model="editOpen"
+      :site="site"
+      :users="users"
+      @save="handleSave"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { Calendar, Clock, Edit, MapPin, Users } from "lucide-vue-next";
+import type { SiteResponseDto, UpdateSiteDto } from "shared";
+
+import { updateSite } from "../../composables/useSite";
+import { useCompanyStore } from "../../stores/company";
 
 const props = defineProps({
   site: {
@@ -85,7 +96,29 @@ const props = defineProps({
   },
 });
 
+const companyStore = useCompanyStore();
+
+const route = useRoute();
+const companyId = route.params.companyId as string;
+const siteId = route.params.siteId as string;
+
 const site = computed(() => props.site);
+const users = computed(() => companyStore.users);
+
+companyStore.fetchUsers(companyId);
 
 const editOpen = ref(false);
+
+const handleSave = async (payload: UpdateSiteDto) => {
+  if (!site.value) return;
+
+  const updated = await updateSite({ companyId, siteId }, payload);
+
+  if (updated) {
+    editOpen.value = false;
+    companyStore.fetchSiteDetails(companyId, siteId);
+  } else {
+    console.error("Failed to update site");
+  }
+};
 </script>
