@@ -1,5 +1,5 @@
 import { getUserUnsafe } from "@src/user/repositories/user.repository";
-import { FastifyReply,FastifyRequest } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
 
 const rolePriority: Record<string, number> = {
@@ -73,9 +73,6 @@ export const canCreateUser = async (
 const isInvalidRole = (role?: string): boolean =>
   !role || !Object.hasOwn(rolePriority, role);
 
-const hasHigherPriority = (a: string, b: string): boolean =>
-  rolePriority[a] > rolePriority[b];
-
 export const canManageUser = async (
   req: FastifyRequest<{
     Params: { userId: string };
@@ -106,17 +103,23 @@ export const canManageUser = async (
       if (isInvalidRole(requestedRole)) {
         return sendBadRequest(reply, `Invalid role: '${requestedRole}'`);
       }
-      if (!hasHigherPriority(currentRole, requestedRole)) {
+
+      if (rolePriority[requestedRole] > rolePriority[currentRole]) {
         return sendForbidden(
           reply,
-          "You cannot assign yourself a role equal or higher than your current role.",
+          "You cannot assign yourself a role higher than your current role.",
         );
       }
     }
+
     return;
   }
 
-  if (!hasHigherPriority(currentRole, targetRole)) {
+  if (currentRole === "WORKER") {
+    return sendForbidden(reply, "Workers cannot manage other users.");
+  }
+
+  if (rolePriority[currentRole] <= rolePriority[targetRole]) {
     return sendForbidden(
       reply,
       "You cannot manage users with equal or higher roles.",
@@ -127,10 +130,11 @@ export const canManageUser = async (
     if (isInvalidRole(requestedRole)) {
       return sendBadRequest(reply, `Invalid role: '${requestedRole}'`);
     }
-    if (!hasHigherPriority(currentRole, requestedRole)) {
+
+    if (rolePriority[requestedRole] > rolePriority[currentRole]) {
       return sendForbidden(
         reply,
-        `You cannot assign role '${requestedRole}' equal or higher than your own.`,
+        `You cannot assign the role '${requestedRole}' higher than your own.`,
       );
     }
   }

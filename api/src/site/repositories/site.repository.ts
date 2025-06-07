@@ -1,4 +1,4 @@
-import { Prisma,PrismaClient } from "@prisma/prisma";
+import { Prisma, PrismaClient } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
 import { prismaErrorCodeToHttpStatus } from "@utils/errorCodeMapper";
 import { ResultAsync } from "neverthrow";
@@ -76,6 +76,15 @@ export const getSites = (where: Prisma.SiteWhereInput) => {
 export const getSite = (where: Prisma.SiteWhereUniqueInput) => {
   return ResultAsync.fromPromise(
     prisma.site.findUniqueOrThrow({ where, select: siteSelect }),
+    (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
+  );
+};
+
+export const deleteSiteAssignment = (
+  where: Prisma.SiteAssignmentWhereUniqueInput,
+) => {
+  return ResultAsync.fromPromise(
+    prisma.siteAssignment.delete({ where }),
     (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
   );
 };

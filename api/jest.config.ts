@@ -7,6 +7,7 @@ const config = {
   transform: {
     "^.+\\.(ts|tsx)$": ["ts-jest", { useESM: true }],
   },
+  maxWorkers: 1,
   extensionsToTreatAsEsm: [".ts"],
   transformIgnorePatterns: ["/node_modules/(?!shared)/"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {

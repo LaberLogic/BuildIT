@@ -1,31 +1,30 @@
 <template>
   <el-dialog
-    :v-model="true"
+    v-model="visible"
     :title="dialogTitle"
     width="425px"
     @close="onCancel"
   >
-    <el-form :model="editForm" label-position="top" class="space-y-4">
-      <div style="display: flex; gap: 16px">
-        <el-form-item label="First Name" prop="firstName" style="flex: 1">
-          <el-input v-model="editForm.firstName" />
+    <el-form :model="model" label-position="top" class="space-y-4">
+      <div class="flex gap-4">
+        <el-form-item label="First Name" prop="firstName" class="flex-1">
+          <el-input v-model="model.firstName" />
         </el-form-item>
 
-        <el-form-item label="Last Name" prop="lastName" style="flex: 1">
-          <el-input v-model="editForm.lastName" />
+        <el-form-item label="Last Name" prop="lastName" class="flex-1">
+          <el-input v-model="model.lastName" />
         </el-form-item>
       </div>
 
       <el-form-item label="Email" prop="email">
-        <el-input v-model="editForm.email" type="email" />
+        <el-input v-model="model.email" type="email" />
       </el-form-item>
 
       <el-form-item v-if="!isProfile" label="Role" prop="role">
         <el-select
-          v-model="editForm.role"
+          v-model="model.role"
           placeholder="Select"
-          size="large"
-          style="width: 240px"
+          style="width: 100%"
         >
           <el-option
             v-for="item in options"
@@ -42,7 +41,7 @@
         :required="isCreate"
       >
         <el-input
-          v-model="editForm.password"
+          v-model="model.password"
           type="password"
           autocomplete="new-password"
           :placeholder="
@@ -59,7 +58,7 @@
         :required="isCreate"
       >
         <el-input
-          v-model="editForm.confirmPassword"
+          v-model="model.confirmPassword"
           type="password"
           autocomplete="new-password"
           :placeholder="isCreate ? 'Confirm password' : 'Confirm new password'"
@@ -79,10 +78,13 @@
 </template>
 
 <script setup lang="ts">
+import type { PropType } from "vue";
 import type { UserResponseDto } from "shared";
+
 const props = defineProps({
   user: {
     type: Object as PropType<UserResponseDto>,
+    default: undefined,
   },
   isProfile: {
     type: Boolean,
@@ -90,32 +92,38 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["update:modelValue", "save"]);
+
+const visible = ref(true);
+
+const isCreate = computed(() => !props.user);
+
+const model: Ref<{
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  password?: string;
+  confirmPassword?: string;
+}> = reactive({
+  firstName: props.user?.firstName || "",
+  lastName: props.user?.lastName || "",
+  email: props.user?.email || "",
+  role: props.user?.role || "",
+  password: undefined,
+  confirmPassword: undefined,
+});
+
 const options = [
   { value: "MANAGER", label: "Manager" },
   { value: "WORKER", label: "Worker" },
 ];
 
-const emit = defineEmits(["update:modelValue", "save"]);
-
-const isCreate = computed(() => {
-  return !props.user;
-});
-
-const editForm = reactive({
-  firstName: props.user?.firstName || "",
-  lastName: props.user?.lastName || "",
-  email: props.user?.email || "",
-  role: props.user?.role || "",
-  password: "",
-  confirmPassword: "",
-});
-
-const showPasswordFields = computed(() => props.isProfile);
-
-const showConfirmPassword = computed(() => editForm.password.length > 0);
+const showPasswordFields = computed(() => isCreate.value || props.isProfile);
+const showConfirmPassword = computed(() => model?.password?.length > 0);
 
 const confirmPasswordError = computed(() =>
-  showConfirmPassword.value && editForm.password !== editForm.confirmPassword
+  showConfirmPassword.value && model?.password !== model?.confirmPassword
     ? "Passwords do not match"
     : "",
 );
@@ -128,30 +136,30 @@ const dialogTitle = computed(() =>
       : "Edit User",
 );
 
-const onCancel = () => {
-  emit("update:modelValue", false);
-  resetForm();
+const onPasswordInput = () => {
+  if (!model.password) model.confirmPassword = "";
 };
 
 const resetForm = () => {
-  editForm.firstName = props.user?.firstName || "";
-  editForm.lastName = props.user?.lastName || "";
-  editForm.email = props.user?.email || "";
-  editForm.password = "";
-  editForm.confirmPassword = "";
+  model.firstName = props.user?.firstName || "";
+  model.lastName = props.user?.lastName || "";
+  model.email = props.user?.email || "";
+  model.role = props.user?.role || "";
+  model.password = undefined;
+  model.confirmPassword = undefined;
+};
+
+const onCancel = () => {
+  emit("update:modelValue", false);
+  visible.value = false;
+  resetForm();
 };
 
 const handleSave = () => {
   if (showConfirmPassword.value && confirmPasswordError.value) return;
-
-  if (isCreate.value && !editForm.password) return;
-
-  emit("save", { ...editForm });
+  emit("save", { ...model });
   emit("update:modelValue", false);
+  visible.value = false;
   resetForm();
-};
-
-const onPasswordInput = () => {
-  if (!editForm.password) editForm.confirmPassword = "";
 };
 </script>

@@ -6,11 +6,10 @@ import { companyAddressSchema } from "./auth";
 export const createSiteSchema = z.object({
   name: z.string().min(1),
   address: companyAddressSchema,
-  companyId: z.string().cuid(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   notes: z.string().optional(),
-  userIds: z.array(z.string().cuid()),
+  users: z.array(z.string()),
 });
 
 export const updateSiteSchema = z
@@ -20,14 +19,16 @@ export const updateSiteSchema = z
     startDate: z.coerce.date(),
     endDate: z.coerce.date(),
     notes: z.string(),
-    userIds: z.array(z.string().cuid()),
+    users: z.array(z.string()),
+    priority: z.string(),
+    status: z.string(),
   })
   .partial();
 
 const assignmentsSchema = z.array(
   z.object({
     lastVisited: z.coerce.date().nullable().optional(),
-    id: z.string().cuid(),
+    userId: z.string().cuid(),
     firstName: z.string().min(1),
     lastName: z.string().min(1),
   }),
@@ -79,6 +80,7 @@ export const errorResponseSchema = z.object({
 
 export const siteIdParamsSchema = z.object({
   siteId: z.string(),
+  companyId: z.string(),
 });
 
 const { schemas: siteSchemas, $ref: siteRef } = buildJsonSchemas(
@@ -92,7 +94,7 @@ const { schemas: siteSchemas, $ref: siteRef } = buildJsonSchemas(
   },
   { $id: "siteSchema" },
 );
-export { siteRef,siteSchemas };
+export { siteRef, siteSchemas };
 
 export type UpdateSiteDto = z.infer<typeof updateSiteSchema>;
 export type CreateSiteDto = z.infer<typeof createSiteSchema>;

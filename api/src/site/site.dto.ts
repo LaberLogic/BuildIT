@@ -54,7 +54,6 @@ export const toSiteDTO = (site: Site, user: UserObject) => {
     : 0;
 
   const progress = Math.min(Math.round((elapsedDays / totalDays) * 100), 100);
-  console.log(progress || "I WAS HERE");
   return {
     id: site.id,
     name: site.name,
@@ -62,7 +61,7 @@ export const toSiteDTO = (site: Site, user: UserObject) => {
     progress,
     //DUMMY DATA
     hoursLogged: 0,
-    status: site.status ?? "unknown",
+    status: site.status,
     priority: site.priority ?? "medium",
     materialInfo: {
       total: site.material?.length ?? 0,
@@ -87,7 +86,7 @@ export const toSiteDTO = (site: Site, user: UserObject) => {
       (assignment) => assignment.user.id === user.id,
     )?.lastVisited,
     assignments: site.assignments.map((assignment) => ({
-      id: assignment.user.id,
+      userId: assignment.user.id,
       firstName: assignment.user.firstName,
       lastName: assignment.user.lastName,
     })),

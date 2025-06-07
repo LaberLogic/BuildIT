@@ -74,25 +74,60 @@
         </div>
       </div>
     </el-card>
-    <general-confirm-action v-model="deleteOpen" />
-    <users-modals-create-update-user v-model="editOpen" :user="props.user" />
+
+    <general-confirm-action v-model="deleteOpen" @save="handleDelete" />
+
+    <users-modals-create-update-user
+      v-model="editOpen"
+      :user="props.user"
+      @save="handleSave"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { Building2, Clock, Edit, MessageSquare, Trash2 } from "lucide-vue-next";
-import type { UserResponseDto } from "shared";
+import type { UpdateUserDto, UserResponseDto } from "shared";
+
+import { useCompanyStore } from "../../stores/company";
 
 const props = defineProps<{
   user: UserResponseDto;
 }>();
 
 const user = computed(() => props.user);
-
 const initials = computed(
   () => `${user.value.firstName[0]}${user.value.lastName[0]}`,
 );
 
 const editOpen = ref(false);
 const deleteOpen = ref(false);
+
+const companyStore = useCompanyStore();
+const companyId = useRoute().params.companyId as string;
+
+const handleSave = async (payload: UpdateUserDto) => {
+  if (!user.value?.id) return;
+
+  const updated = await updateUser(companyId, user.value.id, payload);
+
+  if (updated) {
+    editOpen.value = false;
+    await companyStore.fetchUsers(companyId);
+  } else {
+    console.error("Failed to update user");
+  }
+};
+
+const handleDelete = async () => {
+  if (!user.value?.id) return;
+
+  const deleted = await deleteUser(companyId, user.value.id);
+
+  if (deleted) {
+    await companyStore.fetchUsers(companyId);
+  } else {
+    console.error("Failed to delete user");
+  }
+};
 </script>

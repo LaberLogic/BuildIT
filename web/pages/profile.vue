@@ -55,7 +55,7 @@
       v-model="editOpen"
       :user="user"
       isProfile
-      @save="handleUserUpdate"
+      @save="handleSave"
     />
   </div>
 </template>
@@ -83,8 +83,24 @@ const companyName = computed(
   () => user.value?.companyId || "Company not specified",
 );
 
-async function handleUserUpdate(updatedUser: UpdateUserDto) {
-  console.log("User updated:", updatedUser);
-  editOpen.value = false;
-}
+const handleSave = async (payload: UpdateUserDto): Promise<void> => {
+  if (!user.value?.id) return;
+
+  try {
+    const updated = await updateUser(
+      user.value.companyId as string,
+      user.value.id,
+      payload,
+    );
+
+    if (updated) {
+      editOpen.value = false;
+      await auth.fetchUser();
+    } else {
+      console.error("Failed to update user");
+    }
+  } catch (error) {
+    console.error("Failed to update user:", error);
+  }
+};
 </script>

@@ -6,8 +6,8 @@
       </el-form-item>
 
       <div class="flex gap-4">
-        <el-form-item label="Quantity" prop="quantity" class="flex-1">
-          <el-input v-model="editForm.quantity" type="number" />
+        <el-form-item label="amount" prop="amount" class="flex-1">
+          <el-input v-model="editForm.amount" type="number" />
         </el-form-item>
 
         <el-form-item label="Unit" prop="unit" class="flex-1">
@@ -46,7 +46,7 @@ const title = computed(() =>
 
 const editForm = ref({
   name: props.material?.name || "",
-  quantity: props.material?.quantity || 0,
+  amount: props.material?.amount || 0,
   unit: props.material?.unit || "",
   threshold: props.material?.threshold || 0,
 });

@@ -38,62 +38,75 @@ export const useUserById = (userId: string) => {
   };
 };
 
-export const useCreateUser = (companyId: string, payload: CreateUserDto) => {
-  const { data, pending, error } = useFetch<UserResponseDto>(
-    () => `/api/companies/${companyId}/users`,
-    {
-      method: "POST",
-      body: payload,
-      headers: {
-        Authorization: getToken(),
-      },
-    },
-  );
+import type { CreateUserDto, UpdateUserDto, UserResponseDto } from "shared";
 
-  return {
-    user: data,
-    isLoading: pending,
-    error,
-  };
+import { useAuthStore } from "@/stores/auth";
+
+export const createUser = async (
+  companyId: string,
+  payload: CreateUserDto,
+): Promise<UserResponseDto | null> => {
+  try {
+    const authStore = useAuthStore();
+    const result = await $fetch<UserResponseDto>(
+      `/api/companies/${companyId}/users`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+        body: payload,
+      },
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Failed to create user:", error);
+    return null;
+  }
 };
 
-export const useUpdateUser = (
+export const updateUser = async (
   companyId: string,
   userId: string,
   payload: UpdateUserDto,
-) => {
-  const { data, pending, error } = useFetch<UserResponseDto>(
-    () => `/api/companies/${companyId}/users/${userId}`,
-    {
-      method: "PUT",
-      body: payload,
-      headers: {
-        Authorization: getToken(),
+): Promise<UserResponseDto | null> => {
+  try {
+    const authStore = useAuthStore();
+    const result = await $fetch<UserResponseDto>(
+      `/api/companies/${companyId}/users/${userId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+        body: payload,
       },
-    },
-  );
+    );
 
-  return {
-    user: data,
-    isLoading: pending,
-    error,
-  };
+    return result;
+  } catch (error) {
+    console.error("Failed to update user:", error);
+    return null;
+  }
 };
 
-export const useDeleteUser = (companyId: string, userId: string) => {
-  const { data, pending, error } = useFetch<null>(
-    () => `/api/companies/${companyId}/users/${userId}`,
-    {
+export const deleteUser = async (
+  companyId: string,
+  userId: string,
+): Promise<null | undefined> => {
+  try {
+    const authStore = useAuthStore();
+    await $fetch<null>(`/api/companies/${companyId}/users/${userId}`, {
       method: "DELETE",
       headers: {
-        Authorization: getToken(),
+        Authorization: `Bearer ${authStore.token}`,
       },
-    },
-  );
+    });
 
-  return {
-    result: data,
-    isLoading: pending,
-    error,
-  };
+    return null;
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+    return undefined;
+  }
 };
