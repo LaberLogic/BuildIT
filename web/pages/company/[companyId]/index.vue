@@ -15,6 +15,10 @@
 <script setup lang="ts">
 import { useCompanyStore } from "../../../stores/company";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const route = useRoute();
 const companyId = route.params.companyId as string;
 
