@@ -58,8 +58,8 @@
 definePageMeta({
   layout: "auth",
 });
-
 import { ElNotification } from "element-plus";
+import type { RegisterDto } from "shared";
 
 const registerTitle = "Create account";
 const registerSubTitle = "Tell us more about yourself";
@@ -74,9 +74,15 @@ const handleNextStep = (data: UserForm | CompanyForm) => {
   if (currentStep.value === 1) {
     userFormData.value = data as UserForm;
     currentStep.value = 2;
-  } else if (currentStep.value === 2) {
+  } else if (currentStep.value === 2 && userFormData.value) {
     companyFormData.value = data as CompanyForm;
-    submitRegistration({ ...userFormData.value, ...companyFormData.value });
+
+    const payload: UserForm & CompanyForm = {
+      ...userFormData.value,
+      ...companyFormData.value,
+    };
+
+    submitRegistration(payload);
   }
 };
 
@@ -95,7 +101,8 @@ const submitRegistration = async (payload: RegisterDto) => {
     });
 
     router.push("/auth/login");
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     if (error?.response?.status === 409) {
       ElNotification({
         title: "Error",

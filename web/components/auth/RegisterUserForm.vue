@@ -72,10 +72,7 @@ const rules = {
   lastName: [
     { required: true, message: "Last name is required", trigger: "blur" },
   ],
-  email: [
-    { required: true, message: "Email is required", trigger: "blur" },
-    { type: "email", message: "Enter a valid email", trigger: "blur" },
-  ],
+  email: [{ required: true, message: "Email is required", trigger: "blur" }],
   password: [
     { required: true, message: "Password is required", trigger: "blur" },
     {

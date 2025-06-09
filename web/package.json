@@ -12,7 +12,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --fix",
     "test": "cypress run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "exec nuxt typecheck"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",

@@ -52,6 +52,8 @@ export const getCompany = (where: Prisma.CompanyWhereUniqueInput) => {
       select: {
         name: true,
         id: true,
+        createdAt: true,
+        updatedAt: true,
         address: {
           select: {
             streetNumber: true,

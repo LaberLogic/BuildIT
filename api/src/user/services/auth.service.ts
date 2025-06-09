@@ -30,7 +30,7 @@ export const authService = {
             },
           );
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { password, updatedAt, ...rest } = user;
+          const { password, ...rest } = user;
           return okAsync({
             accessToken: token,
             user: rest,

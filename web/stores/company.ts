@@ -10,7 +10,7 @@ import { useCompanyUsers } from "../composables/useUser";
 import { useAuthStore } from "./auth";
 
 export const useCompanyStore = defineStore("company", () => {
-  const company = ref<any | null>(null);
+  const company = ref<unknown | null>(null);
   const sites = ref<SiteResponseDto[]>([]);
   const users = ref<UserResponseDto[]>([]);
   const siteDetails = ref<SiteResponseDto | null>(null);

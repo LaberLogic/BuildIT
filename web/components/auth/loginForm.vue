@@ -52,7 +52,6 @@ const form = ref({
   email: "",
   password: "",
 });
-
 const errorMessage = ref("");
 const isLoading = ref(false);
 const showPassword = ref(false);
@@ -61,19 +60,31 @@ const router = useRouter();
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
+
 const submitForm = async () => {
-  const result = await signIn(form.value);
+  errorMessage.value = "";
+  isLoading.value = true;
 
-  if (!result.success) {
-    errorMessage.value = "Wrong email or password.";
-    return;
-  }
+  try {
+    const result = await signIn(form.value);
 
-  const role = result.user.role;
-  if (role === "ADMIN") {
-    router.push("/company/");
-  } else {
-    router.push(`/company/${result.user.companyId}/sites`);
+    if (!result.success) {
+      errorMessage.value = "Wrong email or password.";
+      return;
+    }
+
+    if (result.user?.role === "ADMIN") {
+      await router.push("/company/");
+    } else if (result.user?.companyId) {
+      await router.push(`/company/${result.user?.companyId}/sites`);
+    } else {
+      errorMessage.value = "Missing company ID for this user.";
+    }
+  } catch (err) {
+    console.error("Sign-in error:", err);
+    errorMessage.value = "Something went wrong. Please try again.";
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>

@@ -175,7 +175,9 @@ const handleSave = async () => {
       firstName: model.firstName,
       lastName: model.lastName,
       email: model.email,
-      role: props.isProfile ? undefined : model.role,
+      ...(props.isProfile
+        ? {}
+        : { role: model.role as "MANAGER" | "WORKER" | "ADMIN" }),
     };
 
     if (model.password) {

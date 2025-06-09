@@ -38,7 +38,7 @@
           <p class="text-gray-600">
             {{ props.company.address.street }}
             {{ props.company.address.streetNumber }},
-            {{ props.company.address.city }} {{ company.address.postCode }}
+            {{ props.company.address.city }} {{ company.address.postalCode }}
           </p>
         </div>
       </div>

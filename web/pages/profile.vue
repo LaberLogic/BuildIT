@@ -51,7 +51,8 @@
       </div>
     </el-card>
 
-    <users-modals-create-update-user
+    <users-modals-create-update-usera
+      v-if="user"
       v-model="editOpen"
       :user="user"
       isProfile
@@ -62,10 +63,10 @@
 
 <script setup lang="ts">
 import { Calendar, Message } from "@element-plus/icons-vue";
-import type { UpdateUserDto } from "shared";
+import type { UserResponseDto } from "shared";
 
 const auth = useAuthStore();
-const user = computed(() => auth.user);
+const user: ComputedRef<UserResponseDto | null> = computed(() => auth.user);
 
 const editOpen = ref(false);
 
