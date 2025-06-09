@@ -9,6 +9,9 @@
 </template>
 
 <script lang="ts" setup>
+definePageMeta({
+  middleware: ["auth"],
+});
 import { useCompanyStore } from "../../../../../stores/company";
 
 const route = useRoute();
