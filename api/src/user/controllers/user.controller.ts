@@ -1,5 +1,6 @@
 // src/user/controllers/user.controller.ts
-import { FastifyRequest, FastifyReply } from "fastify";
+import { sendChainedErrorReply } from "@utils/errorCodeMapper";
+import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
 import {
   CompanyIdParams,
@@ -7,14 +8,15 @@ import {
   UpdateUserDto,
   UserIdParams,
 } from "shared";
+
 import { userService } from "../services/user.service";
-import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 
 export const createUserController = async (
-  req: FastifyRequest<{ Body: CreateUserDto }>,
+  req: FastifyRequest<{ Body: CreateUserDto; Params: CompanyIdParams }>,
   reply: FastifyReply,
 ) => {
-  return userService.createUser(req.user, req.body).match(
+  const companyId = req.params.companyId;
+  return userService.createUser(companyId, req.user, req.body).match(
     (user) => {
       return reply.status(httpStatus.CREATED).send(user);
     },

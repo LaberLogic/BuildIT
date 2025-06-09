@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div v-if="company">
     <el-tabs
       v-model="activeTab"
-      type="card rounded-lg"
+      type="card"
       tab-position="top"
       stretch
       class="w-full"
@@ -13,10 +13,12 @@
     </el-tabs>
 
     <div class="mt-6">
-      <div v-if="activeTab === 'users'" class="space-y-4">
-        <users-user-statistics />
+      <div v-if="activeTab === 'users'" class="space-y-4 mb-24">
+        <users-user-statistics :users />
         <users-user-dashboard-actions />
-        <users-user-card :user="user" />
+        <div v-for="user in users" :key="user.id">
+          <users-user-card :user="user" />
+        </div>
       </div>
 
       <div v-else-if="activeTab === 'sites'" class="space-y-4 pb-4 mb-24">
@@ -32,10 +34,11 @@
 
       <div v-else-if="activeTab === 'info'">
         <div class="bg-white shadow rounded-xl p-6 space-y-2">
-          <h2 class="text-xl font-semibold">{{ company.name }}</h2>
+          <h2 class="text-xl font-semibold">{{ props.company.name }}</h2>
           <p class="text-gray-600">
-            {{ company.address.street }} {{ company.address.streetNumber }},
-            {{ company.address.city }} {{ company.address.postCode }}
+            {{ props.company.address.street }}
+            {{ props.company.address.streetNumber }},
+            {{ props.company.address.city }} {{ company.address.postalCode }}
           </p>
         </div>
       </div>
@@ -43,105 +46,27 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { defineProps } from "vue";
+<script setup lang="ts">
+import type {
+  CompanyResponseDto,
+  SiteResponseDto,
+  UserResponseDto,
+} from "shared";
 
 const props = defineProps({
-  company2: {
-    type: Object,
+  company: {
+    type: Object as PropType<CompanyResponseDto>,
+    required: true,
+  },
+  users: {
+    type: Array as PropType<UserResponseDto[]>,
+    required: true,
+  },
+  sites: {
+    type: Array as PropType<SiteResponseDto[]>,
     required: true,
   },
 });
 
 const activeTab = ref("info");
-
-const sites = [
-  {
-    id: "1",
-    name: "Greenfield Construction",
-    address: "123 Main St, Springfield",
-    progress: 75,
-    lastVisit: "2025-05-20",
-    hoursLogged: 150,
-    status: "active",
-    priority: "high",
-    materials: { total: 100, warnings: 3 },
-    chat: { unreadCount: 2, lastMessage: "Please approve the new design." },
-    teamSize: 10,
-    deadline: "2025-06-15",
-  },
-  {
-    id: "2",
-    name: "Lakeside Renovation",
-    address: "456 Lake Dr, Rivertown",
-    progress: 40,
-    lastVisit: "2025-05-18",
-    hoursLogged: 80,
-    status: "planning",
-    priority: "medium",
-    materials: { total: 50, warnings: 0 },
-    chat: { unreadCount: 0 },
-    teamSize: 5,
-    deadline: "2025-07-01",
-  },
-  {
-    id: "3",
-    name: "Downtown Tower",
-    address: "789 City Rd, Metropolis",
-    progress: 90,
-    lastVisit: "2025-05-22",
-    hoursLogged: 300,
-    status: "finishing",
-    priority: "high",
-    materials: { total: 200, warnings: 1 },
-    chat: { unreadCount: 5, lastMessage: "Urgent material order needed." },
-    teamSize: 25,
-    deadline: "2025-06-05",
-  },
-  {
-    id: "4",
-    name: "Suburban Homes",
-    address: "321 Oak St, Pleasantville",
-    progress: 20,
-    lastVisit: "2025-05-10",
-    hoursLogged: 40,
-    status: "paused",
-    priority: "low",
-    materials: { total: 70, warnings: 0 },
-    chat: { unreadCount: 0 },
-    teamSize: 8,
-    deadline: "2025-08-20",
-  },
-];
-
-const company = {
-  id: "5",
-  name: "Test Company",
-  address: {
-    street: "123 Main St",
-    city: "Springfield",
-    streetNumber: "123",
-    postCode: "62701",
-  },
-  sites,
-};
-
-const user = {
-  firstName: "Jane",
-  lastName: "Doe",
-  avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-  email: "jane.doe@example.com",
-  role: "Project Manager",
-  status: "active",
-  currentSite: "Site Alpha - Berlin",
-  hoursThisMonth: 128,
-  joinDate: "March 15, 2023",
-};
 </script>
-
-<style scoped>
-.el-tabs__header {
-  border: none !important;
-}
-</style>

@@ -28,14 +28,14 @@
 
         <div class="grid grid-cols-2 gap-4 text-center mb-4">
           <div>
-            <el-icon class="mb-1 text-gray-400"><UserFilled /></el-icon>
+            <el-icon class="mb-1 text-gray-400"><User /></el-icon>
             <p class="text-xs text-gray-500">Users</p>
             <p class="text-sm font-semibold text-gray-900">
               {{ company.users?.length }}
             </p>
           </div>
           <div>
-            <el-icon class="mb-1 text-gray-400"><Location /></el-icon>
+            <el-icon class="mb-1 text-gray-400"><Building /></el-icon>
             <p class="text-xs text-gray-500">Sites</p>
             <p class="text-sm font-semibold text-gray-900">
               {{ company.sites?.length }}
@@ -60,14 +60,15 @@
   </NuxtLink>
 </template>
 
-<script setup>
-import { defineProps } from "vue";
-import { ArrowRight, UserFilled, Location } from "@element-plus/icons-vue";
-
+<script setup lang="ts">
+import { ArrowRight, Building, User } from "lucide-vue-next";
+import type { CompanyResponseDto } from "shared";
 const props = defineProps({
   company: {
-    type: Object,
+    type: Object as PropType<CompanyResponseDto>,
     required: true,
   },
 });
+
+const company = computed(() => props.company);
 </script>

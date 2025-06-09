@@ -1,8 +1,8 @@
 import { env } from "@env";
 import fastifyJwt from "@fastify/jwt";
 import { FastifyPluginAsync, FastifyRequest } from "fastify";
-import fp from "fastify-plugin";
 import { FastifyReply } from "fastify/types/reply";
+import fp from "fastify-plugin";
 
 export const jwtPlugin: FastifyPluginAsync = fp(async (fastify) => {
   fastify.register(fastifyJwt, {

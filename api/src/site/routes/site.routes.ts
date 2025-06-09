@@ -1,7 +1,7 @@
-import { FastifyInstance } from "fastify";
-
 import { isAdminOrManager } from "@src/plugins/roleGuards";
+import { FastifyInstance } from "fastify";
 import { siteRef as $ref, userRef } from "shared";
+
 import {
   createSiteController,
   getSiteByIdController,

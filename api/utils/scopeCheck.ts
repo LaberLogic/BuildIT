@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
-import { ResultAsync, errAsync, okAsync } from "neverthrow";
+import { errAsync, okAsync,ResultAsync } from "neverthrow";
 import { UserObject } from "types";
 
 const prisma = new PrismaClient();

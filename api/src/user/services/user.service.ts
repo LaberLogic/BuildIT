@@ -1,4 +1,10 @@
-import { ResultAsync, errAsync, okAsync } from "neverthrow";
+import { ChainedError } from "@utils/chainedError";
+import { hash } from "bcryptjs";
+import { errAsync, okAsync, ResultAsync } from "neverthrow";
+import { CreateUserDto, UpdateUserDto } from "shared";
+import { UserObject } from "types";
+
+import { Prisma } from "../../../generated/prisma";
 import {
   createUser,
   deleteUser,
@@ -7,11 +13,6 @@ import {
   getUsersByCompanyId,
   updateUser,
 } from "../repositories/user.repository";
-import { ChainedError } from "@utils/chainedError";
-import { CreateUserDto, UpdateUserDto } from "shared";
-import { hash } from "bcryptjs";
-import { Prisma } from "../../../generated/prisma";
-import { UserObject } from "types";
 
 const isSameCompany = (
   currentUser: UserObject,
@@ -29,8 +30,12 @@ const scopedUserWhere = (
 };
 
 export const userService = {
-  createUser: (currentUser: UserObject, data: CreateUserDto) => {
-    if (!isSameCompany(currentUser, data.companyId)) {
+  createUser: (
+    companyId: string,
+    currentUser: UserObject,
+    data: CreateUserDto,
+  ) => {
+    if (!isSameCompany(currentUser, companyId)) {
       return errAsync(
         new ChainedError("Cannot create user in another company", 403),
       );
@@ -40,7 +45,8 @@ export const userService = {
       firstName: data.firstName,
       lastName: data.lastName,
       role: data.role,
-      company: { connect: { id: data.companyId } },
+      status: "INACTIVE",
+      company: { connect: { id: companyId } },
     });
   },
 

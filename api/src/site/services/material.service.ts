@@ -1,12 +1,16 @@
+import { ChainedError } from "@utils/chainedError";
+import { scopeCheckMaterial, scopeCheckSite } from "@utils/scopeCheck";
+import { errAsync } from "neverthrow";
 import { UpdateMaterialCountDto } from "shared";
+import { CreateMaterialDto, UpdateMaterialDto } from "shared";
+import { UserObject } from "types";
+
 import {
   createMaterial,
   deleteMaterial,
+  getMaterialById,
   updateMaterial,
 } from "../repositories/material.repostiory";
-import { UserObject } from "types";
-import { UpdateMaterialDto, CreateMaterialDto } from "shared";
-import { scopeCheckMaterial, scopeCheckSite } from "@utils/scopeCheck";
 
 export const createNewMaterial = (
   currentUser: UserObject,
@@ -35,16 +39,20 @@ export const incrementDecrementMaterial = (
   materialId: string,
   { delta }: UpdateMaterialCountDto,
 ) => {
-  return scopeCheckMaterial(currentUser, siteId).andThen(() =>
-    updateMaterial(
-      { id: materialId },
-      {
-        amount: {
-          increment: delta,
-        },
-      },
-    ),
-  );
+  return scopeCheckMaterial(currentUser, siteId)
+    .andThen(() => getMaterialById({ id: materialId }))
+    .andThen((material) => {
+      if (material.amount + delta < 0) {
+        return errAsync(
+          new ChainedError("Material amount cannot be negative", 401),
+        );
+      }
+
+      return updateMaterial(
+        { id: materialId },
+        { amount: { increment: delta } },
+      );
+    });
 };
 
 export const deleteMaterialFromSite = (

@@ -10,23 +10,24 @@
 
       <div class="p-4">
         <div class="info-block text-gray-700 mb-3">
+          <span>{{ site.name }}</span>
+        </div>
+        <div class="info-block text-gray-700 mb-3">
           <el-icon class="mr-2"><MapPin /></el-icon>
           <span>{{ site.address }}</span>
           <el-button
             class="btn-icon ml-auto text-gray-500"
-            type="text"
             @click="editOpen = true"
           >
-            Edit
-            <el-icon class="ml-1"><Edit /></el-icon>
+            <el-icon><Edit /></el-icon>
           </el-button>
         </div>
 
         <el-alert
-          v-if="site?.materials?.warnings > 0"
+          v-if="site?.materialInfo?.warnings > 0"
           type="warning"
           show-icon
-          :title="`${site?.materials.warnings} material${site.materials.warnings > 1 ? 's' : ''} low or out of stock`"
+          :title="`${site?.materialInfo.warnings} material${site.materialInfo.warnings > 1 ? 's' : ''} low or out of stock`"
           class="mb-4"
         />
 
@@ -50,7 +51,7 @@
             <el-icon class="mr-2"><Calendar /></el-icon>
             <div>
               <p class="text-label">Completion</p>
-              <p class="info-value">{{ site.endDate }}</p>
+              <p class="info-value">{{ useFormatDate(site.endDate) }}</p>
             </div>
           </div>
 
@@ -58,7 +59,7 @@
             <el-icon class="mr-2"><Users /></el-icon>
             <div>
               <p class="text-label">Workers</p>
-              <p class="info-value">{{ site.workers }}</p>
+              <p class="info-value">{{ site.assignments?.length }}</p>
             </div>
           </div>
 
@@ -66,32 +67,43 @@
             <el-icon class="mr-2"><Calendar /></el-icon>
             <div>
               <p class="text-label">Start Date</p>
-              <p class="info-value">{{ site.startDate }}</p>
+              <p class="info-value">{{ useFormatDate(site.startDate) }}</p>
             </div>
           </div>
         </div>
       </div>
     </el-card>
-    <site-modals-update-site v-model="editOpen" :site="site" />
+    <site-modals-create-update-site
+      v-model="editOpen"
+      :site="site"
+      :users="users"
+      @close="editOpen = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { MapPin, Clock, Calendar, Users, Edit } from "lucide-vue-next";
+import { Calendar, Clock, Edit, MapPin, Users } from "lucide-vue-next";
+import type { SiteResponseDto } from "shared";
 
-interface Site {
-  address: string;
-  progress: number;
-  hoursLogged: string;
-  endDate: string;
-  startDate: string;
-  workers: number;
-  materials?: {
-    warnings: number;
-  };
-}
+import { useCompanyStore } from "../../stores/company";
 
-defineProps<{ site: Site }>();
+const props = defineProps({
+  site: {
+    type: Object as PropType<SiteResponseDto>,
+    required: true,
+  },
+});
+
+const companyStore = useCompanyStore();
+
+const route = useRoute();
+const companyId = route.params.companyId as string;
+
+const site = computed(() => props.site);
+const users = computed(() => companyStore.users);
+
+companyStore.fetchUsers(companyId);
 
 const editOpen = ref(false);
 </script>

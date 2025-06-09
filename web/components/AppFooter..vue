@@ -34,12 +34,11 @@
 <script setup lang="ts">
 import {
   Building2,
+  Construction,
+  MessageCircle,
   User,
   Users,
-  MessageCircle,
-  Construction,
 } from "lucide-vue-next";
-
 import { useRoute } from "vue-router";
 
 const route = useRoute();

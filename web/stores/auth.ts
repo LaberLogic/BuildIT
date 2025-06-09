@@ -1,6 +1,5 @@
 import axios from "axios";
 import type { UserResponseDto } from "shared";
-import { useCookie } from "#app";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({

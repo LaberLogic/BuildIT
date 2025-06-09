@@ -1,16 +1,12 @@
 <template>
-  <div class="p-4">
+  <div v-if="user">
     <el-card
       shadow="hover"
       class="border border-gray-200 alert-bar w-full"
       :body-style="{ padding: '0px' }"
     >
       <div class="p-4 flex items-start space-x-4">
-        <el-avatar
-          :src="user.avatar || '/placeholder.svg'"
-          size="large"
-          class="h-12 w-12"
-        >
+        <el-avatar :src="'/placeholder.svg'" size="large" class="h-12 w-12">
           <template #default>
             {{ initials }}
           </template>
@@ -23,7 +19,7 @@
             </h3>
             <div class="flex items-center space-x-2">
               <el-tag
-                :type="user.status === 'active' ? 'success' : 'info'"
+                :type="user.status === 'ACTIVE' ? 'success' : 'info'"
                 effect="light"
                 size="small"
                 round
@@ -45,7 +41,7 @@
             </div>
           </div>
 
-          <p class="text-muted">{{ user.role }}</p>
+          <p class="text-sm text-gray-600">{{ user.role }}</p>
 
           <div class="info-block mt-2 text-xs text-gray-500">
             <el-icon>
@@ -55,64 +51,58 @@
           </div>
 
           <div
-            v-if="user.currentSite"
-            class="info-block mt-1 text-xs text-gray-500"
-          >
-            <el-icon>
-              <Building2 />
-            </el-icon>
-            <span class="truncate">{{ user.currentSite }}</span>
-          </div>
-
-          <div
             class="flex justify-between items-center mt-3 text-xs text-gray-500"
           >
             <div class="info-block">
               <el-icon>
                 <Clock />
               </el-icon>
-              <span>{{ user.hoursThisMonth }} hrs this month</span>
+              <span>{{ 0 }} hrs this month</span>
             </div>
-            <span>Joined {{ user.joinDate }}</span>
+            <span>Joined {{ useFormatDate(user.createdAt) }}</span>
           </div>
         </div>
       </div>
     </el-card>
-    <general-confirm-action v-model="deleteOpen" />
-    <users-modals-create-update-user v-model="editOpen" :user="props.user" />
+
+    <general-confirm-action v-model="deleteOpen" @save="handleDelete" />
+
+    <users-modals-create-update-user
+      v-model="editOpen"
+      :user="props.user"
+      @close="editOpen = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  Clock,
-  MessageSquare,
-  Building2,
-  Edit,
-  Trash2,
-  Clock10,
-} from "lucide-vue-next";
+import { Clock, Edit, MessageSquare, Trash2 } from "lucide-vue-next";
+import type { UserResponseDto } from "shared";
 
 const props = defineProps<{
-  user: {
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-    email: string;
-    role: string;
-    status: "active" | "inactive";
-    currentSite?: string;
-    hoursThisMonth: number;
-    joinDate: string;
-  };
+  user: UserResponseDto;
 }>();
 
 const user = computed(() => props.user);
-
 const initials = computed(
   () => `${user.value.firstName[0]}${user.value.lastName[0]}`,
 );
 
 const editOpen = ref(false);
 const deleteOpen = ref(false);
+
+const companyStore = useCompanyStore();
+const companyId = useRoute().params.companyId as string;
+
+const handleDelete = async () => {
+  if (!user.value?.id) return;
+
+  const deleted = await deleteUser(companyId, user.value.id);
+
+  if (deleted) {
+    await companyStore.fetchUsers(companyId);
+  } else {
+    console.error("Failed to delete user");
+  }
+};
 </script>

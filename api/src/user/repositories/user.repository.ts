@@ -11,6 +11,7 @@ const safeUserSelect = {
   firstName: true,
   lastName: true,
   role: true,
+  status: true,
   companyId: true,
   createdAt: true,
   updatedAt: true,

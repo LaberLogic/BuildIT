@@ -41,3 +41,12 @@ export const deleteMaterial = (
     (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
   );
 };
+
+export const getMaterialById = (
+  where: Prisma.MaterialWhereUniqueInput,
+): ResultAsync<MaterialResponseDto, ChainedError> => {
+  return ResultAsync.fromPromise(
+    prisma.material.findUniqueOrThrow({ where, select: materialSelect }),
+    (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
+  );
+};

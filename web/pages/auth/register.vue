@@ -23,7 +23,7 @@
         Step 1 of 2
       </p>
       <p v-if="currentStep === 2" class="text-xs text-gray-500 mt-2">
-        Step 1 of 2
+        Step 2 of 2
       </p>
     </div>
 
@@ -55,21 +55,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+definePageMeta({
+  layout: "auth",
+});
+import { ElNotification } from "element-plus";
+import type { RegisterDto } from "shared";
 
 const registerTitle = "Create account";
-const registerSubTitle = "Tell us mor about yourself";
-const currentStep = ref(1);
-const userFormData = ref(null);
-const companyFormData = ref(null);
+const registerSubTitle = "Tell us more about yourself";
 
-const handleNextStep = (data) => {
+const currentStep = ref(1);
+const userFormData = ref<UserForm | null>(null);
+const companyFormData = ref<CompanyForm | null>(null);
+
+const router = useRouter();
+
+const handleNextStep = (data: UserForm | CompanyForm) => {
   if (currentStep.value === 1) {
-    userFormData.value = data;
+    userFormData.value = data as UserForm;
     currentStep.value = 2;
-  } else if (currentStep.value === 2) {
-    companyFormData.value = data;
-    submitRegistration();
+  } else if (currentStep.value === 2 && userFormData.value) {
+    companyFormData.value = data as CompanyForm;
+
+    const payload: UserForm & CompanyForm = {
+      ...userFormData.value,
+      ...companyFormData.value,
+    };
+
+    submitRegistration(payload);
   }
 };
 
@@ -77,15 +90,7 @@ const handlePreviousStep = () => {
   currentStep.value = 1;
 };
 
-const router = useRouter();
-
-const submitRegistration = async () => {
-  const payload = {
-    ...userFormData.value,
-    ...companyFormData.value,
-  };
-  const { register } = useAuth();
-
+const submitRegistration = async (payload: RegisterDto) => {
   try {
     await register(payload);
 
@@ -96,8 +101,9 @@ const submitRegistration = async () => {
     });
 
     router.push("/auth/login");
-  } catch (error) {
-    if (error.response && error.response.status === 409) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error?.response?.status === 409) {
       ElNotification({
         title: "Error",
         message: "Email already in use. Reset Password if necessary",
@@ -110,9 +116,7 @@ const submitRegistration = async () => {
         type: "error",
       });
     }
-
     console.error("Register failed:", error);
-    return false;
   }
 };
 </script>

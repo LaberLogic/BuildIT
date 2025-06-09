@@ -1,49 +1,73 @@
-import axios from "axios";
-import type { RegisterDto, SignInDto } from "shared";
-import { useAuthStore } from "@/stores/auth";
+import type {
+  RegisterDto,
+  RegisterResponseDto,
+  SignInDto,
+  SignInResponseDto,
+} from "shared";
 
-export const useAuth = () => {
-  const auth = useAuthStore();
+export const getToken = () => `Bearer ${useAuthStore().token}`;
 
-  const api = axios.create({
-    baseURL: "http://localhost:3001/auth",
+export const register = async (data: RegisterDto) => {
+  return await $fetch<RegisterResponseDto>("/api/auth/register", {
+    method: "POST",
+    body: data,
     headers: {
       "Content-Type": "application/json",
     },
   });
+};
 
-  const register = async (data: RegisterDto) => {
-    const response = await api.post("/register", data);
-    return response.data;
-  };
+export const signIn = async (data: SignInDto) => {
+  try {
+    const authStore = useAuthStore();
 
-  const signIn = async (data: SignInDto) => {
-    const { data: res } = await api.post("/signin", data);
-    const token = res.accessToken;
+    const res = await $fetch<SignInResponseDto>("/api/auth/signin", {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    if (!token) return { success: false };
+    if (!res.accessToken) {
+      console.warn("No access token received from server");
+      return { success: false };
+    }
 
-    auth.setToken(token);
-    auth.setUser(res.user);
+    authStore.setToken(res.accessToken);
+    authStore.setUser(res.user);
 
     return { success: true, user: res.user };
-  };
+  } catch (error) {
+    console.error("Sign-in failed:", error);
+    return { success: false };
+  }
+};
 
-  const signOut = async () => {
-    try {
-      auth.clearAuth();
-      const router = useRouter();
-      router.push("/auth/login");
-    } catch (error) {
-      console.error("Sign out failed:", error);
-    }
-  };
+export const signOut = () => {
+  const auth = useAuthStore();
+  const router = useRouter();
 
-  return {
-    register,
-    signIn,
-    signOut,
-    user: computed(() => auth.user),
-    token: computed(() => auth.token),
-  };
+  auth.clearAuth();
+  router.push("/auth/login");
+};
+
+export type UserForm = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
+type Address = {
+  streetNumber: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
+};
+
+export type CompanyForm = {
+  companyName: string;
+  address: Address;
 };

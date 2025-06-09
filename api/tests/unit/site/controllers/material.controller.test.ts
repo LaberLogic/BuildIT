@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  createMaterialController,
-  updateMaterialController,
-  deleteMaterialController,
   adjustMaterialQuantityController,
+  createMaterialController,
+  deleteMaterialController,
+  updateMaterialController,
 } from "@src/site/controllers/material.controller";
 import {
   createNewMaterial,
@@ -11,9 +11,9 @@ import {
   incrementDecrementMaterial,
   updateMaterialProperties,
 } from "@src/site/services/material.service";
+import { ChainedError } from "@utils/chainedError";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 import httpStatus from "http-status";
-import { ChainedError } from "@utils/chainedError";
 
 jest.mock("@src/site/services/material.service");
 jest.mock("@utils/errorCodeMapper");
