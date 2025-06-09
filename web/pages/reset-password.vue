@@ -55,7 +55,7 @@ const submit = async () => {
   try {
     const result = await resetPasswordRequest({ email: form.value.email });
 
-    if (!result.success) {
+    if (!result) {
       errorMessage.value = "Could not send reset email. Please try again.";
     } else {
       successMessage.value = "Reset link sent! Redirecting to login...";
