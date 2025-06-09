@@ -1,5 +1,6 @@
-import { authRef } from "shared";
 import { FastifyPluginAsync } from "fastify";
+import { authRef, siteRef } from "shared";
+
 import {
   registerController,
   signInController,
@@ -14,10 +15,15 @@ const authRoutes: FastifyPluginAsync = async (app) => {
     handler: registerController,
   });
 
-  app.post("/signIn", {
+  app.post("/signin", {
     schema: {
       body: authRef("signInSchema"),
       tags: ["Authentication"],
+      response: {
+        200: authRef("signInResponseSchema"),
+        400: siteRef("errorResponseSchema"),
+        403: siteRef("errorResponseSchema"),
+      },
     },
     handler: signInController,
   });

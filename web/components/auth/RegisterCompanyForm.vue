@@ -1,4 +1,3 @@
-/** eslint-disable no-undef */
 <template>
   <el-form
     ref="formRef"
@@ -72,8 +71,7 @@
 import { ArrowLeft } from "@element-plus/icons-vue";
 
 const formRef = ref();
-const errorMessage = ref("");
-// Form model
+
 const form = ref({
   companyName: "",
   address: {
@@ -85,7 +83,6 @@ const form = ref({
   },
 });
 
-// Validation rules
 const rules = {
   companyName: [
     { required: true, message: "Company name is required", trigger: "blur" },
@@ -125,7 +122,7 @@ const emit = defineEmits<{
 }>();
 
 const handleSubmit = () => {
-  formRef.value.validate((valid) => {
+  formRef.value.validate((valid: boolean) => {
     if (valid) {
       emit("next-step", { ...form.value });
     }

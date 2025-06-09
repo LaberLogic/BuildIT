@@ -53,39 +53,39 @@ const form = ref({
   password: "",
 });
 const errorMessage = ref("");
-const router = useRouter();
 const isLoading = ref(false);
 const showPassword = ref(false);
-
-const auth = useAuthStore();
-const user = computed(() => auth.user);
+const router = useRouter();
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
 const submitForm = async () => {
-  isLoading.value = true;
   errorMessage.value = "";
+  isLoading.value = true;
 
-  const success = await login(form.value);
+  try {
+    const result = await signIn(form.value);
 
-  if (!success) {
-    errorMessage.value = "Wrong email or password.";
+    if (!result.success) {
+      errorMessage.value = "Wrong email or password.";
+      return;
+    }
+
+    if (result.user?.role === "ADMIN") {
+      await router.push("/company/");
+    } else if (result.user?.companyId) {
+      await router.push(`/company/${result.user?.companyId}/sites`);
+    } else {
+      errorMessage.value = "Missing company ID for this user.";
+    }
+  } catch (err) {
+    console.error("Sign-in error:", err);
+    errorMessage.value = "Something went wrong. Please try again.";
+  } finally {
+    isLoading.value = false;
   }
-
-  isLoading.value = false;
-  if (user.value?.role === "ADMIN") {
-    router.push(`/company/`);
-  } else router.push(`/company/${user.value?.companyId}/sites`);
-};
-
-const login = async (credentials: { email: string; password: string }) => {
-  const { signIn } = useAuth();
-
-  const result = await signIn(credentials);
-
-  return result.success;
 };
 </script>
 

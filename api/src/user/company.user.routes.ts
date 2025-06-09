@@ -1,17 +1,17 @@
+import {
+  canCreateUser,
+  canManageUser,
+  isAdminOrManager,
+} from "@src/plugins/roleGuards";
 import { FastifyInstance } from "fastify";
+import { siteRef,userRef as $ref } from "shared";
+
 import {
   createUserController,
   deleteUserController,
   getAllUsersByCompanyController,
   updateUserController,
 } from "./controllers/user.controller";
-
-import { userRef as $ref, siteRef } from "shared";
-import {
-  canCreateUser,
-  canManageUser,
-  isAdminOrManager,
-} from "@src/plugins/roleGuards";
 
 const userCompanyRoutes = async (app: FastifyInstance) => {
   app.route({

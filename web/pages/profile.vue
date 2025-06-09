@@ -43,7 +43,7 @@
           </el-icon>
           <div>
             <p class="text-sm font-medium text-gray-900">
-              {{ formatDate(user?.createdAt) }}
+              {{ useFormatDate(user?.createdAt) }}
             </p>
             <p class="text-xs text-gray-500">Member since</p>
           </div>
@@ -51,22 +51,22 @@
       </div>
     </el-card>
 
-    <users-modals-create-update-user
+    <users-modals-create-update-usera
+      v-if="user"
       v-model="editOpen"
       :user="user"
       isProfile
-      @save="handleUserUpdate"
+      @close="editOpen = false"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { Message, Calendar } from "@element-plus/icons-vue";
-import { useAuthStore } from "@/stores/auth";
+import { Calendar, Message } from "@element-plus/icons-vue";
+import type { UserResponseDto } from "shared";
 
 const auth = useAuthStore();
-const user = computed(() => auth.user);
+const user: ComputedRef<UserResponseDto | null> = computed(() => auth.user);
 
 const editOpen = ref(false);
 
@@ -83,12 +83,4 @@ const userInitials = computed(() =>
 const companyName = computed(
   () => user.value?.companyId || "Company not specified",
 );
-
-const formatDate = (date?: string | Date | null) =>
-  date ? new Date(date).toLocaleDateString() : "";
-
-async function handleUserUpdate(updatedUser: UpdateUserDto) {
-  console.log("User updated:", updatedUser);
-  editOpen.value = false;
-}
 </script>

@@ -8,7 +8,6 @@ export const createUserSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   role: roleSchema,
-  companyId: z.string(),
 });
 
 export const updateUserSchema = z
@@ -18,7 +17,6 @@ export const updateUserSchema = z
     lastName: z.string().min(1),
     role: roleSchema.optional(),
     password: z.string().min(6).optional(),
-    companyId: z.string().optional(),
   })
   .partial();
 
@@ -31,6 +29,7 @@ export const userResponseSchema = z.object({
   companyId: z.string().nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  status: z.string(),
 });
 
 export const usersResponseSchema = z.array(userResponseSchema);

@@ -22,7 +22,6 @@
     <el-button
       v-if="showBackButton"
       size="small"
-      type="text"
       class="ml-auto"
       @click="logout"
     >
@@ -32,8 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { ArrowLeft } from "@element-plus/icons-vue";
+import { ref } from "vue";
 
 const showBackButton = ref(true);
 const title = "Construx";
@@ -43,7 +42,6 @@ const goBack = () => {
 };
 
 const logout = () => {
-  const { signOut } = useAuth();
   signOut();
 };
 </script>

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ROLE } from "@prisma/prisma";
 import {
   registerController,
   signInController,
 } from "@src/user/controllers/auth.controller";
 import { authService } from "@src/user/services/auth.service";
-import { okAsync, errAsync } from "neverthrow";
-import { ROLE } from "@prisma/prisma";
-import httpStatus from "http-status";
 import { ChainedError } from "@utils/chainedError";
+import httpStatus from "http-status";
+import { errAsync,okAsync } from "neverthrow";
 
 jest.mock("@src/user/services/auth.service");
 

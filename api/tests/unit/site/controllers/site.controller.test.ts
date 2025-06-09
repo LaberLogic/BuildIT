@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import httpStatus from "http-status";
-
-import { sendChainedErrorReply } from "@utils/errorCodeMapper";
-import { ChainedError } from "@utils/chainedError";
 import {
   createSiteController,
-  updateSiteController,
-  getSitesByUserIdController,
-  getSitesByCompanyIdController,
   getSiteByIdController,
+  getSitesByCompanyIdController,
+  getSitesByUserIdController,
+  updateSiteController,
 } from "@src/site/controllers/site.controller";
 import {
   createNewSite,
-  updateSiteById,
-  getSitesByUserId,
-  getSitesByCompanyId,
   getSiteById,
+  getSitesByCompanyId,
+  getSitesByUserId,
+  updateSiteById,
 } from "@src/site/services/site.service";
+import { ChainedError } from "@utils/chainedError";
+import { sendChainedErrorReply } from "@utils/errorCodeMapper";
+import httpStatus from "http-status";
 
 jest.mock("@src/site/services/site.service");
 jest.mock("@utils/errorCodeMapper");

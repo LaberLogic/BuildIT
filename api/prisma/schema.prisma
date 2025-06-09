@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider      = "prisma-client-js"
   output        = "../generated/prisma"
@@ -23,9 +17,10 @@ model User {
   firstName   String
   lastName    String
   password    String?
+  status      String           @default("ACTIVE")
   role        ROLE             @default(WORKER)
   companyId   String?
-  company     Company?         @relation(fields: [companyId], references: [id])
+  company     Company?         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   assignments SiteAssignment[]
 }
 
@@ -34,7 +29,7 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
-  address   Address  @relation(fields: [addressId], references: [id])
+  address   Address  @relation(fields: [addressId], references: [id], onDelete: Cascade)
   users     User[]
   sites     Site[]
   addressId String
@@ -59,16 +54,17 @@ model Site {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   name        String
-  address     Address          @relation(fields: [addressId], references: [id])
+  priority    String?
+  address     Address          @relation(fields: [addressId], references: [id], onDelete: Cascade)
   companyId   String
-  company     Company          @relation(fields: [companyId], references: [id])
+  company     Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
   assignments SiteAssignment[]
   addressId   String
   material    Material[]
   startDate   DateTime?
   endDate     DateTime?
   notes       String?
-  status      SITE_STATUS   @default(ACTIVE)
+  status      SITE_STATUS      @default(ACTIVE)
 }
 
 model Material {
@@ -79,16 +75,17 @@ model Material {
   unit      String
   amount    Int
   threshold Int
-  siteId   String
-  site     Site          @relation(fields: [siteId], references: [id])
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
 }
 
 model SiteAssignment {
-  id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-  site   Site   @relation(fields: [siteId], references: [id])
-  siteId String
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  site        Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      String
+  lastVisited DateTime?
 
   @@unique([userId, siteId])
 }

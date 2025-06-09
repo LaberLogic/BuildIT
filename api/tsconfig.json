@@ -25,7 +25,8 @@
     "tests/**/*.ts",
     "jest.config.ts",
     "utils/*.ts",
-    "middlewares/**/*.ts"
+    "middlewares/**/*.ts",
+    "prisma/seed.ts"
   ],
   "exclude": ["node_modules"],
   "files": ["types.d.ts"]

@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <el-input type="text" placeholder="Search by name" />
+    <el-input placeholder="Search by name" />
 
     <div class="flex gap-3 mt-4">
       <el-select
@@ -18,22 +18,23 @@
       <el-button type="primary" @click="onAddClick">
         <el-icon><Plus /></el-icon>
       </el-button>
-      <users-modals-create-update-user v-model="createOpen" />
+
+      <users-modals-create-update-user
+        v-model="createOpen"
+        @close="createOpen = false"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 
 const createOpen = ref(false);
-
 const roleFilter = ref("all");
 
 const onAddClick = () => {
+  console.log(createOpen.value);
   createOpen.value = true;
 };
 </script>
-
-<style scoped></style>

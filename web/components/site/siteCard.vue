@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/company/${user.companyId}/sites/${site.id}`" class="block">
+  <NuxtLink :to="`/company/${companyId}/sites/${site.id}`" class="block">
     <el-card
       shadow="hover"
       class="transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"
@@ -37,10 +37,8 @@
           </div>
           <el-progress
             :percentage="site.progress"
-            :status="getProgressStatus(site.progress)"
             :color="getProgressColor(site.progress)"
             :stroke-width="10"
-            show-text="false"
           />
         </div>
 
@@ -49,7 +47,7 @@
             <el-icon class="mb-1 text-gray-400"><User /></el-icon>
             <p class="text-xs text-gray-500">Team</p>
             <p class="text-sm font-semibold text-gray-900">
-              {{ site.teamSize }}
+              {{ site.assignments?.length }}
             </p>
           </div>
           <div>
@@ -63,12 +61,7 @@
             <el-icon class="mb-1 text-gray-400"><Calendar /></el-icon>
             <p class="text-xs text-gray-500">Deadline</p>
             <p class="text-sm font-semibold text-gray-900">
-              {{
-                new Date(site.deadline).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
-              }}
+              {{ formattedDeadline }}
             </p>
           </div>
         </div>
@@ -78,14 +71,14 @@
           class="bg-gray-50 rounded-lg p-3 space-y-2 border border-gray-100"
         >
           <div
-            v-if="site.materials?.warnings > 0"
+            v-if="site.materialInfo?.warnings > 0"
             class="flex items-center justify-between"
           >
             <div class="flex items-center text-amber-600">
-              <el-icon><WarningFilled /></el-icon>
+              <el-icon><CircleAlert /></el-icon>
               <span class="text-sm font-medium ml-2">
-                {{ site.materials.warnings }} material{{
-                  site.materials.warnings > 1 ? "s" : ""
+                {{ site.materialInfo.warnings }} material{{
+                  site.materialInfo.warnings > 1 ? "s" : ""
                 }}
                 low
               </span>
@@ -96,13 +89,13 @@
           </div>
 
           <NuxtLink
-            v-if="site.chat?.unreadCount > 0"
+            v-if="hasChat"
             :to="`/chat/site-${site.id}`"
             class="flex items-center justify-between hover:bg-gray-100 rounded-md p-2 -m-2 transition-colors"
             @click.stop
           >
             <div class="flex items-center text-blue-600">
-              <el-icon><ChatDotRound /></el-icon>
+              <el-icon><MessageCirclePlus /></el-icon>
               <span class="text-sm font-medium ml-2">
                 {{ site.chat.unreadCount }} new message{{
                   site.chat.unreadCount > 1 ? "s" : ""
@@ -120,7 +113,14 @@
         <div
           class="flex justify-between items-center mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500"
         >
-          <span>Last visit: {{ site.lastVisit }}</span>
+          <span>
+            Last visit:
+            {{
+              site.lastVisited
+                ? new Date(site.lastVisited).toLocaleDateString()
+                : "Never"
+            }}
+          </span>
           <div
             :class="`w-2 h-2 rounded-full ${getPriorityIndicator(site.priority)}`"
             :title="`${site.priority} priority`"
@@ -133,51 +133,31 @@
 
 <script setup lang="ts">
 import {
-  User,
-  Clock,
+  ArrowRight,
   Calendar,
-  WarningFilled,
-  ChatDotRound,
-} from "@element-plus/icons-vue";
+  CircleAlert,
+  Clock,
+  MessageCirclePlus,
+  User,
+} from "lucide-vue-next";
+import type { SiteResponseDto } from "shared";
 
-interface Site {
-  id: string;
-  name: string;
-  address: string;
-  progress: number;
-  lastVisit: string;
-  hoursLogged: number;
-  status: "active" | "planning" | "finishing" | "paused";
-  priority: "high" | "medium" | "low";
-  materials?: {
-    total: number;
-    warnings: number;
-  };
-  chat?: {
-    unreadCount: number;
-    lastMessage?: string;
-  };
-  teamSize: number;
-  deadline: string;
-}
+const props = defineProps({
+  site: {
+    type: Object as PropType<SiteResponseDto>,
+    required: true,
+  },
+});
 
-const props = defineProps<{ site: Site }>();
-
-const auth = useAuthStore();
-const user = computed(() => auth.user);
+const route = useRoute();
+const companyId = computed(() => route.params.companyId);
 
 const getStatusBadge = (status: string) => {
   switch (status) {
-    case "active":
-      return "bg-gray-100 text-gray-700 border-gray-200";
-    case "planning":
-      return "bg-gray-100 text-gray-600 border-gray-200";
-    case "finishing":
-      return "bg-gray-100 text-gray-700 border-gray-200";
-    case "paused":
-      return "bg-gray-100 text-gray-500 border-gray-200";
-    default:
-      return "bg-gray-100 text-gray-600 border-gray-200";
+    case "ACTIVE":
+      return "success";
+    case "INACTIVE":
+      return "info";
   }
 };
 
@@ -195,23 +175,30 @@ const getPriorityIndicator = (priority: string) => {
 };
 
 const getProgressColor = (progress: number) => {
-  if (progress >= 80) return "#22c55e"; // green-500
-  if (progress >= 50) return "#3b82f6"; // blue-500
-  if (progress >= 25) return "#facc15"; // yellow-500
-  return "#f97316"; // orange-500
+  if (progress >= 80) return "#22c55e";
+  if (progress >= 50) return "#3b82f6";
+  if (progress >= 25) return "#facc15";
+  return "#f97316";
 };
 
-const getProgressStatus = (progress: number) => {
-  if (progress >= 80) return "success";
-  if (progress >= 50) return "primary";
-  if (progress >= 25) return "warning";
-  return "exception";
-};
+const hasChat = computed(() => {
+  return props.site.chat;
+});
 
 const hasWarningsOrChats = computed(() => {
   return (
-    (props.site.materials?.warnings ?? 0) > 0 ||
+    (props.site.materialInfo?.warnings ?? 0) > 0 ||
     (props.site.chat?.unreadCount ?? 0) > 0
   );
+});
+
+const formattedDeadline = computed(() => {
+  console.log(props.site.endDate);
+  return props.site.endDate
+    ? new Date(props.site.endDate).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    : "N/A";
 });
 </script>

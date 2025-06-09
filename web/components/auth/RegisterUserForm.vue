@@ -1,8 +1,8 @@
 <template>
   <el-form
+    ref="formRef"
     :model="form"
     :rules="rules"
-    ref="formRef"
     label-position="top"
     class="max-w-xl mx-auto space-y-4"
     @submit.prevent="onSubmit"
@@ -31,7 +31,7 @@
         placeholder="Enter password"
       >
         <template #suffix>
-          <el-icon @click="togglePasswordVisibility" class="cursor-pointer">
+          <el-icon class="cursor-pointer" @click="togglePasswordVisibility">
             <component :is="showPassword ? Eye : EyeOff" />
           </el-icon>
         </template>
@@ -53,8 +53,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { Eye, EyeOff } from "lucide-vue-next";
+import { ref } from "vue";
 
 const form = ref({
   firstName: "",
@@ -72,10 +72,7 @@ const rules = {
   lastName: [
     { required: true, message: "Last name is required", trigger: "blur" },
   ],
-  email: [
-    { required: true, message: "Email is required", trigger: "blur" },
-    { type: "email", message: "Enter a valid email", trigger: "blur" },
-  ],
+  email: [{ required: true, message: "Email is required", trigger: "blur" }],
   password: [
     { required: true, message: "Password is required", trigger: "blur" },
     {

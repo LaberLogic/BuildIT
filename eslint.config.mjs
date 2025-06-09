@@ -5,13 +5,21 @@ import pluginVue from "eslint-plugin-vue";
 import pluginJest from "eslint-plugin-jest";
 import { defineConfig, globalIgnores } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 export default defineConfig([
   globalIgnores(["**/node_modules/", "**/generated/", "**/.nuxt","**/coverage","**/dist/","**/.output/"]),
 
 
 
-
+  {
+    files: ["**/*.{js,ts,vue}"],
+    plugins: { "simple-import-sort": simpleImportSort },
+    rules: {
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+    },
+  },
   {
     files: ["**/*.{js,mjs,cjs,ts,vue}"],
     plugins: { js },
@@ -28,8 +36,25 @@ export default defineConfig([
     languageOptions: { parserOptions: { parser: tseslint.parser } },
     rules: {
       "no-undef": "off",
-       "vue/multi-word-component-names": "off",
+      "vue/multi-word-component-names": "off",
+      "vue/attributes-order": ["error", {
+        order: [
+          "DEFINITION",
+          "LIST_RENDERING",
+          "CONDITIONALS",
+          "RENDER_MODIFIERS",
+          "GLOBAL",
+          ["UNIQUE", "SLOT"],
+          "TWO_WAY_BINDING",
+          "OTHER_DIRECTIVES",
+          "OTHER_ATTR",
+          "EVENTS",
+          "CONTENT"
+        ],
+        alphabetical: false
+      }],
     },
+
   },
   {
     files: ["**/*.ts"],
