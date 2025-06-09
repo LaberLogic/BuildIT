@@ -157,8 +157,8 @@ const defaultForm = () => ({
   name: "",
   status: "",
   priority: "",
-  startDate: null as Date | null,
-  endDate: null as Date | null,
+  startDate: undefined as Date | undefined,
+  endDate: undefined as Date | undefined,
   users: [] as { userId: string; firstName: string; lastName: string }[],
   address: {
     street: "",
@@ -190,8 +190,10 @@ watch(
     model.value.priority = newSite.priority || "";
     model.value.startDate = newSite.startDate
       ? new Date(newSite.startDate)
-      : null;
-    model.value.endDate = newSite.endDate ? new Date(newSite.endDate) : null;
+      : undefined;
+    model.value.endDate = newSite.endDate
+      ? new Date(newSite.endDate)
+      : undefined;
     model.value.users = newSite.assignments || [];
     model.value.notes = newSite.notes || "";
 

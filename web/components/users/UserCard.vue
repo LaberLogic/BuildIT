@@ -51,16 +51,6 @@
           </div>
 
           <div
-            v-if="user.currentSite"
-            class="info-block mt-1 text-xs text-gray-500"
-          >
-            <el-icon>
-              <Building2 />
-            </el-icon>
-            <span class="truncate">{{ user.currentSite }}</span>
-          </div>
-
-          <div
             class="flex justify-between items-center mt-3 text-xs text-gray-500"
           >
             <div class="info-block">
@@ -86,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { Building2, Clock, Edit, MessageSquare, Trash2 } from "lucide-vue-next";
+import { Clock, Edit, MessageSquare, Trash2 } from "lucide-vue-next";
 import type { UserResponseDto } from "shared";
 
 const props = defineProps<{

@@ -1,9 +1,14 @@
-import type { RegisterDto, SignInDto } from "shared";
+import type {
+  RegisterDto,
+  RegisterResponseDto,
+  SignInDto,
+  SignInResponseDto,
+} from "shared";
 
 export const getToken = () => `Bearer ${useAuthStore().token}`;
 
 export const register = async (data: RegisterDto) => {
-  return await $fetch("/api/auth/register", {
+  return await $fetch<RegisterResponseDto>("/api/auth/register", {
     method: "POST",
     body: data,
     headers: {
@@ -13,10 +18,10 @@ export const register = async (data: RegisterDto) => {
 };
 
 export const signIn = async (data: SignInDto) => {
-  const auth = useAuthStore();
-
   try {
-    const res = await $fetch("/api/auth/signin", {
+    const authStore = useAuthStore();
+
+    const res = await $fetch<SignInResponseDto>("/api/auth/signin", {
       method: "POST",
       body: data,
       headers: {
@@ -24,10 +29,13 @@ export const signIn = async (data: SignInDto) => {
       },
     });
 
-    if (!res.accessToken) return { success: false };
+    if (!res.accessToken) {
+      console.warn("No access token received from server");
+      return { success: false };
+    }
 
-    auth.setToken(res.accessToken);
-    auth.setUser(res.user);
+    authStore.setToken(res.accessToken);
+    authStore.setUser(res.user);
 
     return { success: true, user: res.user };
   } catch (error) {

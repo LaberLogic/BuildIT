@@ -1,7 +1,9 @@
+import type { CompanyResponseDto } from "shared";
+
 const getToken = () => `Bearer ${useAuthStore().token}`;
 
 export const useCompanies = () => {
-  const { data, pending, error, refresh } = useFetch<[]>(
+  const { data, pending, error, refresh } = useFetch<CompanyResponseDto[]>(
     () => `/api/companies/`,
     {
       headers: {

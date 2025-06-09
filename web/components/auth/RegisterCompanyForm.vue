@@ -122,7 +122,7 @@ const emit = defineEmits<{
 }>();
 
 const handleSubmit = () => {
-  formRef.value.validate((valid) => {
+  formRef.value.validate((valid: boolean) => {
     if (valid) {
       emit("next-step", { ...form.value });
     }

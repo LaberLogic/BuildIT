@@ -79,7 +79,6 @@ const rules = {
   amount: [
     {
       required: true,
-      type: "number",
       message: "Amount is required",
       trigger: "blur",
     },
@@ -88,7 +87,6 @@ const rules = {
   threshold: [
     {
       required: true,
-      type: "number",
       message: "Threshold is required",
       trigger: "blur",
     },

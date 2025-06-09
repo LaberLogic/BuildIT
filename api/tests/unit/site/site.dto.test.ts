@@ -154,8 +154,8 @@ describe("toSiteDTO", () => {
 
     jest.useRealTimers();
   });
-  it("should handle material being undefined", () => {
-    const dto = toSiteDTO({ ...site, material: undefined as any }, user);
+  it("should handle material being empty", () => {
+    const dto = toSiteDTO({ ...site, material: [] }, user);
     expect(dto.materialInfo).toEqual({ total: 0, warnings: 0 });
   });
 

@@ -38,10 +38,6 @@ export const useUserById = (userId: string) => {
   };
 };
 
-import type { CreateUserDto, UpdateUserDto, UserResponseDto } from "shared";
-
-import { useAuthStore } from "@/stores/auth";
-
 export const createUser = async (
   companyId: string,
   payload: CreateUserDto,

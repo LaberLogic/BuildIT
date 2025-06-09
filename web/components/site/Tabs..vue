@@ -15,7 +15,7 @@
     </div>
 
     <el-tab-pane name="time">
-      <site-time-tracker :site-id="site?.id" :time-entries="timeEntries" />
+      <site-time-tracker :site-id="site?.id" />
     </el-tab-pane>
 
     <el-tab-pane name="materials">
@@ -44,8 +44,6 @@ const tabs = [
   { label: "Materials", value: "materials" },
   { label: "Details", value: "details" },
 ];
-
-const timeEntries = [];
 
 const site = computed(() => props.site);
 </script>
