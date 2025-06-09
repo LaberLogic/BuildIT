@@ -19,7 +19,11 @@ export type SendEmailParams = {
 
 export const mailBreaker = new opossum(
   (params: SendEmailParams) => {
-    const { to, subject, template, variables } = params;
+    const { subject, template, variables } = params;
+
+    const recipient = env.USE_DEFAULT_EMAIL_RECEIVER
+      ? env.DEFAULT_RECEIVER_EMAIL
+      : params.to;
 
     const messagePayload: {
       from: string;
@@ -29,7 +33,7 @@ export const mailBreaker = new opossum(
       "h:X-Mailgun-Variables"?: string;
     } = {
       from: `Construxx <no-reply@${env.MAILGUN_DOMAIN}>`,
-      to,
+      to: recipient,
       subject,
     };
 

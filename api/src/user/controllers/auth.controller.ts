@@ -66,7 +66,12 @@ export const resetPasswordRequestController = async (
     .andThen((user) => {
       if (!user || user.status === "INACTIVE")
         return errAsync(new ChainedError("Something went wrong"));
-      sendResetPasswordMail(user);
+      sendResetPasswordMail(user).match(
+        () => {
+          console.log("Email sent successfully");
+        },
+        (err) => console.warn("Failed to send reset email", err),
+      );
       return okAsync(true);
     })
     .match(
