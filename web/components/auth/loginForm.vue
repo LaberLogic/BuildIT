@@ -23,11 +23,11 @@
         </el-form-item>
 
         <div class="flex items-center justify-between mb-4">
-          <el-checkbox>Remember me</el-checkbox>
           <router-link
-            to="/auth/forgot-password"
+            to="/reset-password"
             class="text-sm text-blue-500 hover:underline"
           >
+            Forgot password?
           </router-link>
         </div>
 

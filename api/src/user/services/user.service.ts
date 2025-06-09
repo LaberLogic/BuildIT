@@ -1,3 +1,4 @@
+import { sendInvitationMail } from "@src/mail/mail.service";
 import { ChainedError } from "@utils/chainedError";
 import { hash } from "bcryptjs";
 import { errAsync, okAsync, ResultAsync } from "neverthrow";
@@ -47,6 +48,15 @@ export const userService = {
       role: data.role,
       status: "INACTIVE",
       company: { connect: { id: companyId } },
+    }).andThen((result) => {
+      sendInvitationMail(result).match(
+        () => {
+          console.log("Email sent successfully");
+        },
+        (err) => console.warn("Failed to send invitation email", err),
+      );
+
+      return okAsync(result);
     });
   },
 
