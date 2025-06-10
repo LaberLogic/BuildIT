@@ -17,9 +17,14 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const { companies, error } = useCompanies();
+const companyStore = useCompanyStore();
 
-if (error.value) {
-  console.error("[API] Failed to fetch sites:", error.value);
-}
+const companies = computed(() => {
+  return companyStore.companies;
+});
+
+onMounted(async () => {
+  await companyStore.fetchCompanies();
+  console.log(companyStore);
+});
 </script>
