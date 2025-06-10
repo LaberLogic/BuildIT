@@ -30,9 +30,7 @@
         <div class="bg-white shadow rounded-xl p-6 space-y-2">
           <h2 class="text-xl font-semibold">{{ props.company.name }}</h2>
           <p class="text-gray-600">
-            {{ props.company.address.street }}
-            {{ props.company.address.streetNumber }},
-            {{ props.company.address.city }} {{ company.address.postalCode }}
+            {{ props.company.address }}
           </p>
         </div>
       </div>

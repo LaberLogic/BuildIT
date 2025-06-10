@@ -5,6 +5,7 @@ import { UpdateMaterialCountDto } from "shared";
 import { CreateMaterialDto, UpdateMaterialDto } from "shared";
 import { UserObject } from "types";
 
+import { toMaterialDTO } from "../dtos/material.dto";
 import {
   createMaterial,
   deleteMaterial,
@@ -18,7 +19,9 @@ export const createNewMaterial = (
   data: CreateMaterialDto,
 ) => {
   return scopeCheckSite(currentUser, siteId).andThen(() =>
-    createMaterial(mapCreateBodyToPayload(siteId, data)),
+    createMaterial(mapCreateBodyToPayload(siteId, data)).map((material) =>
+      toMaterialDTO(material),
+    ),
   );
 };
 
@@ -28,9 +31,9 @@ export const updateMaterialProperties = (
   materialId: string,
   data: UpdateMaterialDto,
 ) => {
-  return scopeCheckSite(currentUser, siteId).andThen(() =>
-    updateMaterial({ id: materialId }, data),
-  );
+  return scopeCheckSite(currentUser, siteId)
+    .andThen(() => updateMaterial({ id: materialId }, data))
+    .map((material) => toMaterialDTO(material));
 };
 
 export const incrementDecrementMaterial = (
@@ -52,7 +55,8 @@ export const incrementDecrementMaterial = (
         { id: materialId },
         { amount: { increment: delta } },
       );
-    });
+    })
+    .map((material) => toMaterialDTO(material));
 };
 
 export const deleteMaterialFromSite = (

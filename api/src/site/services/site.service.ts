@@ -1,10 +1,11 @@
-import { Prisma } from "@prisma/prisma";
+import { Prisma, SITE_STATUS } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
 import { extendSiteWhere, scopeCheckCompany } from "@utils/scopeCheck";
 import { ResultAsync } from "neverthrow";
 import { CreateSiteDto, SiteResponseDto, UpdateSiteDto } from "shared";
 import { UserObject } from "types";
 
+import { toSiteDTO } from "../dtos/site.dto";
 import {
   createSite,
   deleteSiteAssignment,
@@ -12,7 +13,7 @@ import {
   getSites,
   updateSite,
 } from "../repositories/site.repository";
-import { toSiteDTO } from "../site.dto";
+
 export const createNewSite = (
   currentUser: UserObject,
   data: CreateSiteDto,
@@ -104,12 +105,12 @@ const mapSiteUpdateUserPayload = (
   data: UpdateSiteDto,
   existingUserIds: string[],
 ): Prisma.SiteUpdateInput => {
-  const { users: userIds, address, ...rest } = data;
+  const { users: userIds, address, status, ...rest } = data;
 
   const toAdd = userIds?.filter((id) => !existingUserIds.includes(id)) || [];
-  console.log(rest);
   return {
     ...rest,
+    status: status as SITE_STATUS,
     address: address ? { update: address } : undefined,
     assignments: {
       create: toAdd.map((userId) => ({

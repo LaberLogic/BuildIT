@@ -3,6 +3,28 @@ import { ChainedError } from "@utils/chainedError";
 import { ResultAsync } from "neverthrow";
 const prisma = new PrismaClient();
 
+export type Company = Prisma.CompanyGetPayload<{
+  select: typeof companySelect;
+}>;
+
+const companySelect = {
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  name: true,
+  address: {
+    include: {},
+  },
+  sites: {
+    include: {},
+  },
+  users: {
+    select: {
+      id: true,
+    },
+  },
+};
+
 export const createCompany = (data: {
   name: string;
   address: Prisma.AddressCreateWithoutCompanyInput;
@@ -15,7 +37,7 @@ export const createCompany = (data: {
           create: data.address,
         },
       },
-      select: { id: true },
+      select: companySelect,
     }),
     (e) => new ChainedError(e),
   );
@@ -25,23 +47,7 @@ export const getCompanies = (where?: Prisma.CompanyWhereInput) => {
   return ResultAsync.fromPromise(
     prisma.company.findMany({
       where,
-      select: {
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        name: true,
-        address: {
-          include: {},
-        },
-        sites: {
-          include: {},
-        },
-        users: {
-          select: {
-            id: true,
-          },
-        },
-      },
+      select: companySelect,
     }),
     (e) => new ChainedError(e),
   );
@@ -51,21 +57,7 @@ export const getCompany = (where: Prisma.CompanyWhereUniqueInput) => {
   return ResultAsync.fromPromise(
     prisma.company.findUnique({
       where,
-      select: {
-        name: true,
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        address: {
-          select: {
-            streetNumber: true,
-            street: true,
-            city: true,
-            country: true,
-            postalCode: true,
-          },
-        },
-      },
+      select: companySelect,
     }),
     (e) => new ChainedError(e),
   );
