@@ -21,7 +21,7 @@ export const useCompanies = () => {
 };
 
 export const useCompany = (companyId: string) => {
-  const { data, pending, error, refresh } = useFetch(
+  const { data, pending, error, refresh } = useFetch<CompanyResponseDto>(
     () => `/api/companies/${companyId}`,
     {
       headers: {

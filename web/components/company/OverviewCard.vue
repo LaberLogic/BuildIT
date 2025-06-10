@@ -19,8 +19,7 @@
               </el-tag>
             </div>
             <p class="text-sm text-gray-500 truncate">
-              {{ company.address?.street || "No address" }},
-              {{ company.address?.city || "" }}
+              {{ company.address || "No address" }},
             </p>
           </div>
           <el-icon class="text-gray-400 ml-2"><ArrowRight /></el-icon>
@@ -31,14 +30,14 @@
             <el-icon class="mb-1 text-gray-400"><User /></el-icon>
             <p class="text-xs text-gray-500">Users</p>
             <p class="text-sm font-semibold text-gray-900">
-              {{ company.users?.length }}
+              {{ company.userCount }}
             </p>
           </div>
           <div>
             <el-icon class="mb-1 text-gray-400"><Building /></el-icon>
             <p class="text-xs text-gray-500">Sites</p>
             <p class="text-sm font-semibold text-gray-900">
-              {{ company.sites?.length }}
+              {{ company.siteCount }}
             </p>
           </div>
         </div>

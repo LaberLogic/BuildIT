@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
-import { cleanEnv, port,str } from "envalid";
+import { bool, cleanEnv, port, str } from "envalid";
 
 dotenvExpand.expand(dotenv.config());
 
@@ -15,4 +15,8 @@ export const env = cleanEnv(removeEmptyStringValues(process.env), {
   PORT: port(),
   JWT_SECRET: str(),
   DATABASE_URL: str(),
+  MAILGUN_API_KEY: str(),
+  MAILGUN_DOMAIN: str(),
+  DEFAULT_RECEIVER_EMAIL: str(),
+  USE_DEFAULT_EMAIL_RECEIVER: bool(),
 });

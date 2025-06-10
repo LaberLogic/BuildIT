@@ -27,16 +27,18 @@ export const getCompanies = (where?: Prisma.CompanyWhereInput) => {
       where,
       select: {
         id: true,
-        name: true,
         createdAt: true,
         updatedAt: true,
+        name: true,
         address: {
+          include: {},
+        },
+        sites: {
+          include: {},
+        },
+        users: {
           select: {
-            streetNumber: true,
-            street: true,
-            city: true,
-            country: true,
-            postalCode: true,
+            id: true,
           },
         },
       },

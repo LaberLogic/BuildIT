@@ -1,15 +1,16 @@
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
-import { FastifyReply,FastifyRequest } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
 
-import { getCompanies, getCompany } from "./company.repository";
+import { getCompany } from "./company.repository";
+import { getAllCompanies } from "./company.service";
 
 export const getCompaniesController = async (
   req: FastifyRequest,
   reply: FastifyReply,
 ) => {
-  return getCompanies().match(
-    (site) => reply.status(httpStatus.CREATED).send(site),
+  return getAllCompanies().match(
+    (companies) => reply.status(httpStatus.OK).send(companies),
     (error) => sendChainedErrorReply(reply, error),
   );
 };
@@ -19,7 +20,7 @@ export const getCompanyController = async (
   reply: FastifyReply,
 ) => {
   return getCompany({ id: req.params.companyId }).match(
-    (site) => reply.status(httpStatus.CREATED).send(site),
+    (site) => reply.status(httpStatus.OK).send(site),
     (error) => sendChainedErrorReply(reply, error),
   );
 };

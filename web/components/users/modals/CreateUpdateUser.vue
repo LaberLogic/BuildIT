@@ -141,7 +141,7 @@ const options = [
   { value: "WORKER", label: "Worker" },
 ];
 
-const showPasswordFields = computed(() => !isCreate.value || props.isProfile);
+const showPasswordFields = computed(() => props.isProfile);
 const showConfirmPassword = computed(() => model.password.length > 0);
 const confirmPasswordError = computed(() =>
   showConfirmPassword.value && model.password !== model.confirmPassword

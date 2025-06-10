@@ -5,7 +5,29 @@ import type {
   SignInResponseDto,
 } from "shared";
 
-export const getToken = () => `Bearer ${useAuthStore().token}`;
+export const setPassword = async (
+  data: { password: string },
+  token: string,
+) => {
+  return await $fetch<RegisterResponseDto>("/api/auth/set-password", {
+    method: "POST",
+    body: data,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const resetPasswordRequest = async (data: { email: string }) => {
+  return await $fetch<RegisterResponseDto>("/api/auth/reset-password", {
+    method: "POST",
+    body: data,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 
 export const register = async (data: RegisterDto) => {
   return await $fetch<RegisterResponseDto>("/api/auth/register", {
