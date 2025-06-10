@@ -11,9 +11,9 @@ import { healthRoutes } from "./health/health.routes";
 import jwtPlugin from "./plugins/jwt";
 import materialRoutes from "./site/routes/material.routes";
 import siteRoutes from "./site/routes/site.routes";
-import authRoutes from "./user/auth.routes";
-import companyUserRoutes from "./user/company.user.routes";
-import userRoutes from "./user/user.routes";
+import authRoutes from "./user/routes/auth.routes";
+import companyUserRoutes from "./user/routes/company.user.routes";
+import userRoutes from "./user/routes/user.routes";
 
 const app = Fastify({
   logger: {

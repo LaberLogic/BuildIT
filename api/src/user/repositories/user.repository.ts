@@ -5,6 +5,8 @@ import { ResultAsync } from "neverthrow";
 
 const prisma = new PrismaClient();
 
+export type User = Prisma.UserGetPayload<{ select: typeof safeUserSelect }>;
+
 const safeUserSelect = {
   id: true,
   email: true,

@@ -1,13 +1,14 @@
 import { CompanyResponseDto } from "shared";
 
-export const toCompanyDTO = (company: any): CompanyResponseDto => {
+import { Company } from "./company.repository";
+
+export const toCompanyDTO = (company: Company): CompanyResponseDto => {
   const { id, name, createdAt, updatedAt } = company;
-  console.log("here");
   return {
     id,
     name,
-    createdAt,
-    updatedAt,
+    createdAt: createdAt.toISOString(),
+    updatedAt: updatedAt.toISOString(),
     address: `${company.address.streetNumber} ${company.address.street}, ${company.address.city}, ${company.address.country} ${company.address.postalCode}`,
 
     siteCount: company.sites.length,

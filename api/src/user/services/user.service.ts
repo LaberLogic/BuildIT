@@ -6,6 +6,7 @@ import { CreateUserDto, UpdateUserDto } from "shared";
 import { UserObject } from "types";
 
 import { Prisma } from "../../../generated/prisma";
+import { toUserDTO } from "../dtos/user.dto";
 import {
   createUser,
   deleteUser,
@@ -48,21 +49,23 @@ export const userService = {
       role: data.role,
       status: "INACTIVE",
       company: { connect: { id: companyId } },
-    }).andThen((result) => {
-      sendInvitationMail(result).match(
-        () => {
-          console.log("Email sent successfully");
-        },
-        (err) => console.warn("Failed to send invitation email", err),
-      );
+    })
+      .andThen((user) => {
+        sendInvitationMail(user).match(
+          () => {
+            console.log("Email sent successfully");
+          },
+          (err) => console.warn("Failed to send invitation email", err),
+        );
 
-      return okAsync(result);
-    });
+        return okAsync(user);
+      })
+      .map((user) => toUserDTO(user));
   },
 
   updateUser: (currentUser: UserObject, id: string, data: UpdateUserDto) => {
-    return getUser(scopedUserWhere(currentUser, { id })).andThen(
-      (targetUser) => {
+    return getUser(scopedUserWhere(currentUser, { id }))
+      .andThen((targetUser) => {
         if (!targetUser) {
           return errAsync(
             new ChainedError("User not found or access denied", 404),
@@ -77,16 +80,13 @@ export const userService = {
             (e) => new ChainedError(e, 500),
           ).andThen((hashedPassword) => {
             updateData.password = hashedPassword;
-            return ResultAsync.fromPromise(
-              updateUser(id, updateData),
-              (e) => new ChainedError(e, 500),
-            );
+            return updateUser(id, updateData);
           });
         } else {
           return updateUser(id, updateData);
         }
-      },
-    );
+      })
+      .map((user) => toUserDTO(user));
   },
 
   deleteUser: (currentUser: UserObject, id: string) => {
@@ -104,14 +104,16 @@ export const userService = {
   },
 
   getUserById: (currentUser: UserObject, id: string) => {
-    return getUser(scopedUserWhere(currentUser, { id })).andThen((user) => {
-      if (!user) {
-        return errAsync(
-          new ChainedError("User not found or access denied", 404),
-        );
-      }
-      return okAsync(user);
-    });
+    return getUser(scopedUserWhere(currentUser, { id }))
+      .andThen((user) => {
+        if (!user) {
+          return errAsync(
+            new ChainedError("User not found or access denied", 404),
+          );
+        }
+        return okAsync(user);
+      })
+      .map((user) => toUserDTO(user));
   },
 
   getAllUsers: () => getAllUsers(),
@@ -122,6 +124,8 @@ export const userService = {
         new ChainedError("Cannot access users from another company", 403),
       );
     }
-    return getUsersByCompanyId(companyId);
+    return getUsersByCompanyId(companyId).map((users) =>
+      users.map((user) => toUserDTO(user)),
+    );
   },
 };

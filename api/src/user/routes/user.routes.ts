@@ -1,11 +1,11 @@
 import { isAdmin } from "@src/plugins/roleGuards";
 import { FastifyInstance } from "fastify";
-import { siteRef,userRef as $ref } from "shared";
+import { siteRef, userRef as $ref } from "shared";
 
 import {
   getCurrentUser,
   getUserByIdController,
-} from "./controllers/user.controller";
+} from "../controllers/user.controller";
 
 const userRoutes = async (app: FastifyInstance) => {
   app.route({
