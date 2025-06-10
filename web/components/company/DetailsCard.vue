@@ -1,12 +1,6 @@
 <template>
   <div v-if="company">
-    <el-tabs
-      v-model="activeTab"
-      type="card"
-      tab-position="top"
-      stretch
-      class="w-full"
-    >
+    <el-tabs v-model="activeTab" tab-position="top" stretch class="w-full">
       <el-tab-pane name="info" label="Info" />
       <el-tab-pane name="users" label="Users" />
       <el-tab-pane name="sites" label="Sites" />

@@ -7,6 +7,7 @@ import { authSchemas, materialSchemas, siteSchemas, userSchemas } from "shared";
 
 import { version } from "../package.json";
 import companyRoutes from "./company/company.routes";
+import { healthRoutes } from "./health/health.routes";
 import jwtPlugin from "./plugins/jwt";
 import materialRoutes from "./site/routes/material.routes";
 import siteRoutes from "./site/routes/site.routes";
@@ -47,7 +48,7 @@ siteSchemas.forEach((schema) => app.addSchema(schema));
 materialSchemas.forEach((schema) => app.addSchema(schema));
 
 app.register(jwtPlugin);
-
+app.register(healthRoutes, { prefix: "/" });
 app.register(authRoutes, { prefix: "/auth" });
 app.register(companyRoutes, { prefix: "/companies" });
 

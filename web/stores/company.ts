@@ -1,4 +1,8 @@
-import type { SiteResponseDto, UserResponseDto } from "shared";
+import type {
+  CompanyResponseDto,
+  SiteResponseDto,
+  UserResponseDto,
+} from "shared";
 
 import { useCompany } from "../composables/useCompany";
 import {
@@ -10,18 +14,30 @@ import { useCompanyUsers } from "../composables/useUser";
 import { useAuthStore } from "./auth";
 
 export const useCompanyStore = defineStore("company", () => {
-  const company = ref<unknown | null>(null);
+  const company = ref<CompanyResponseDto | null>(null);
   const sites = ref<SiteResponseDto[]>([]);
   const users = ref<UserResponseDto[]>([]);
   const siteDetails = ref<SiteResponseDto | null>(null);
-
+  const companies = ref<CompanyResponseDto[]>([]);
   const authStore = useAuthStore();
 
   const user = computed(() => authStore.user);
 
+  const fetchCompanies = async () => {
+    const { companies: cs, isLoading } = useCompanies();
+    while (isLoading.value) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    companies.value = cs.value || [];
+    console.log(companies.value);
+  };
+
   const fetchCompany = async (companyId: string) => {
-    const { company: c } = useCompany(companyId);
-    company.value = c;
+    const { company: c, isLoading } = useCompany(companyId);
+    while (isLoading.value) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    company.value = c.value;
   };
 
   const fetchSites = async (companyId: string) => {
@@ -82,5 +98,7 @@ export const useCompanyStore = defineStore("company", () => {
     fetchUsers,
     fetchSiteDetails,
     fetchAll,
+    fetchCompanies,
+    companies,
   };
 });

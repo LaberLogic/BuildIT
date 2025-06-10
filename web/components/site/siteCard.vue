@@ -31,14 +31,12 @@
         <div class="mb-4">
           <div class="flex justify-between items-center mb-2">
             <span class="text-sm font-medium text-gray-700">Progress</span>
-            <span class="text-sm font-semibold text-gray-900">
-              {{ site.progress }}%
-            </span>
+            <span class="t"> {{ site.progress }}% </span>
           </div>
           <el-progress
             :percentage="site.progress"
             :color="getProgressColor(site.progress)"
-            :stroke-width="10"
+            :show-text="false"
           />
         </div>
 

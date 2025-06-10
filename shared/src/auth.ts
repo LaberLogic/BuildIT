@@ -35,12 +35,22 @@ export const signInSchema = z.object({
   password: z.string(),
 });
 
+export const setPasswordSchema = z.object({
+  password: z.string().min(6),
+});
+
+export const resetPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
 export const { schemas: authSchemas, $ref: authRef } = buildJsonSchemas(
   {
     signInSchema,
     registerSchema,
     registerResponseSchema,
     signInResponseSchema,
+    setPasswordSchema,
+    resetPasswordSchema,
   },
   { $id: "authSchema" },
 );
@@ -49,3 +59,5 @@ export type SignInResponseDto = z.infer<typeof signInResponseSchema>;
 export type RegisterResponseDto = z.infer<typeof registerResponseSchema>;
 export type SignInDto = z.infer<typeof signInSchema>;
 export type RegisterDto = z.infer<typeof registerSchema>;
+export type SetPasswordDto = z.infer<typeof setPasswordSchema>;
+export type SetPasswordRequestDto = z.infer<typeof resetPasswordSchema>;
