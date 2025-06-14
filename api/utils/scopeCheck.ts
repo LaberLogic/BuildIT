@@ -1,62 +1,81 @@
 import { Prisma, PrismaClient } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
-import { errAsync, okAsync,ResultAsync } from "neverthrow";
+import { errAsync, okAsync, ResultAsync } from "neverthrow";
 import { UserObject } from "types";
 
-const prisma = new PrismaClient();
+const prismaClient = new PrismaClient();
 
 export const scopeCheckCompany = (
   currentUser: UserObject,
-  companyId: string,
+  passedCompanyId: string,
 ): ResultAsync<void, ChainedError> => {
-  if (currentUser.companyId !== companyId) {
-    return errAsync(new ChainedError("Unauthorized"));
+  if (currentUser.role === "ADMIN") {
+    return okAsync(undefined);
   }
+
+  if (!currentUser.companyId || currentUser.companyId !== passedCompanyId) {
+    return errAsync(new ChainedError("Unauthorized - Invalid company scope"));
+  }
+
   return okAsync(undefined);
 };
 
-export const scopeCheckMaterial = (currentUser: UserObject, siteId: string) => {
+export const scopeCheckSiteAccess = (
+  currentUser: UserObject,
+  siteId: string,
+  passedCompanyId: string,
+  prisma: PrismaClient = prismaClient,
+): ResultAsync<void, ChainedError> => {
+  if (currentUser.role === "ADMIN") {
+    return okAsync(undefined);
+  }
+
+  if (!currentUser.companyId || currentUser.companyId !== passedCompanyId) {
+    return errAsync(new ChainedError("Unauthorized - Invalid company scope"));
+  }
+
+  if (currentUser.role === "MANAGER") {
+    return okAsync(undefined);
+  }
+
   return ResultAsync.fromPromise(
     prisma.site.findFirst({
       where: {
         id: siteId,
+        companyId: passedCompanyId,
         assignments: {
           some: {
-            user: {
-              id: currentUser.id,
-            },
+            userId: currentUser.id,
           },
         },
       },
     }),
-    () => new ChainedError("Failed to check material scope"),
-  );
-};
-
-export const scopeCheckSite = (currentUser: UserObject, siteId: string) => {
-  return ResultAsync.fromPromise(
-    prisma.site.findFirst({
-      where: {
-        id: siteId,
-        company: {
-          id: currentUser.companyId as string,
-        },
-      },
-    }),
-    () => new ChainedError("Failed to check material scope"),
+    () => new ChainedError("Failed to validate site access"),
+  ).andThen((site) =>
+    site
+      ? okAsync(undefined)
+      : errAsync(new ChainedError("Unauthorized - Not assigned to site")),
   );
 };
 
 export const extendSiteWhere = (
-  where: Prisma.SiteWhereUniqueInput | Prisma.SiteWhereInput,
+  where: Prisma.SiteWhereInput,
   user: UserObject,
-) => {
-  if (user.role === "ADMIN") return where;
+): Prisma.SiteWhereInput => {
+  if (user.role === "ADMIN" || user.role === "MANAGER") {
+    return {
+      ...where,
+      companyId: user.companyId ?? undefined,
+    };
+  }
 
   return {
     ...where,
-    company: {
-      id: user.companyId as string,
+    companyId: user.companyId ?? undefined,
+    assignments: {
+      some: {
+        userId: user.id,
+      },
     },
   };
 };

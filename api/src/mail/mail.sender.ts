@@ -17,41 +17,40 @@ export type SendEmailParams = {
   variables?: Record<string, unknown>;
 };
 
-export const mailBreaker = new opossum(
-  (params: SendEmailParams) => {
-    const { subject, template, variables } = params;
+export const buildAndSendEmail = (params: SendEmailParams) => {
+  const { subject, template, variables } = params;
 
-    const recipient = env.USE_DEFAULT_EMAIL_RECEIVER
-      ? env.DEFAULT_RECEIVER_EMAIL
-      : params.to;
+  const recipient = env.USE_DEFAULT_EMAIL_RECEIVER
+    ? env.DEFAULT_RECEIVER_EMAIL
+    : params.to;
 
-    const messagePayload: {
-      from: string;
-      to: string;
-      subject: string;
-      template?: string;
-      "h:X-Mailgun-Variables"?: string;
-    } = {
-      from: `Construxx <no-reply@${env.MAILGUN_DOMAIN}>`,
-      to: recipient,
-      subject,
-    };
+  const messagePayload: {
+    from: string;
+    to: string;
+    subject: string;
+    template?: string;
+    "h:X-Mailgun-Variables"?: string;
+  } = {
+    from: `Construxx <no-reply@${env.MAILGUN_DOMAIN}>`,
+    to: recipient,
+    subject,
+  };
 
-    if (template) {
-      messagePayload.template = template;
-      if (variables) {
-        messagePayload["h:X-Mailgun-Variables"] = JSON.stringify(variables);
-      }
+  if (template) {
+    messagePayload.template = template;
+    if (variables) {
+      messagePayload["h:X-Mailgun-Variables"] = JSON.stringify(variables);
     }
+  }
 
-    return mailgunClient.messages().send(messagePayload);
-  },
-  {
-    timeout: 5000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 10000,
-  },
-);
+  return mailgunClient.messages().send(messagePayload);
+};
+
+export const mailBreaker = new opossum(buildAndSendEmail, {
+  timeout: 5000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 10000,
+});
 
 export const sendEmail = (
   params: SendEmailParams,

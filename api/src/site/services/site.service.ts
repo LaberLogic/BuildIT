@@ -1,6 +1,10 @@
 import { Prisma, SITE_STATUS } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
-import { extendSiteWhere, scopeCheckCompany } from "@utils/scopeCheck";
+import {
+  extendSiteWhere,
+  scopeCheckCompany,
+  scopeCheckSiteAccess,
+} from "@utils/scopeCheck";
 import { ResultAsync } from "neverthrow";
 import { CreateSiteDto, SiteResponseDto, UpdateSiteDto } from "shared";
 import { UserObject } from "types";
@@ -17,23 +21,21 @@ import {
 export const createNewSite = (
   currentUser: UserObject,
   data: CreateSiteDto,
+  companyId: string,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
-  return scopeCheckCompany(currentUser, currentUser.companyId)
-    .andThen(() =>
-      createSite(mapSiteCreatePayload(data, currentUser.companyId)),
-    )
+  return scopeCheckCompany(currentUser, companyId)
+    .andThen(() => createSite(mapSiteCreatePayload(data, companyId)))
     .map((site) => toSiteDTO(site, currentUser));
 };
 
 export const updateSiteById = (
   currentUser: UserObject,
-  id: string,
+  siteId: string,
   data: UpdateSiteDto,
+  companyId: string,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
-  return getSite({ id })
-    .andThen((site) => {
-      return scopeCheckCompany(currentUser, site.companyId).map(() => site);
-    })
+  return scopeCheckSiteAccess(currentUser, siteId, companyId)
+    .andThen(() => getSite({ id: siteId }))
     .andThen((site) => {
       const existingUserIds = site.assignments.map((a) => a.user.id);
       const toRemove = existingUserIds.filter(
@@ -43,41 +45,56 @@ export const updateSiteById = (
       return ResultAsync.combine(
         toRemove.map((userId) =>
           deleteSiteAssignment({
-            userId_siteId: { userId, siteId: id },
+            userId_siteId: { userId, siteId },
           }),
         ),
       ).andThen(() =>
-        updateSite({ id }, mapSiteUpdateUserPayload(data, existingUserIds)),
+        updateSite(
+          { id: siteId },
+          mapSiteUpdateUserPayload(data, existingUserIds),
+        ),
       );
     })
     .map((site) => toSiteDTO(site, currentUser));
 };
 
 export const getSitesByUserId = (
-  id: string,
+  userId: string,
   currentUser: UserObject,
 ): ResultAsync<SiteResponseDto[], ChainedError> => {
-  return getSites(
-    extendSiteWhere({ assignments: { some: { user: { id } } } }, currentUser),
-  ).map((sites) => sites.map((site) => toSiteDTO(site, currentUser)));
+  return  getSites(
+      extendSiteWhere(
+        { assignments: { some: { user: { id: userId } } } },
+        currentUser,
+      ),
+    ).map((sites) => sites.map((site) => toSiteDTO(site, currentUser)));
+
 };
 
 export const getSitesByCompanyId = (
-  id: string,
+  companyId: string,
   currentUser: UserObject,
 ): ResultAsync<SiteResponseDto[], ChainedError> => {
-  return getSites(extendSiteWhere({ company: { id } }, currentUser)).map(
-    (sites) => sites.map((site) => toSiteDTO(site, currentUser)),
+  return scopeCheckCompany(currentUser, companyId).andThen(() =>
+    getSites(extendSiteWhere({ companyId }, currentUser)).map((sites) =>
+      sites.map((site) => toSiteDTO(site, currentUser)),
+    ),
   );
 };
 
 export const getSiteById = (
-  id: string,
+  siteId: string,
   currentUser: UserObject,
+  companyId: string,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
-  return getSite(
-    extendSiteWhere({ id }, currentUser) as Prisma.SiteWhereUniqueInput,
-  ).map((site) => toSiteDTO(site, currentUser));
+  return scopeCheckCompany(currentUser, companyId).andThen(() =>
+    getSite(
+      extendSiteWhere(
+        { id: siteId },
+        currentUser,
+      ) as Prisma.SiteWhereUniqueInput,
+    ).map((site) => toSiteDTO(site, currentUser)),
+  );
 };
 
 const mapSiteCreatePayload = (
@@ -86,12 +103,8 @@ const mapSiteCreatePayload = (
 ): Prisma.SiteCreateInput => {
   const { users, address, ...rest } = data;
   return {
-    company: {
-      connect: { id: companyId },
-    },
-    address: {
-      create: address,
-    },
+    company: { connect: { id: companyId } },
+    address: { create: address },
     assignments: {
       createMany: {
         data: users.map((userId) => ({ userId })),
@@ -106,8 +119,8 @@ const mapSiteUpdateUserPayload = (
   existingUserIds: string[],
 ): Prisma.SiteUpdateInput => {
   const { users: userIds, address, status, ...rest } = data;
-
   const toAdd = userIds?.filter((id) => !existingUserIds.includes(id)) || [];
+
   return {
     ...rest,
     status: status as SITE_STATUS,

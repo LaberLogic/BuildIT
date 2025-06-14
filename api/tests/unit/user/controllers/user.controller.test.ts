@@ -29,6 +29,7 @@ describe("User Controllers", () => {
       mockRequest = {
         user: { id: "admin" },
         body: { email: "test@example.com" },
+        params:{companyId: "company1"}
       };
 
       (userService.createUser as jest.Mock).mockReturnValueOnce({
@@ -38,6 +39,7 @@ describe("User Controllers", () => {
       await createUserController(mockRequest, mockReply);
 
       expect(userService.createUser).toHaveBeenCalledWith(
+        mockRequest.params.companyId,
         mockRequest.user,
         mockRequest.body,
       );
@@ -47,7 +49,7 @@ describe("User Controllers", () => {
 
     it("should respond with errorCode from ChainedError", async () => {
       const error = new ChainedError("Invalid data", 400);
-      mockRequest = { user: {}, body: {} };
+      mockRequest = { user: {}, body: {} ,params:{companyId: "company1"}};
 
       (userService.createUser as jest.Mock).mockReturnValueOnce({
         match: (_ok: any, err: any) => err(error),
@@ -65,7 +67,7 @@ describe("User Controllers", () => {
       const mockUser = { id: "user1", email: "updated@example.com" };
       mockRequest = {
         user: { id: "admin" },
-        params: { userId: "user1" },
+        params: { userId: "user1",companyId: "company-1" },
         body: { email: "updated@example.com" },
       };
 
@@ -79,6 +81,8 @@ describe("User Controllers", () => {
         mockRequest.user,
         mockRequest.params.userId,
         mockRequest.body,
+        mockRequest.params.companyId,
+
       );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
       expect(mockReply.send).toHaveBeenCalledWith(mockUser);
@@ -107,7 +111,7 @@ describe("User Controllers", () => {
     it("should respond 204 on success", async () => {
       mockRequest = {
         user: { id: "admin" },
-        params: { userId: "user1" },
+        params: { userId: "user1",companyId:"company-1" },
       };
 
       (userService.deleteUser as jest.Mock).mockReturnValueOnce({
@@ -119,6 +123,7 @@ describe("User Controllers", () => {
       expect(userService.deleteUser).toHaveBeenCalledWith(
         mockRequest.user,
         "user1",
+        "company-1"
       );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.NO_CONTENT);
       expect(mockReply.send).toHaveBeenCalledWith({ id: "user1" });

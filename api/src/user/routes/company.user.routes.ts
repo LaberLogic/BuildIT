@@ -21,6 +21,7 @@ const userCompanyRoutes = async (app: FastifyInstance) => {
     schema: {
       tags: ["Users"],
       body: $ref("createUserSchema"),
+      params: $ref("companyIdParamsSchema"),
       response: {
         201: $ref("userResponseSchema"),
         400: siteRef("errorResponseSchema"),

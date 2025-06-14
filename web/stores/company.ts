@@ -29,7 +29,6 @@ export const useCompanyStore = defineStore("company", () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
     companies.value = cs.value || [];
-    console.log(companies.value);
   };
 
   const fetchCompany = async (companyId: string) => {
