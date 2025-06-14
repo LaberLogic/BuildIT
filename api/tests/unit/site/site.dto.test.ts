@@ -1,5 +1,5 @@
 import { SITE_STATUS } from "@prisma/prisma";
-import { toSiteDTO } from "@src/site/site.dto";
+import { toSiteDTO } from "@src/site/dtos/site.dto";
 import { UserObject } from "types";
 
 describe("toSiteDTO", () => {
@@ -66,8 +66,10 @@ describe("toSiteDTO", () => {
         name: "Test Site",
         address: "100 Main St, New York, USA 10001",
         status: SITE_STATUS.ACTIVE,
-        priority: "medium", // fallback
+        priority: "medium",
         hoursLogged: 0,
+        progress: 100,
+
         materialInfo: {
           total: 2,
           warnings: 1, // only Cement triggers warning
@@ -79,8 +81,8 @@ describe("toSiteDTO", () => {
         },
         lastVisited: new Date("2024-01-15"),
         assignments: [
-          { id: "user-1", firstName: "John", lastName: "Doe" },
-          { id: "user-2", firstName: "Alice", lastName: "Smith" },
+          { userId: "user-1", firstName: "John", lastName: "Doe" },
+          { userId: "user-2", firstName: "Alice", lastName: "Smith" },
         ],
         startDate: new Date("2024-01-01"),
         endDate: new Date("2024-01-31"),

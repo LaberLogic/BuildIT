@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "resolveJsonModule": true,
-    "target": "ES2024",
+    "target": "es2023",
     "module": "ESNext",
     "strict": true,
     "esModuleInterop": true,
@@ -17,6 +17,7 @@
       "@src/*": ["src/*"],
       "@env": ["env.ts"],
       "@prisma/*": ["generated/*"],
+      "@tests/*":  ["tests/*"],
       "shared": ["../shared/src/index.ts"]
     }
   },

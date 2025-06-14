@@ -1,4 +1,3 @@
-// src/user/controllers/user.controller.ts
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
@@ -28,8 +27,8 @@ export const updateUserController = async (
   req: FastifyRequest<{ Params: UserIdParams; Body: UpdateUserDto }>,
   reply: FastifyReply,
 ) => {
-  const id = req.params.userId;
-  return userService.updateUser(req.user, id, req.body).match(
+  const { userId, companyId } = req.params;
+  return userService.updateUser(req.user, userId, req.body, companyId).match(
     (user) => reply.status(httpStatus.OK).send(user),
     (error) => sendChainedErrorReply(reply, error),
   );
@@ -39,8 +38,8 @@ export const deleteUserController = async (
   req: FastifyRequest<{ Params: UserIdParams }>,
   reply: FastifyReply,
 ) => {
-  const id = req.params.userId;
-  return userService.deleteUser(req.user, id).match(
+  const { userId, companyId } = req.params;
+  return userService.deleteUser(req.user, userId, companyId).match(
     ({ id }) => reply.status(httpStatus.NO_CONTENT).send({ id }),
     (error) => sendChainedErrorReply(reply, error),
   );

@@ -1,8 +1,9 @@
+import { SiteResponseDto } from "shared";
 import { UserObject } from "types";
 
 import { Site } from "../repositories/site.repository";
 
-export const toSiteDTO = (site: Site, user: UserObject) => {
+export const toSiteDTO = (site: Site, user: UserObject): SiteResponseDto => {
   const totalDays =
     site.startDate && site.endDate
       ? Math.max(

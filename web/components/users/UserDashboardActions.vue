@@ -34,7 +34,6 @@ const createOpen = ref(false);
 const roleFilter = ref("all");
 
 const onAddClick = () => {
-  console.log(createOpen.value);
   createOpen.value = true;
 };
 </script>

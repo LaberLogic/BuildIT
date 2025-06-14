@@ -1,9 +1,8 @@
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
-import { FastifyReply,FastifyRequest } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
 import { CreateSiteDto, SiteIdParams, UpdateSiteDto } from "shared";
 import { CompanyIdParams, UserIdParams } from "shared";
-import { UserObject } from "types";
 
 import {
   createNewSite,
@@ -14,13 +13,14 @@ import {
 } from "../services/site.service";
 
 export const createSiteController = async (
-  req: FastifyRequest<{ Body: CreateSiteDto }>,
+  req: FastifyRequest<{ Body: CreateSiteDto; Params: CompanyIdParams }>,
   reply: FastifyReply,
 ) => {
   const data = req.body;
-  const currentUser = req.user as UserObject;
+  const companyId = req.params.companyId;
+  const currentUser = req.user;
 
-  return createNewSite(currentUser, data).match(
+  return createNewSite(currentUser, data, companyId).match(
     (site) => reply.status(httpStatus.CREATED).send(site),
     (error) => sendChainedErrorReply(reply, error),
   );
@@ -30,11 +30,11 @@ export const updateSiteController = async (
   req: FastifyRequest<{ Params: SiteIdParams; Body: UpdateSiteDto }>,
   reply: FastifyReply,
 ) => {
-  const id = req.params.siteId;
+  const {siteId,companyId} = req.params;
   const data = req.body;
   const currentUser = req.user;
 
-  return updateSiteById(currentUser, id, data).match(
+  return updateSiteById(currentUser, siteId, data,companyId).match(
     (site) => reply.status(httpStatus.OK).send(site),
     (error) => sendChainedErrorReply(reply, error),
   );
@@ -67,13 +67,14 @@ export const getSitesByCompanyIdController = async (
 };
 
 export const getSiteByIdController = async (
-  req: FastifyRequest<{ Params: { siteId: string } }>,
+  req: FastifyRequest<{ Params: SiteIdParams }>,
   reply: FastifyReply,
 ) => {
   const id = req.params.siteId;
+  const companyId = req.params.companyId;
   const currentUser = req.user;
 
-  return getSiteById(id, currentUser).match(
+  return getSiteById(id, currentUser, companyId).match(
     (site) => reply.status(httpStatus.OK).send(site),
     (error) => sendChainedErrorReply(reply, error),
   );
