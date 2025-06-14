@@ -55,19 +55,24 @@ export const canCreateUser = async (
 ) => {
   const currentUser = req.user;
   const targetRole = req.body?.role;
-
-  if (!currentUser || !targetRole || !rolePriority[targetRole]) {
+  if (
+    !currentUser ||
+    Object.keys(currentUser).length === 0 ||
+    !targetRole ||
+    !rolePriority[targetRole]
+  ) {
     return sendBadRequest(reply, "Invalid user role or request payload.");
   }
 
   const currentPriority = rolePriority[currentUser.role];
   const targetPriority = rolePriority[targetRole];
 
-  if (currentPriority >= targetPriority) return;
-  return sendForbidden(
-    reply,
-    `Insufficient privileges to create role '${targetRole}'.`,
-  );
+  if (currentPriority < targetPriority || currentUser.role === "WORKER") {
+    return sendForbidden(
+      reply,
+      `Insufficient privileges to create role '${targetRole}'.`,
+    );
+  }
 };
 
 const isInvalidRole = (role?: string): boolean =>

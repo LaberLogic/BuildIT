@@ -1,7 +1,7 @@
 import { env } from "@env";
 import { ChainedError } from "@utils/chainedError";
 import mailgun from "mailgun-js";
-import { ResultAsync } from "neverthrow";
+import { okAsync, ResultAsync } from "neverthrow";
 import opossum from "opossum";
 
 export const mailgunClient = mailgun({
@@ -55,6 +55,8 @@ export const mailBreaker = new opossum(buildAndSendEmail, {
 export const sendEmail = (
   params: SendEmailParams,
 ): ResultAsync<null, ChainedError> => {
+  if (env.SKIP_EMAIL_SENDING === true) return okAsync(null);
+
   return ResultAsync.fromPromise(
     mailBreaker.fire(params),
     (e) => new ChainedError(e),

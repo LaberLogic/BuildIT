@@ -11,4 +11,5 @@ export const toUserDTO = (user: User): UserResponseDto => ({
   createdAt: user.createdAt.toISOString(),
   updatedAt: user.updatedAt.toISOString(),
   status: user.status,
+  companyId: user.companyId,
 });

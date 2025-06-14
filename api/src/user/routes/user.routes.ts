@@ -28,7 +28,7 @@ const userRoutes = async (app: FastifyInstance) => {
     preHandler: [app.authenticate, isAdmin],
     schema: {
       tags: ["Users"],
-      params: $ref("userIdParamsSchema"),
+      params: $ref("userIdParamsOnlyIdSchema"),
       response: {
         200: $ref("userResponseSchema"),
         404: siteRef("errorResponseSchema"),
