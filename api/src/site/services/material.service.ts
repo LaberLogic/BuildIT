@@ -39,7 +39,11 @@ export const updateMaterialProperties = (
   return scopeCheckCompany(currentUser, companyId)
     .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
     .andThen(() => updateMaterial({ id: materialId }, data))
-    .map((material: Material) => toMaterialDTO(material));
+    .map((material: Material) => toMaterialDTO(material))
+    .mapErr((e) => {
+      console.log(e);
+      return e;
+    });
 };
 
 export const incrementDecrementMaterial = (
@@ -53,9 +57,11 @@ export const incrementDecrementMaterial = (
     .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
     .andThen(() => getMaterialById({ id: materialId }))
     .andThen((material: Material) => {
+      console.log("REACHED");
       if (material.amount + delta < 0) {
+        console.log("REACHED2");
         return errAsync(
-          new ChainedError("Material amount cannot be negative", 401),
+          new ChainedError("Material amount cannot be negative", 403),
         );
       }
 

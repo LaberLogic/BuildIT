@@ -30,11 +30,12 @@ export const updateSiteController = async (
   req: FastifyRequest<{ Params: SiteIdParams; Body: UpdateSiteDto }>,
   reply: FastifyReply,
 ) => {
-  const {siteId,companyId} = req.params;
+  const { siteId, companyId } = req.params;
   const data = req.body;
   const currentUser = req.user;
+  console.log(companyId);
 
-  return updateSiteById(currentUser, siteId, data,companyId).match(
+  return updateSiteById(currentUser, siteId, data, companyId).match(
     (site) => reply.status(httpStatus.OK).send(site),
     (error) => sendChainedErrorReply(reply, error),
   );

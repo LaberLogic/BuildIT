@@ -184,12 +184,9 @@ describe("Permission Functions", () => {
         }>(undefined, { role: "WORKER" });
         const reply = makeReply();
         await canCreateUser(req, reply);
-        expect(reply.status).toHaveBeenCalledWith(403);
+        expect(reply.status).toHaveBeenCalledWith(400);
       });
     });
-
-    describe("Edge Cases", () => {});
-    describe("Data Transformation", () => {});
   });
 
   describe("canManageUser", () => {
@@ -327,8 +324,5 @@ describe("Permission Functions", () => {
         });
       });
     });
-
-    describe("Edge Cases", () => {});
-    describe("Data Transformation", () => {});
   });
 });

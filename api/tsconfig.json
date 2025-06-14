@@ -17,7 +17,7 @@
       "@src/*": ["src/*"],
       "@env": ["env.ts"],
       "@prisma/*": ["generated/*"],
-      "@tests/*":  ["tests/*"],
+      "@tests/*": ["tests/*"],
       "shared": ["../shared/src/index.ts"]
     }
   },
@@ -27,7 +27,7 @@
     "jest.config.ts",
     "utils/*.ts",
     "middlewares/**/*.ts",
-    "prisma/seed.ts"
+    "prisma/seed.js"
   ],
   "exclude": ["node_modules"],
   "files": ["types.d.ts"]

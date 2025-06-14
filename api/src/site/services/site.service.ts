@@ -34,6 +34,7 @@ export const updateSiteById = (
   data: UpdateSiteDto,
   companyId: string,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
+  console.log(companyId);
   return scopeCheckSiteAccess(currentUser, siteId, companyId)
     .andThen(() => getSite({ id: siteId }))
     .andThen((site) => {
@@ -62,13 +63,12 @@ export const getSitesByUserId = (
   userId: string,
   currentUser: UserObject,
 ): ResultAsync<SiteResponseDto[], ChainedError> => {
-  return  getSites(
-      extendSiteWhere(
-        { assignments: { some: { user: { id: userId } } } },
-        currentUser,
-      ),
-    ).map((sites) => sites.map((site) => toSiteDTO(site, currentUser)));
-
+  return getSites(
+    extendSiteWhere(
+      { assignments: { some: { user: { id: userId } } } },
+      currentUser,
+    ),
+  ).map((sites) => sites.map((site) => toSiteDTO(site, currentUser)));
 };
 
 export const getSitesByCompanyId = (
