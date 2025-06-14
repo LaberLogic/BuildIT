@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/prisma";
 import { ChainedError } from "@utils/chainedError";
+import { prismaErrorCodeToHttpStatus } from "@utils/errorCodeMapper";
 import { ResultAsync } from "neverthrow";
 const prisma = new PrismaClient();
 
@@ -49,16 +50,16 @@ export const getCompanies = (where?: Prisma.CompanyWhereInput) => {
       where,
       select: companySelect,
     }),
-    (e) => new ChainedError(e),
+    (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
   );
 };
 
 export const getCompany = (where: Prisma.CompanyWhereUniqueInput) => {
   return ResultAsync.fromPromise(
-    prisma.company.findUnique({
+    prisma.company.findUniqueOrThrow({
       where,
       select: companySelect,
     }),
-    (e) => new ChainedError(e),
+    (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
   );
 };
