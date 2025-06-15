@@ -6,16 +6,12 @@
 
 declare namespace Cypress {
   interface Chainable<Subject = any> {
-    /**
-     * Custom command to select elements by data-cy attribute.
-     * @example cy.getByCy('submit-button')
-     */
-    getByCy(selector: string, ...args: any[]): Chainable<JQuery<HTMLElement>>;
-    /**
-     * Logs in by sending a POST request and sets a token cookie.
-     * @param email User email
-     * @param password User password
-     */
     loginByApi(email: string, password: string): Chainable<void>;
+    loginAsManager(): Chainable<void>;
+    loginAsAdmin(): Chainable<void>;
+    goToFirstSiteAsManager(): Chainable<void>;
+    goToSitesTabAsAdmin(): Chainable<void>;
+    goToFirstSiteAsAdmin(): Chainable<void>;
+    getByCy(dataCy: string): Chainable<JQuery<HTMLElement>>;
   }
 }

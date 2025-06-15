@@ -3,8 +3,12 @@ before(() => {
 });
 
 describe("Site Overview (Admin)", () => {
+  before(() => {
+    cy.request("POST", "http://localhost:3001/test/reset-db");
+  });
+
   it("should log in as admin and validate the first site card", () => {
-    cy.loginByApi("admin@example.com", "secret").then(() => {
+    cy.loginAsAdmin().then(() => {
       cy.getByCy("company-overview-card").click();
       cy.get("#tab-sites").click();
 
@@ -14,21 +18,15 @@ describe("Site Overview (Admin)", () => {
         .first()
         .within(() => {
           cy.get("h2").should("not.be.empty");
-
           cy.get(".el-tag").should("exist").and("not.be.empty");
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           cy.contains(/\d+%/).should(($progress: any) => {
-            const progressText = $progress!.text();
-            const progressNumber = parseInt(progressText);
-            expect(progressNumber).to.be.gte(0).and.lte(100);
+            const progressNumber = parseInt($progress.text());
+            expect(progressNumber).to.be.within(0, 100);
           });
-
           cy.contains("Team")
             .next()
             .should("match", "p,span")
             .and("not.be.empty");
-
           cy.contains("Deadline")
             .next()
             .should("match", "p,span")

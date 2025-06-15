@@ -242,7 +242,7 @@ const handleSave = async () => {
       startDate: model.value.startDate,
       endDate: model.value.endDate,
       users: model.value.users.map((u) => u.userId),
-      ...(includeAddress.value && {
+      ...((includeAddress.value || !isEditMode.value) && {
         address,
       }),
     };
