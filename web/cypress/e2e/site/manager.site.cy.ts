@@ -3,88 +3,70 @@ before(() => {
 });
 
 describe("Site Overview (Manager)", () => {
-  it("should log in as manager and validate the first site card", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("create-site-button").should("exist");
+  it("logs in as manager and validates the first site card", () => {
+    cy.loginAsManager();
+    cy.getByCy("create-site-button").should("exist");
 
-      cy.getByCy("site-card")
-        .first()
-        .within(() => {
-          cy.get("h2").should("not.be.empty");
-
-          cy.get(".el-tag").should("exist").and("not.be.empty");
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          cy.contains(/\d+%/).should(($progress: any) => {
-            const progressText = $progress!.text();
-            const progressNumber = parseInt(progressText);
-            expect(progressNumber).to.be.gte(0).and.lte(100);
-          });
-
-          cy.contains("Team")
-            .next()
-            .should("match", "p,span")
-            .and("not.be.empty");
-
-          cy.contains("Deadline")
-            .next()
-            .should("match", "p,span")
-            .and(($el) => {
-              expect($el.text().trim()).to.match(/N\/A|[a-zA-Z]+ \d{1,2}/);
-            });
+    cy.getByCy("site-card")
+      .first()
+      .within(() => {
+        cy.get("h2").should("not.be.empty");
+        cy.get(".el-tag").should("exist").and("not.be.empty");
+        cy.contains(/\d+%/).should(($progress) => {
+          const progressNumber = parseInt($progress.text());
+          expect(progressNumber).to.be.within(0, 100);
         });
-    });
+        cy.contains("Team")
+          .next()
+          .should("match", "p,span")
+          .and("not.be.empty");
+        cy.contains("Deadline")
+          .next()
+          .should("match", "p,span")
+          .and(($el) => {
+            expect($el.text().trim()).to.match(/N\/A|[a-zA-Z]+ \d{1,2}/);
+          });
+      });
   });
 });
 
 describe("Site Details Page (Manager)", () => {
-  it("should access first site and validate details", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("site-card").first().click();
-      cy.wait(500);
+  it("accesses the first site and validates details", () => {
+    cy.goToFirstSiteAsManager();
 
-      cy.getByCy("site-name").should("not.be.empty");
+    cy.wait(500);
 
-      cy.getByCy("site-address").within(() => {
-        cy.get("span").should("not.be.empty");
-      });
-
-      cy.getByCy("site-edit-button").should("exist");
-
-      cy.get("body").then(($body) => {
-        if ($body.find('[data-cy="material-warning-alert"]').length) {
-          cy.getByCy("material-warning-alert").should("exist");
-        }
-      });
-
-      cy.getByCy("progress-bar").should("exist");
-
-      cy.getByCy("hours-logged").within(() => {
-        cy.contains("Hours Logged");
-        cy.get(".info-value").should("not.be.empty");
-      });
-
-      cy.getByCy("completion-date").within(() => {
-        cy.contains("Completion");
-        cy.get(".info-value").should("not.be.empty");
-      });
-
-      cy.getByCy("workers-count").within(() => {
-        cy.contains("Workers");
-        cy.get(".info-value").should("not.be.empty");
-      });
-
-      cy.getByCy("start-date").within(() => {
-        cy.contains("Start Date");
-        cy.get(".info-value").should("not.be.empty");
-      });
-
-      cy.getByCy("material-tracker").should("exist");
-
-      cy.getByCy("add-material-button").should("exist");
-      cy.getByCy("edit-material-button").should("exist");
-      cy.getByCy("delete-material-button").should("exist");
+    cy.getByCy("site-name").should("not.be.empty");
+    cy.getByCy("site-address").within(() => {
+      cy.get("span").should("not.be.empty");
     });
+    cy.getByCy("site-edit-button").should("exist");
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-cy="material-warning-alert"]').length) {
+        cy.getByCy("material-warning-alert").should("exist");
+      }
+    });
+    cy.getByCy("progress-bar").should("exist");
+    cy.getByCy("hours-logged").within(() => {
+      cy.contains("Hours Logged");
+      cy.get(".info-value").should("not.be.empty");
+    });
+    cy.getByCy("completion-date").within(() => {
+      cy.contains("Completion");
+      cy.get(".info-value").should("not.be.empty");
+    });
+    cy.getByCy("workers-count").within(() => {
+      cy.contains("Workers");
+      cy.get(".info-value").should("not.be.empty");
+    });
+    cy.getByCy("start-date").within(() => {
+      cy.contains("Start Date");
+      cy.get(".info-value").should("not.be.empty");
+    });
+    cy.getByCy("material-tracker").should("exist");
+    cy.getByCy("add-material-button").should("exist");
+    cy.getByCy("edit-material-button").should("exist");
+    cy.getByCy("delete-material-button").should("exist");
   });
 });
 
