@@ -3,6 +3,7 @@ import { z } from "zod";
 export const materialIdWithSiteParamsSchema = z.object({
   siteId: z.string().cuid2(),
   materialId: z.string().cuid2(),
+  companyId: z.string().cuid2(),
 });
 
 export const updateMaterialSchema = z.object({

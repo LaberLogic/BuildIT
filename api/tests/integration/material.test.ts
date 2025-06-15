@@ -34,7 +34,7 @@ describe("Materials API", () => {
     await app.close();
   });
 
-  describe.skip("POST /companies/:companyId/sites/:siteId/materials", () => {
+  describe("POST /companies/:companyId/sites/:siteId/materials", () => {
     describe("Business Logic", () => {
       it("should allow admin to create a material", async () => {
         const res = await request(app.server)

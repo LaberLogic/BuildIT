@@ -34,7 +34,6 @@ export const updateSiteById = (
   data: UpdateSiteDto,
   companyId: string,
 ): ResultAsync<SiteResponseDto, ChainedError> => {
-  console.log(companyId);
   return scopeCheckSiteAccess(currentUser, siteId, companyId)
     .andThen(() => getSite({ id: siteId }))
     .andThen((site) => {
@@ -101,7 +100,7 @@ const mapSiteCreatePayload = (
   data: CreateSiteDto,
   companyId: string,
 ): Prisma.SiteCreateInput => {
-  const { users, address, ...rest } = data;
+  const { users, address, startDate, endDate, ...rest } = data;
   return {
     company: { connect: { id: companyId } },
     address: { create: address },
@@ -110,6 +109,8 @@ const mapSiteCreatePayload = (
         data: users.map((userId) => ({ userId })),
       },
     },
+    startDate: new Date(startDate),
+    endDate: new Date(endDate),
     ...rest,
   };
 };
@@ -118,7 +119,7 @@ const mapSiteUpdateUserPayload = (
   data: UpdateSiteDto,
   existingUserIds: string[],
 ): Prisma.SiteUpdateInput => {
-  const { users: userIds, address, status, ...rest } = data;
+  const { users: userIds, address, status, startDate, endDate, ...rest } = data;
   const toAdd = userIds?.filter((id) => !existingUserIds.includes(id)) || [];
 
   return {
@@ -130,5 +131,7 @@ const mapSiteUpdateUserPayload = (
         user: { connect: { id: userId } },
       })),
     },
+    ...(startDate && { startDate: new Date(startDate) }),
+    ...(endDate && { endDate: new Date(endDate) }),
   };
 };

@@ -1,6 +1,7 @@
 import fastifyCors from "@fastify/cors";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import testRoutes from "@tests/test.routes";
 import Fastify from "fastify";
 import { withRefResolver } from "fastify-zod";
 import { authSchemas, materialSchemas, siteSchemas, userSchemas } from "shared";
@@ -58,6 +59,7 @@ app.register(siteRoutes, { prefix: "/companies/:companyId/sites" });
 app.register(materialRoutes, {
   prefix: "/companies/:companyId/sites/:siteId/materials",
 });
+app.register(testRoutes, { prefix: "/test" });
 
 app.register(swaggerUI, {
   routePrefix: "/docs",
