@@ -124,7 +124,7 @@ export const seedMaterials = [
     siteId: seedSite1.id,
     name: "Concrete",
     unit: "cubic meters",
-    amount: 100,
+    amount: 30,
     threshold: 25,
   },
   {
@@ -132,7 +132,7 @@ export const seedMaterials = [
     siteId: seedSite1.id,
     name: "Rebar",
     unit: "tons",
-    amount: 50,
+    amount: 20,
     threshold: 10,
   },
   {
@@ -140,12 +140,13 @@ export const seedMaterials = [
     siteId: seedSite2.id,
     name: "Glass Panels",
     unit: "units",
-    amount: 200,
+    amount: 45,
     threshold: 40,
   },
 ];
 
 export async function seedDatabase() {
+  console.log("REACHED");
   await prisma.siteAssignment.deleteMany();
   await prisma.material.deleteMany();
   await prisma.site.deleteMany();

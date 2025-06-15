@@ -16,6 +16,31 @@
       </div>
 
       <div v-else-if="activeTab === 'sites'" class="space-y-4 pb-4 mb-24">
+        <div class="flex w-1/3 justify-between items-center mb-6">
+          <div class="ml-2">
+            <h1 class="text-2xl font-bold text-gray-900">My Sites</h1>
+            <p class="text-sm text-gray-500 mt-1">
+              {{ sites.length }} active projects
+            </p>
+          </div>
+
+          <el-button
+            v-if="isAdminOrManager"
+            data-cy="create-site-button"
+            type="default"
+            circle
+            class="h-12 w-12 ml-auto"
+            @click="createOpen = true"
+          >
+            <Plus class="h-6 w-6 text-blue-500" />
+            <span class="sr-only">Add new site</span>
+          </el-button>
+          <site-modals--create-update-site
+            v-model="createOpen"
+            :users="users"
+            @close="createOpen = false"
+          />
+        </div>
         <div
           v-for="(site, index) in sites"
           :key="site.id"
@@ -39,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import { Plus } from "lucide-vue-next";
 import type {
   CompanyResponseDto,
   SiteResponseDto,
@@ -61,4 +87,9 @@ const props = defineProps({
 });
 
 const activeTab = ref("info");
+const isAdminOrManager = computed(() => authStore.isManagerOrAdmin);
+
+const authStore = useAuthStore();
+
+const createOpen = ref(false);
 </script>

@@ -35,3 +35,27 @@
 //     }
 //   }
 // }
+//
+Cypress.Commands.add("getByCy", (selector, ...args) => {
+  return cy.get(`[data-cy="${selector}"]`, ...args);
+});
+
+Cypress.Commands.add("loginByApi", (email: string, password: string) => {
+  cy.request({
+    method: "POST",
+    url: "http://localhost:3001/auth/signin",
+    body: { email, password },
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+
+    const { accessToken, user } = response.body;
+
+    cy.setCookie("token", accessToken);
+
+    const redirectUrl = user.companyId
+      ? `/company/${user.companyId}/sites`
+      : "/company/";
+
+    cy.visit(redirectUrl);
+  });
+});

@@ -2,32 +2,37 @@
   <div
     v-if="material"
     class="border border-gray-200 rounded-md"
-    :body-style="{ padding: '16px' }"
+    data-cy="material-card"
   >
     <div
       class="flex items-center justify-between p-3 border border-gray-200 rounded-md"
+      data-cy="material-card-content"
     >
       <div class="flex-1">
         <div class="flex items-center">
-          <span class="text-label">{{ material.name }}</span>
+          <span class="text-label" data-cy="material-name">
+            {{ material.name }}
+          </span>
           <el-tag
             :type="getStatusBadge()"
             size="small"
             effect="light"
             class="capitalize ml-1"
+            data-cy="material-status"
           >
             {{ getStatusName() }}
           </el-tag>
         </div>
-        <div class="text-sm text-gray-500 mt-1">
+        <div class="text-sm text-gray-500 mt-1" data-cy="material-threshold">
           Threshold: {{ material.threshold }}
         </div>
       </div>
 
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2" data-cy="material-controls">
         <el-button
           class="btn-icon"
           plain
+          data-cy="material-increment"
           @mousedown="holdIncrement.start"
           @mouseup="holdIncrement.stop"
           @mouseleave="holdIncrement.stop"
@@ -37,7 +42,7 @@
           <el-icon><Plus /></el-icon>
         </el-button>
 
-        <span class="mx-2 min-w-[40px] text-center">
+        <span class="mx-2 min-w-[40px] text-center" data-cy="material-amount">
           {{ localAmount }} {{ material.unit }}
         </span>
 
@@ -45,6 +50,7 @@
           class="btn-icon"
           plain
           :disabled="localAmount <= 0"
+          data-cy="material-decrement"
           @mousedown="holdDecrement.start"
           @mouseup="holdDecrement.stop"
           @mouseleave="holdDecrement.stop"
@@ -55,17 +61,23 @@
         </el-button>
       </div>
 
-      <el-button class="btn-icon ml-4" @click="editOpen = true">
-        <el-icon>
-          <Edit />
-        </el-icon>
+      <el-button
+        class="btn-icon ml-4"
+        data-cy="edit-material-button"
+        @click="editOpen = true"
+      >
+        <el-icon><Edit /></el-icon>
       </el-button>
-      <el-button class="btn-icon" @click="deleteOpen = true">
-        <el-icon>
-          <Trash />
-        </el-icon>
+      <el-button
+        v-if="isAdminOrManager"
+        class="btn-icon"
+        data-cy="delete-material-button"
+        @click="deleteOpen = true"
+      >
+        <el-icon><Trash /></el-icon>
       </el-button>
     </div>
+
     <site-modals-create-update-material
       v-model="editOpen"
       :material="material"
@@ -108,6 +120,10 @@ const editOpen = ref(false);
 const deleteOpen = ref(false);
 
 const localAmount = ref(props.material.amount);
+
+const authStore = useAuthStore();
+
+const isAdminOrManager = computed(() => authStore.isManagerOrAdmin);
 
 let accumulatedDelta = 0;
 

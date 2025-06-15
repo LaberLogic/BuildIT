@@ -1,13 +1,17 @@
 <template>
-  <el-card class="w-full max-w-md mx-auto border border-gray-200 shadow-sm">
+  <el-card
+    class="w-full max-w-md mx-auto border border-gray-200 shadow-sm"
+    data-cy="signin-card"
+  >
     <div class="p-6">
-      <el-form :model="form" class="space-y-4">
+      <el-form :model="form" class="space-y-4" data-cy="signin-form">
         <el-form-item label="Email" label-position="top">
           <el-input
             v-model="form.email"
             type="email"
             placeholder="Enter your email"
             :disabled="isLoading"
+            data-cy="email-input"
           />
         </el-form-item>
 
@@ -18,6 +22,7 @@
             placeholder="Enter your password"
             :disabled="isLoading"
             suffix-icon="View"
+            data-cy="password-input"
             @suffix-icon-click="togglePassword"
           />
         </el-form-item>
@@ -26,6 +31,7 @@
           <router-link
             to="/reset-password"
             class="text-sm text-blue-500 hover:underline"
+            data-cy="forgot-password-link"
           >
             Forgot password?
           </router-link>
@@ -35,11 +41,17 @@
           type="primary"
           class="w-full"
           :loading="isLoading"
+          data-cy="submit-button"
           @click="submitForm"
         >
           Sign in
         </el-button>
-        <div v-if="errorMessage" class="text-red-600 text-sm mb-4">
+
+        <div
+          v-if="errorMessage"
+          class="text-red-600 text-sm mb-4"
+          data-cy="error-message"
+        >
           {{ errorMessage }}
         </div>
       </el-form>
