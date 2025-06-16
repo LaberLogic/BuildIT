@@ -10,9 +10,9 @@
         <span class="text-2xl font-bold text-gray-900">Construxx</span>
       </div>
       <div class="flex items-center space-x-4">
-        <el-button tag="nuxt-link" to="/auth/login" class="p-0">
-          Sign In
-        </el-button>
+        <NuxtLink to="/auth/login" class="w-full sm:w-auto">
+          <el-button size="large" class="w-full"> Sign In </el-button>
+        </NuxtLink>
         <el-button
           type="primary"
           tag="nuxt-link"
