@@ -12,7 +12,8 @@ describe("Site Overview (Manager)", () => {
       .within(() => {
         cy.get("h2").should("not.be.empty");
         cy.get(".el-tag").should("exist").and("not.be.empty");
-        cy.contains(/\d+%/).should(($progress) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        cy.contains(/\d+%/).should(($progress: any) => {
           const progressNumber = parseInt($progress.text());
           expect(progressNumber).to.be.within(0, 100);
         });
