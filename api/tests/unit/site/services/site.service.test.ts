@@ -99,11 +99,11 @@ describe("createNewSite", () => {
 
   describe("Business Logic", () => {
     it("should create site successfully", async () => {
-      const createDto: CreateSiteDto = {
+      const createDto = {
         users: ["user-2", "user-3"],
         address: createRawSite().address,
         name: "New Site",
-      };
+      } as unknown as CreateSiteDto;
 
       mockedCreateSite.mockReturnValue(okAsync(createRawSite()));
       mockedToSiteDTO.mockReturnValue(baseSiteDTO);
@@ -117,11 +117,11 @@ describe("createNewSite", () => {
 
   describe("Error Scenarios", () => {
     it("should return error if creation fails", async () => {
-      const createDto: CreateSiteDto = {
+      const createDto = {
         users: ["user-2"],
         address: createRawSite().address,
         name: "Failing Site",
-      };
+      } as unknown as CreateSiteDto;
 
       mockedCreateSite.mockReturnValue(errAsync(new ChainedError("DB error")));
 

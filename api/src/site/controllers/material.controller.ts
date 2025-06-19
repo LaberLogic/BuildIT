@@ -1,9 +1,11 @@
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
-import { UpdateMaterialDto } from "shared";
-import { CreateMaterialDto } from "shared";
-import { UpdateMaterialCountDto } from "shared";
+import {
+  CreateMaterialDto,
+  UpdateMaterialCountDto,
+  UpdateMaterialDto,
+} from "shared";
 import { UserObject } from "types";
 
 import {
@@ -40,7 +42,6 @@ export const updateMaterialController = async (
   const { siteId, materialId, companyId } = req.params;
   const data = req.body;
 
-  console.log(companyId);
   const currentUser = req.user as UserObject;
 
   return updateMaterialProperties(

@@ -88,7 +88,7 @@ const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
 
-const emit = defineEmits<{
+const emit = defineEmits<
   (
     e: "next-step",
     payload: {
@@ -97,8 +97,8 @@ const emit = defineEmits<{
       email: string;
       password: string;
     },
-  ): void;
-}>();
+  ) => void
+>();
 
 const onSubmit = () => {
   formRef.value.validate((valid: boolean) => {

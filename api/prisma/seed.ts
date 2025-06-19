@@ -146,7 +146,6 @@ export const seedMaterials = [
 ];
 
 export async function seedDatabase() {
-  console.log("REACHED");
   await prisma.siteAssignment.deleteMany();
   await prisma.material.deleteMany();
   await prisma.site.deleteMany();

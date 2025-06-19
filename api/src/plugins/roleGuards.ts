@@ -87,7 +87,7 @@ export const canManageUser = async (
 ) => {
   const currentUser = req.user;
   const targetUserId = req.params.userId;
-  const requestedRole = req.body?.role || req.body?.targetRole;
+  const requestedRole = req.body?.role ?? req.body?.targetRole;
 
   if (!currentUser || !targetUserId) {
     return sendForbidden(reply, "Missing authentication or user ID.");
@@ -116,8 +116,6 @@ export const canManageUser = async (
         );
       }
     }
-
-    return;
   }
 
   if (currentRole === "WORKER") {

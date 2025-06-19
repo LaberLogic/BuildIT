@@ -1,8 +1,13 @@
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
 import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
-import { CreateSiteDto, SiteIdParams, UpdateSiteDto } from "shared";
-import { CompanyIdParams, UserIdParams } from "shared";
+import {
+  CompanyIdParams,
+  CreateSiteDto,
+  SiteIdParams,
+  UpdateSiteDto,
+  UserIdParams,
+} from "shared";
 
 import {
   createNewSite,
@@ -33,7 +38,6 @@ export const updateSiteController = async (
   const { siteId, companyId } = req.params;
   const data = req.body;
   const currentUser = req.user;
-  console.log(companyId);
 
   return updateSiteById(currentUser, siteId, data, companyId).match(
     (site) => reply.status(httpStatus.OK).send(site),

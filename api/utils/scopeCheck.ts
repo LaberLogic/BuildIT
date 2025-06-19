@@ -12,8 +12,6 @@ export const scopeCheckCompany = (
   if (currentUser.role === "ADMIN") {
     return okAsync(undefined);
   }
-  console.log(currentUser);
-  console.log(passedCompanyId);
 
   if (!currentUser.companyId || currentUser.companyId !== passedCompanyId) {
     return errAsync(new ChainedError("Unauthorized - Invalid company scope"));
