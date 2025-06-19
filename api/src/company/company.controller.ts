@@ -20,7 +20,7 @@ export const getCompanyController = async (
   reply: FastifyReply,
 ) => {
   return getCompany({ id: req.params.companyId }).match(
-    (site) => reply.status(httpStatus.OK).send(site),
+    (company) => reply.status(httpStatus.OK).send(company),
     (error) => sendChainedErrorReply(reply, error),
   );
 };

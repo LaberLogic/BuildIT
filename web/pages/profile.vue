@@ -16,6 +16,7 @@
           type="primary"
           plain
           class="mt-4 border-blue-500 text-blue-500 hover:bg-blue-50"
+          data-cy="edit-profile-button"
           @click="editOpen = true"
         >
           Edit Profile
@@ -51,12 +52,12 @@
       </div>
     </el-card>
 
-    <users-modals-create-update-usera
+    <users-modals-create-update-user
       v-if="user"
       v-model="editOpen"
       :user="user"
       isProfile
-      @close="editOpen = false"
+      @close="handleClose"
     />
   </div>
 </template>
@@ -83,4 +84,9 @@ const userInitials = computed(() =>
 const companyName = computed(
   () => user.value?.companyId || "Company not specified",
 );
+
+const handleClose = () => {
+  editOpen.value = false;
+  auth.fetchUser();
+};
 </script>

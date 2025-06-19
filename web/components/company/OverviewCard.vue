@@ -1,5 +1,9 @@
 <template>
-  <NuxtLink :to="`/company/${company.id}`" class="block">
+  <NuxtLink
+    :to="`/company/${company.id}`"
+    class="block"
+    data-cy="company-overview-card"
+  >
     <el-card
       shadow="hover"
       class="transition-transform duration-200 hover:-translate-y-0.5 border border-gray-200"

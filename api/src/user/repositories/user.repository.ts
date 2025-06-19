@@ -5,6 +5,8 @@ import { ResultAsync } from "neverthrow";
 
 const prisma = new PrismaClient();
 
+export type User = Prisma.UserGetPayload<{ select: typeof safeUserSelect }>;
+
 const safeUserSelect = {
   id: true,
   email: true,
@@ -46,9 +48,10 @@ export const getUserUnsafe = (where: Prisma.UserWhereUniqueInput) => {
   );
 };
 
-export const getAllUsers = () => {
+export const getUsers = (where?: Prisma.UserWhereInput) => {
   return ResultAsync.fromPromise(
     prisma.user.findMany({
+      where,
       select: safeUserSelect,
     }),
     (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
@@ -71,16 +74,6 @@ export const deleteUser = (id: string) => {
     prisma.user.delete({
       where: { id },
       select: { id: true },
-    }),
-    (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
-  );
-};
-
-export const getUsersByCompanyId = (companyId: string) => {
-  return ResultAsync.fromPromise(
-    prisma.user.findMany({
-      where: { companyId },
-      select: safeUserSelect,
     }),
     (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
   );

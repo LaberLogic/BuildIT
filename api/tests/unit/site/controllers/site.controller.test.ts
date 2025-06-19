@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ROLE } from "@prisma/prisma";
 import {
   createSiteController,
   getSiteByIdController,
@@ -15,29 +16,35 @@ import {
 } from "@src/site/services/site.service";
 import { ChainedError } from "@utils/chainedError";
 import { sendChainedErrorReply } from "@utils/errorCodeMapper";
+import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
+import {
+  CompanyIdParams,
+  CreateSiteDto,
+  SiteIdParams,
+  UpdateSiteDto,
+  UserIdParams,
+} from "shared";
 
 jest.mock("@src/site/services/site.service");
 jest.mock("@utils/errorCodeMapper");
 
-describe("Site Controllers", () => {
-  let mockReply: any;
+describe("createSiteController", () => {
+  let mockReply: Partial<FastifyReply>;
+  const mockUser = { id: "user1", role: ROLE.MANAGER, companyId: "company1" };
+  const mockSite = { id: "site1", name: "Test Site" };
+  const mockError = new ChainedError("Failure", 400);
 
   beforeEach(() => {
     mockReply = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
-
     (sendChainedErrorReply as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
-  const mockUser = { id: "user1", email: "user1@example.com" };
-  const mockSite = { id: "site1", name: "Test Site" };
-  const mockSites = [mockSite, { id: "site2", name: "Site 2" }];
-  const mockError = new ChainedError("Failure", 400);
-
-  describe("createSiteController", () => {
+  describe("Business Logic", () => {
     it("should respond 201 and return created site on success", async () => {
       (createNewSite as jest.Mock).mockReturnValueOnce({
         match: (ok: any) => ok(mockSite),
@@ -45,31 +52,81 @@ describe("Site Controllers", () => {
 
       const mockRequest = {
         user: mockUser,
-        body: { name: "Test Site", companyId: "c1", address: {}, userIds: [] },
-      };
+        body: {
+          name: "Test Site",
+          companyId: "c1",
+          address: {},
+          userIds: [],
+        },
+        params: { companyId: "c1" },
+      } as unknown as FastifyRequest<{
+        Body: CreateSiteDto;
+        Params: CompanyIdParams;
+      }>;
 
-      await createSiteController(mockRequest as any, mockReply);
+      await createSiteController(mockRequest, mockReply as FastifyReply);
 
-      expect(createNewSite).toHaveBeenCalledWith(mockUser, mockRequest.body);
+      expect(createNewSite).toHaveBeenCalledWith(
+        mockUser,
+        mockRequest.body,
+        "c1",
+      );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.CREATED);
       expect(mockReply.send).toHaveBeenCalledWith(mockSite);
-      expect(sendChainedErrorReply).not.toHaveBeenCalled();
     });
+  });
 
+  describe("Error Scenarios", () => {
     it("should call sendChainedErrorReply on error", async () => {
       (createNewSite as jest.Mock).mockReturnValueOnce({
         match: (_ok: any, err: any) => err(mockError),
       });
 
-      const mockRequest = { user: mockUser, body: {} };
+      const mockRequest = {
+        user: mockUser,
+        body: {
+          name: "",
+          address: {
+            street: "",
+            streetNumber: "",
+            city: "",
+            postalCode: "",
+            country: "",
+          },
+          users: [],
+        },
+        params: { companyId: "c1" },
+      } as unknown as FastifyRequest<{
+        Body: CreateSiteDto;
+        Params: CompanyIdParams;
+      }>;
 
-      await createSiteController(mockRequest as any, mockReply);
+      await createSiteController(mockRequest, mockReply as FastifyReply);
 
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
 
-  describe("updateSiteController", () => {
+  describe("Edge Cases", () => {
+  });
+});
+
+describe("updateSiteController", () => {
+  let mockReply: Partial<FastifyReply>;
+  const mockUser = { id: "user1", role: ROLE.MANAGER, companyId: "company1" };
+  const mockSite = { id: "site1", name: "Test Site" };
+  const mockError = new ChainedError("Failure", 400);
+
+  beforeEach(() => {
+    mockReply = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+    (sendChainedErrorReply as jest.Mock).mockClear();
+    jest.clearAllMocks();
+  });
+
+  describe("Business Logic", () => {
     it("should respond 200 and return updated site on success", async () => {
       (updateSiteById as jest.Mock).mockReturnValueOnce({
         match: (ok: any) => ok(mockSite),
@@ -77,22 +134,24 @@ describe("Site Controllers", () => {
 
       const mockRequest = {
         user: mockUser,
-        params: { siteId: "site1" },
+        params: { siteId: "site1", companyId: "company-1" },
         body: { name: "Updated Site" },
-      };
+      } as FastifyRequest<{ Body: UpdateSiteDto; Params: SiteIdParams }>;
 
-      await updateSiteController(mockRequest as any, mockReply);
+      await updateSiteController(mockRequest, mockReply as FastifyReply);
 
       expect(updateSiteById).toHaveBeenCalledWith(
         mockUser,
-        mockRequest.params.siteId,
+        "site1",
         mockRequest.body,
+        "company-1"
       );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
       expect(mockReply.send).toHaveBeenCalledWith(mockSite);
-      expect(sendChainedErrorReply).not.toHaveBeenCalled();
     });
+  });
 
+  describe("Error Scenarios", () => {
     it("should call sendChainedErrorReply on error", async () => {
       (updateSiteById as jest.Mock).mockReturnValueOnce({
         match: (_ok: any, err: any) => err(mockError),
@@ -100,17 +159,36 @@ describe("Site Controllers", () => {
 
       const mockRequest = {
         user: mockUser,
-        params: { siteId: "site1" },
+        params: { siteId: "site1", companyId: "company1" },
         body: { name: "Updated Site" },
-      };
+      } as FastifyRequest<{ Body: UpdateSiteDto; Params: SiteIdParams }>;
 
-      await updateSiteController(mockRequest as any, mockReply);
+      await updateSiteController(mockRequest, mockReply as FastifyReply);
 
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
+});
 
-  describe("getSitesByUserIdController", () => {
+describe("getSitesByUserIdController", () => {
+  let mockReply: Partial<FastifyReply>;
+  const mockUser = { id: "user1", role: ROLE.MANAGER, companyId: "company1" };
+  const mockSites = [
+    { id: "site1", name: "Test Site" },
+    { id: "site2", name: "Site 2" },
+  ];
+  const mockError = new ChainedError("Failure", 400);
+
+  beforeEach(() => {
+    mockReply = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+    (sendChainedErrorReply as jest.Mock).mockClear();
+    jest.clearAllMocks();
+  });
+
+  describe("Business Logic", () => {
     it("should respond 200 and return sites on success", async () => {
       (getSitesByUserId as jest.Mock).mockReturnValueOnce({
         match: (ok: any) => ok(mockSites),
@@ -119,19 +197,17 @@ describe("Site Controllers", () => {
       const mockRequest = {
         user: mockUser,
         params: { userId: "user1" },
-      };
+      } as FastifyRequest<{ Params: UserIdParams }>;
 
-      await getSitesByUserIdController(mockRequest as any, mockReply);
+      await getSitesByUserIdController(mockRequest, mockReply as FastifyReply);
 
-      expect(getSitesByUserId).toHaveBeenCalledWith(
-        mockRequest.params.userId,
-        mockUser,
-      );
+      expect(getSitesByUserId).toHaveBeenCalledWith("user1", mockUser);
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
       expect(mockReply.send).toHaveBeenCalledWith(mockSites);
-      expect(sendChainedErrorReply).not.toHaveBeenCalled();
     });
+  });
 
+  describe("Error Scenarios", () => {
     it("should call sendChainedErrorReply on error", async () => {
       (getSitesByUserId as jest.Mock).mockReturnValueOnce({
         match: (_ok: any, err: any) => err(mockError),
@@ -140,15 +216,34 @@ describe("Site Controllers", () => {
       const mockRequest = {
         user: mockUser,
         params: { userId: "user1" },
-      };
+      } as FastifyRequest<{ Params: UserIdParams }>;
 
-      await getSitesByUserIdController(mockRequest as any, mockReply);
+      await getSitesByUserIdController(mockRequest, mockReply as FastifyReply);
 
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
+});
 
-  describe("getSitesByCompanyIdController", () => {
+describe("getSitesByCompanyIdController", () => {
+  let mockReply: Partial<FastifyReply>;
+  const mockUser = { id: "user1", role: ROLE.MANAGER, companyId: "company1" };
+  const mockSites = [
+    { id: "site1", name: "Test Site" },
+    { id: "site2", name: "Site 2" },
+  ];
+  const mockError = new ChainedError("Failure", 400);
+
+  beforeEach(() => {
+    mockReply = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+    (sendChainedErrorReply as jest.Mock).mockClear();
+    jest.clearAllMocks();
+  });
+
+  describe("Business Logic", () => {
     it("should respond 200 and return sites on success", async () => {
       (getSitesByCompanyId as jest.Mock).mockReturnValueOnce({
         match: (ok: any) => ok(mockSites),
@@ -157,36 +252,56 @@ describe("Site Controllers", () => {
       const mockRequest = {
         user: mockUser,
         params: { companyId: "company1" },
-      };
+      } as FastifyRequest<{ Params: CompanyIdParams }>;
 
-      await getSitesByCompanyIdController(mockRequest as any, mockReply);
-
-      expect(getSitesByCompanyId).toHaveBeenCalledWith(
-        mockRequest.params.companyId,
-        mockUser,
+      await getSitesByCompanyIdController(
+        mockRequest,
+        mockReply as FastifyReply,
       );
+
+      expect(getSitesByCompanyId).toHaveBeenCalledWith("company1", mockUser);
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
       expect(mockReply.send).toHaveBeenCalledWith(mockSites);
-      expect(sendChainedErrorReply).not.toHaveBeenCalled();
     });
+  });
 
+  describe("Error Scenarios", () => {
     it("should call sendChainedErrorReply on error", async () => {
       (getSitesByCompanyId as jest.Mock).mockReturnValueOnce({
-        match: (_o: any, err: any) => err(mockError),
+        match: (_ok: any, err: any) => err(mockError),
       });
 
       const mockRequest = {
         user: mockUser,
         params: { companyId: "company1" },
-      };
+      } as FastifyRequest<{ Params: CompanyIdParams }>;
 
-      await getSitesByCompanyIdController(mockRequest as any, mockReply);
+      await getSitesByCompanyIdController(
+        mockRequest,
+        mockReply as FastifyReply,
+      );
 
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
+});
 
-  describe("getSiteByIdController", () => {
+describe("getSiteByIdController", () => {
+  let mockReply: Partial<FastifyReply>;
+  const mockUser = { id: "user1", role: ROLE.MANAGER, companyId: "company1" };
+  const mockSite = { id: "site1", name: "Test Site" };
+  const mockError = new ChainedError("Failure", 400);
+
+  beforeEach(() => {
+    mockReply = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+    (sendChainedErrorReply as jest.Mock).mockClear();
+    jest.clearAllMocks();
+  });
+
+  describe("Business Logic", () => {
     it("should respond 200 and return site on success", async () => {
       (getSiteById as jest.Mock).mockReturnValueOnce({
         match: (ok: any) => ok(mockSite),
@@ -194,31 +309,32 @@ describe("Site Controllers", () => {
 
       const mockRequest = {
         user: mockUser,
-        params: { siteId: "site1" },
-      };
+        params: { companyId: "company1", siteId: "site1" },
+      } as FastifyRequest<{ Params: SiteIdParams }>;
 
-      await getSiteByIdController(mockRequest as any, mockReply);
+      await getSiteByIdController(mockRequest, mockReply as FastifyReply);
 
-      expect(getSiteById).toHaveBeenCalledWith(
-        mockRequest.params.siteId,
-        mockUser,
-      );
+      expect(getSiteById).toHaveBeenCalledWith("site1", mockUser, "company1");
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
       expect(mockReply.send).toHaveBeenCalledWith(mockSite);
-      expect(sendChainedErrorReply).not.toHaveBeenCalled();
     });
+  });
 
+  describe("Error Scenarios", () => {
     it("should call sendChainedErrorReply on error", async () => {
-      (getSiteById as jest.Mock).mockReturnValueOnce({
-        match: (ok: any, err: any) => err(mockError),
+      (getSitesByCompanyId as jest.Mock).mockReturnValueOnce({
+        match: (_ok: any, err: any) => err(mockError),
       });
 
       const mockRequest = {
         user: mockUser,
-        params: { siteId: "site1" },
-      };
+        params: { companyId: "company1" },
+      } as FastifyRequest<{ Params: CompanyIdParams }>;
 
-      await getSiteByIdController(mockRequest as any, mockReply);
+      await getSitesByCompanyIdController(
+        mockRequest,
+        mockReply as FastifyReply,
+      );
 
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });

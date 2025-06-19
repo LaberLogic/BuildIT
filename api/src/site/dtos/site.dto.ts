@@ -1,40 +1,9 @@
-import { SITE_STATUS } from "@prisma/prisma";
+import { SiteResponseDto } from "shared";
 import { UserObject } from "types";
 
-type Site = {
-  id: string;
-  name: string;
-  priority?: string | null;
-  status: SITE_STATUS;
-  address: {
-    streetNumber: string;
-    street: string;
-    city: string;
-    country: string;
-    postalCode: string;
-  };
-  companyId: string;
-  startDate: null | Date;
-  endDate: null | Date;
-  notes: string | null;
-  assignments: {
-    lastVisited: Date | null;
-    user: {
-      id: string;
-      firstName: string;
-      lastName: string;
-    };
-  }[];
-  material: {
-    id: string;
-    name: string;
-    unit: string;
-    amount: number;
-    threshold: number;
-  }[];
-};
+import { Site } from "../repositories/site.repository";
 
-export const toSiteDTO = (site: Site, user: UserObject) => {
+export const toSiteDTO = (site: Site, user: UserObject): SiteResponseDto => {
   const totalDays =
     site.startDate && site.endDate
       ? Math.max(

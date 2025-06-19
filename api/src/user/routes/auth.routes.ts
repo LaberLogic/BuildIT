@@ -6,7 +6,7 @@ import {
   resetPasswordRequestController,
   setPasswordController,
   signInController,
-} from "./controllers/auth.controller";
+} from "../controllers/auth.controller";
 
 const authRoutes: FastifyPluginAsync = async (app) => {
   app.post("/register", {

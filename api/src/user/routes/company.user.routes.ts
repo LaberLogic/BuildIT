@@ -4,14 +4,14 @@ import {
   isAdminOrManager,
 } from "@src/plugins/roleGuards";
 import { FastifyInstance } from "fastify";
-import { siteRef,userRef as $ref } from "shared";
+import { siteRef, userRef as $ref } from "shared";
 
 import {
   createUserController,
   deleteUserController,
   getAllUsersByCompanyController,
   updateUserController,
-} from "./controllers/user.controller";
+} from "../controllers/user.controller";
 
 const userCompanyRoutes = async (app: FastifyInstance) => {
   app.route({
@@ -21,6 +21,7 @@ const userCompanyRoutes = async (app: FastifyInstance) => {
     schema: {
       tags: ["Users"],
       body: $ref("createUserSchema"),
+      params: $ref("companyIdParamsSchema"),
       response: {
         201: $ref("userResponseSchema"),
         400: siteRef("errorResponseSchema"),

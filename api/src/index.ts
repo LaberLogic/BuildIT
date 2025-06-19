@@ -1,6 +1,7 @@
 import fastifyCors from "@fastify/cors";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import testRoutes from "@tests/test.routes";
 import Fastify from "fastify";
 import { withRefResolver } from "fastify-zod";
 import { authSchemas, materialSchemas, siteSchemas, userSchemas } from "shared";
@@ -11,9 +12,9 @@ import { healthRoutes } from "./health/health.routes";
 import jwtPlugin from "./plugins/jwt";
 import materialRoutes from "./site/routes/material.routes";
 import siteRoutes from "./site/routes/site.routes";
-import authRoutes from "./user/auth.routes";
-import companyUserRoutes from "./user/company.user.routes";
-import userRoutes from "./user/user.routes";
+import authRoutes from "./user/routes/auth.routes";
+import companyUserRoutes from "./user/routes/company.user.routes";
+import userRoutes from "./user/routes/user.routes";
 
 const app = Fastify({
   logger: {
@@ -58,6 +59,7 @@ app.register(siteRoutes, { prefix: "/companies/:companyId/sites" });
 app.register(materialRoutes, {
   prefix: "/companies/:companyId/sites/:siteId/materials",
 });
+app.register(testRoutes, { prefix: "/test" });
 
 app.register(swaggerUI, {
   routePrefix: "/docs",

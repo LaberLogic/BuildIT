@@ -9,16 +9,16 @@
     >
       <div class="flex gap-4">
         <el-form-item label="First Name" prop="firstName" class="flex-1">
-          <el-input v-model="model.firstName" />
+          <el-input v-model="model.firstName" data-cy="input-first-name" />
         </el-form-item>
 
         <el-form-item label="Last Name" prop="lastName" class="flex-1">
-          <el-input v-model="model.lastName" />
+          <el-input v-model="model.lastName" data-cy="input-last-name" />
         </el-form-item>
       </div>
 
       <el-form-item label="Email" prop="email">
-        <el-input v-model="model.email" type="email" />
+        <el-input v-model="model.email" type="email" data-cy="input-email" />
       </el-form-item>
 
       <el-form-item v-if="!isProfile" label="Role" prop="role">
@@ -26,12 +26,14 @@
           v-model="model.role"
           placeholder="Select"
           style="width: 100%"
+          data-cy="select-role"
         >
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value"
+            :data-cy="`option-role-${item.value}`"
           />
         </el-select>
       </el-form-item>
@@ -48,6 +50,7 @@
           :placeholder="
             isCreate ? 'Enter password' : 'Enter new password (optional)'
           "
+          data-cy="input-password"
           @input="onPasswordInput"
         />
       </el-form-item>
@@ -63,14 +66,20 @@
           type="password"
           autocomplete="new-password"
           :placeholder="isCreate ? 'Confirm password' : 'Confirm new password'"
+          data-cy="input-confirm-password"
         />
       </el-form-item>
     </el-form>
 
     <template #footer>
       <div class="flex justify-end space-x-2">
-        <el-button @click="onCancel">Cancel</el-button>
-        <el-button type="primary" :loading="loading" @click="handleSave">
+        <el-button data-cy="btn-cancel" @click="onCancel">Cancel</el-button>
+        <el-button
+          type="primary"
+          :loading="loading"
+          data-cy="btn-submit"
+          @click="handleSave"
+        >
           {{ isCreate ? "Create User" : "Save Changes" }}
         </el-button>
       </div>
@@ -188,12 +197,19 @@ const handleSave = async () => {
       if (isCreate.value) {
         await createUser(companyId, payload as CreateUserDto);
         ElMessage.success("User created successfully");
+      } else if (props.isProfile) {
+        await updateProfile(payload as UpdateUserDto);
+        ElMessage.success("Profile updated successfully");
       } else {
         await updateUser(companyId, props.user!.id, payload as UpdateUserDto);
         ElMessage.success("User updated successfully");
       }
-      if (!props.isProfile) await companyStore.fetchUsers(companyId);
-      else await useAuthStore().fetchUser();
+
+      if (!props.isProfile) {
+        await companyStore.fetchUsers(companyId);
+      } else {
+        await useAuthStore().fetchUser();
+      }
     } catch (error) {
       console.error("Error saving user:", error);
       ElMessage.error("An error occurred");

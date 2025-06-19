@@ -8,16 +8,17 @@
       class="grid gap-6"
     >
       <el-form-item label="Site Name" prop="name">
-        <el-input v-model="model.name" />
+        <el-input v-model="model.name" data-cy="input-site-name" />
       </el-form-item>
 
       <el-form-item label="Assign Users" prop="users">
         <el-select
           v-model="model.users"
-          placeholder="Select users"
           multiple
           clearable
           :value-key="'userId'"
+          placeholder="Select users"
+          data-cy="input-users"
         >
           <el-option
             v-for="user in users"
@@ -28,90 +29,108 @@
               firstName: user.firstName,
               lastName: user.lastName,
             }"
+            :data-cy="'user-option-' + user.id"
           />
         </el-select>
       </el-form-item>
 
-      <div class="grid grid-cols-2 gap-4">
-        <el-form-item label="Status" prop="status">
-          <el-select
-            v-model="model.status"
-            placeholder="Select status"
-            clearable
-          >
-            <el-option label="ACTIVE" value="ACTIVE" />
-            <el-option label="INACTIVE" value="INACTIVE" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="Priority" prop="priority">
-          <el-select
-            v-model="model.priority"
-            placeholder="Select priority"
-            clearable
-          >
-            <el-option label="Low" value="low" />
-            <el-option label="Medium" value="medium" />
-            <el-option label="High" value="high" />
-          </el-select>
-        </el-form-item>
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <el-form-item label="Start Date" prop="startDate">
-          <el-date-picker
-            v-model="model.startDate"
-            type="date"
-            placeholder="Pick a date"
-            style="width: 100%"
-            clearable
+      <el-form-item label="Status" prop="status">
+        <el-select v-model="model.status" clearable data-cy="input-status">
+          <el-option
+            data-cy="input-status-option"
+            label="ACTIVE"
+            value="ACTIVE"
           />
-        </el-form-item>
-
-        <el-form-item label="End Date" prop="endDate">
-          <el-date-picker
-            v-model="model.endDate"
-            type="date"
-            placeholder="Pick a date"
-            style="width: 100%"
-            clearable
+          <el-option
+            data-cy="input-status-option"
+            label="INACTIVE"
+            value="INACTIVE"
           />
-        </el-form-item>
-      </div>
-
-      <el-form-item v-if="isEditMode">
-        <el-checkbox v-model="includeAddress">Include Address</el-checkbox>
+        </el-select>
       </el-form-item>
 
-      <!-- Address Fields -->
-      <div v-if="!isEditMode || includeAddress" class="grid grid-cols-2 gap-4">
-        <el-form-item label="Street" prop="address.street">
-          <el-input v-model="model.address.street" />
-        </el-form-item>
+      <el-form-item label="Priority" prop="priority">
+        <el-select v-model="model.priority" clearable data-cy="input-priority">
+          <el-option data-cy="input-priority-option" label="Low" value="low" />
+          <el-option
+            data-cy="input-priority-option"
+            label="Medium"
+            value="medium"
+          />
+          <el-option
+            data-cy="input-priority-option"
+            label="High"
+            value="high"
+          />
+        </el-select>
+      </el-form-item>
 
-        <el-form-item label="Street Number" prop="address.streetNumber">
-          <el-input v-model="model.address.streetNumber" />
-        </el-form-item>
+      <el-form-item
+        label="Start Date"
+        prop="startDate"
+        data-cy="input-start-date"
+      >
+        <el-date-picker
+          v-model="model.startDate"
+          type="date"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+          placeholder="Pick a date"
+          style="width: 100%"
+          clearable
+        />
+      </el-form-item>
 
-        <el-form-item label="City" prop="address.city">
-          <el-input v-model="model.address.city" />
-        </el-form-item>
+      <el-form-item label="End Date" prop="endDate" data-cy="input-end-date">
+        <el-date-picker
+          v-model="model.endDate"
+          type="date"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+          placeholder="Pick a date"
+          style="width: 100%"
+          clearable
+        />
+      </el-form-item>
 
-        <el-form-item label="Postal Code" prop="address.postalCode">
-          <el-input v-model="model.address.postalCode" />
-        </el-form-item>
+      <el-checkbox v-model="includeAddress" data-cy="checkbox-include-address"
+        >Include Address</el-checkbox
+      >
+      <el-form-item label="Street" prop="address.streetNumber">
+        <el-input v-model="model.address.street" data-cy="input-street" />
+      </el-form-item>
 
-        <el-form-item label="Country" prop="address.country">
-          <el-input v-model="model.address.country" />
-        </el-form-item>
-      </div>
+      <el-form-item label="Street Number" prop="address.streetNumber">
+        <el-input
+          v-model="model.address.streetNumber"
+          data-cy="input-street-number"
+        />
+      </el-form-item>
+
+      <el-form-item label="City" prop="address.city">
+        <el-input v-model="model.address.city" data-cy="input-city" />
+      </el-form-item>
+
+      <el-form-item label="Postal Code" prop="address.postalCode">
+        <el-input
+          v-model="model.address.postalCode"
+          data-cy="input-postal-code"
+        />
+      </el-form-item>
+
+      <el-form-item label="Country" prop="address.country">
+        <el-input v-model="model.address.country" data-cy="input-country" />
+      </el-form-item>
     </el-form>
 
-    <!-- Footer -->
     <template #footer>
       <div class="flex justify-end space-x-2">
         <el-button @click="onCancel">Cancel</el-button>
-        <el-button type="primary" @click="handleSave">
+        <el-button
+          type="primary"
+          data-cy="create-update-site-save-button"
+          @click="handleSave"
+        >
           {{ isEditMode ? "Save Changes" : "Create Site" }}
         </el-button>
       </div>
@@ -216,13 +235,16 @@ const onCancel = () => {
 const handleSave = async () => {
   await formRef.value?.validate(async (valid: boolean) => {
     if (!valid) return;
-
+    console.log(includeAddress);
+    const { address, ...rest } = model.value;
     const payload = {
-      ...model.value,
+      ...rest,
       startDate: model.value.startDate,
       endDate: model.value.endDate,
       users: model.value.users.map((u) => u.userId),
-      address: model.value.address,
+      ...((includeAddress.value || !isEditMode.value) && {
+        address,
+      }),
     };
 
     try {
@@ -234,7 +256,7 @@ const handleSave = async () => {
         await companyStore.fetchSiteDetails(companyId, props.site.id);
         ElMessage.success("Site updated successfully");
       } else {
-        await createSite({ companyId }, payload as CreateSiteDto);
+        await createSite({ companyId }, payload as unknown as CreateSiteDto);
         await companyStore.fetchSites(companyId);
         ElMessage.success("Site created successfully");
       }

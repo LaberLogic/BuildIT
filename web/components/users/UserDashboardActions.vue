@@ -15,7 +15,11 @@
         <el-option label="Electrician" value="electrician" />
       </el-select>
 
-      <el-button type="primary" @click="onAddClick">
+      <el-button
+        type="primary"
+        data-cy="create-user-button"
+        @click="onAddClick"
+      >
         <el-icon><Plus /></el-icon>
       </el-button>
 
@@ -34,7 +38,6 @@ const createOpen = ref(false);
 const roleFilter = ref("all");
 
 const onAddClick = () => {
-  console.log(createOpen.value);
   createOpen.value = true;
 };
 </script>

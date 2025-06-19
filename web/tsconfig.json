@@ -1,6 +1,7 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
+    "types": ["cypress"],
     "baseUrl": ".",
     "paths": {
       "shared": ["../shared/src/index.ts"],

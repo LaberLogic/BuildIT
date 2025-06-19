@@ -6,8 +6,8 @@ import { companyAddressSchema } from "./auth";
 export const createSiteSchema = z.object({
   name: z.string().min(1),
   address: companyAddressSchema,
-  startDate: z.coerce.date().optional(),
-  endDate: z.coerce.date().optional(),
+  startDate: z.string().date(),
+  endDate: z.string().date(),
   notes: z.string().optional(),
   users: z.array(z.string()),
 });

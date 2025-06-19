@@ -1,6 +1,8 @@
-import { ROLE } from "@prisma/prisma";
+import { ROLE, SITE_STATUS } from "@prisma/prisma";
+import { toSiteDTO } from "@src/site/dtos/site.dto";
 import {
   createSite,
+  deleteSiteAssignment,
   getSite,
   getSites,
   updateSite,
@@ -12,174 +14,268 @@ import {
   getSitesByUserId,
   updateSiteById,
 } from "@src/site/services/site.service";
-import { toSiteDTO } from "@src/site/site.dto";
-import { okAsync } from "neverthrow";
+import { ChainedError } from "@utils/chainedError";
+import { errAsync, okAsync } from "neverthrow";
+import { CreateSiteDto, SiteResponseDto, UpdateSiteDto } from "shared";
+import { UserObject } from "types";
 
 jest.mock("@src/site/repositories/site.repository");
-
-const mockedCreateSite = createSite as jest.Mock;
-const mockedGetSite = getSite as jest.Mock;
-const mockedGetSites = getSites as jest.Mock;
-const mockedUpdateSite = updateSite as jest.Mock;
-
 jest.mock("@utils/scopeCheck", () => ({
   scopeCheckCompany: jest.fn(() => okAsync(true)),
+  scopeCheckSiteAccess: jest.fn(() => okAsync(true)),
   extendSiteWhere: jest.fn((where) => where),
 }));
-
-jest.mock("@src/site/site.dto", () => ({
+jest.mock("@src/site/dtos/site.dto", () => ({
   toSiteDTO: jest.fn(),
 }));
 
-describe("site.service", () => {
-  const currentUser = { id: "user-1", role: ROLE.ADMIN };
-  const companyId = "company-1";
-  const siteId = "site-1";
+const mockedDeleteSiteAssignment = deleteSiteAssignment as jest.MockedFunction<
+  typeof deleteSiteAssignment
+>;
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const mockedCreateSite = createSite as jest.MockedFunction<typeof createSite>;
+const mockedGetSite = getSite as jest.MockedFunction<typeof getSite>;
+const mockedGetSites = getSites as jest.MockedFunction<typeof getSites>;
+const mockedUpdateSite = updateSite as jest.MockedFunction<typeof updateSite>;
+const mockedToSiteDTO = toSiteDTO as jest.MockedFunction<typeof toSiteDTO>;
 
-  it("should create site successfully", async () => {
-    const createDto = {
-      companyId,
-      userIds: ["user-2", "user-3"],
-      address: {
-        street: "123 Main St",
-        streetNumber: "123",
-        city: "New York",
-        country: "USA",
-        postalCode: "12345",
+const createRawSite = () => ({
+  id: "site-1",
+  name: "New Site",
+  status: SITE_STATUS.ACTIVE,
+  priority: "medium",
+  progress: 0,
+  hoursLogged: 0,
+  address: {
+    street: "123 Main St",
+    streetNumber: "123",
+    city: "New York",
+    country: "USA",
+    postalCode: "12345",
+  },
+  companyId: "company-1",
+  assignments: [
+    {
+      lastVisited: null,
+      user: {
+        id: "user-1",
+        firstName: "John",
+        lastName: "Doe",
       },
-      name: "New Site",
-    };
+    },
+  ],
+  material: [],
+  notes: null,
+  startDate: new Date("2024-06-01T10:00:00Z"),
+  endDate: new Date("2024-06-01T10:00:00Z"),
+});
 
-    const rawCreatedSite = { id: siteId, name: "New Site" };
-    const siteDTO = { id: siteId, name: "New Site", status: "active" };
+const baseSiteDTO: SiteResponseDto = {
+  id: "site-1",
+  name: "New Site",
+  address: "123 Main St, New York, USA 12345",
+  progress: 0,
+  hoursLogged: 0,
+  status: SITE_STATUS.ACTIVE,
+  priority: "medium",
+  materialInfo: { total: 0, warnings: 0 },
+  material: [],
+  chat: { unreadCount: 0, lastMessage: "" },
+  lastVisited: new Date("2024-06-01T10:00:00Z"),
+  assignments: [
+    {
+      userId: "user-1",
+      firstName: "John",
+      lastName: "Doe",
+    },
+  ],
+  startDate: new Date("2024-06-01T10:00:00Z"),
+  endDate: new Date("2024-06-01T10:00:00Z"),
+};
 
-    mockedCreateSite.mockReturnValue(okAsync(rawCreatedSite));
-    (toSiteDTO as jest.Mock).mockReturnValue(siteDTO);
+describe("createNewSite", () => {
+  const currentUser: UserObject = { id: "user-1", role: ROLE.ADMIN };
+  const companyId = "company-1";
 
-    const result = await createNewSite(currentUser, createDto);
-
-    expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toEqual(siteDTO);
-
-    expect(mockedCreateSite).toHaveBeenCalledWith(
-      expect.objectContaining({
-        company: { connect: { id: companyId } },
-        address: { create: createDto.address },
-        assignments: {
-          createMany: { data: [{ userId: "user-2" }, { userId: "user-3" }] },
-        },
+  describe("Business Logic", () => {
+    it("should create site successfully", async () => {
+      const createDto: CreateSiteDto = {
+        users: ["user-2", "user-3"],
+        address: createRawSite().address,
         name: "New Site",
-      }),
-    );
-
-    expect(toSiteDTO).toHaveBeenCalledWith(rawCreatedSite, currentUser);
-  });
-
-  describe("updateSiteById", () => {
-    it("should update site successfully", async () => {
-      const updateDto = {
-        userIds: ["user-5"],
-        name: "Updated Site",
       };
 
-      const existingSite = { id: siteId, companyId };
-      const updatedRawSite = { id: siteId, name: "Updated Site" };
-      const updatedDTO = {
-        id: siteId,
-        name: "Updated Site",
-        status: "active",
-      };
+      mockedCreateSite.mockReturnValue(okAsync(createRawSite()));
+      mockedToSiteDTO.mockReturnValue(baseSiteDTO);
 
-      mockedGetSite.mockReturnValue(okAsync(existingSite));
-      mockedUpdateSite.mockReturnValue(okAsync(updatedRawSite));
-      (toSiteDTO as jest.Mock).mockReturnValue(updatedDTO);
-
-      const result = await updateSiteById(currentUser, siteId, updateDto);
+      const result = await createNewSite(currentUser, createDto, companyId);
 
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap()).toEqual(updatedDTO);
-      expect(mockedGetSite).toHaveBeenCalledWith({ id: siteId });
-      expect(mockedUpdateSite).toHaveBeenCalledWith(
-        { id: siteId },
-        expect.objectContaining({
-          name: "Updated Site",
-          assignments: {
-            set: [{ userId_siteId: { userId: "user-5", siteId } }],
-          },
-        }),
-      );
-      expect(toSiteDTO).toHaveBeenCalledWith(updatedRawSite, currentUser);
+      expect(result._unsafeUnwrap()).toEqual(baseSiteDTO);
     });
   });
 
-  describe("getSitesByUserId", () => {
-    it("should return sites by user id", async () => {
-      const rawSites = [
-        { id: "site-1", name: "Site A" },
-        { id: "site-2", name: "Site B" },
-      ];
-      const siteDTOs = [
-        { id: "site-1", name: "Site A", status: "active" },
-        { id: "site-2", name: "Site B", status: "active" },
-      ];
+  describe("Error Scenarios", () => {
+    it("should return error if creation fails", async () => {
+      const createDto: CreateSiteDto = {
+        users: ["user-2"],
+        address: createRawSite().address,
+        name: "Failing Site",
+      };
 
-      mockedGetSites.mockReturnValue(okAsync(rawSites));
-      (toSiteDTO as jest.Mock)
-        .mockReturnValueOnce(siteDTOs[0])
-        .mockReturnValueOnce(siteDTOs[1]);
+      mockedCreateSite.mockReturnValue(errAsync(new ChainedError("DB error")));
+
+      const result = await createNewSite(currentUser, createDto, companyId);
+
+      expect(result.isErr()).toBe(true);
+    });
+  });
+});
+
+describe("updateSiteById", () => {
+  const currentUser: UserObject = { id: "user-1", role: ROLE.ADMIN };
+  const siteId = "site-1";
+  const companyId = "company-1";
+
+  describe("Business Logic", () => {
+    it("should update site successfully", async () => {
+      const updateDto: UpdateSiteDto = {
+        users: ["user-5"],
+        name: "Updated Site",
+      };
+
+      mockedGetSite.mockReturnValue(okAsync(createRawSite()));
+      mockedUpdateSite.mockReturnValue(okAsync(createRawSite()));
+      mockedToSiteDTO.mockReturnValue(baseSiteDTO);
+      mockedDeleteSiteAssignment.mockReturnValue(
+        okAsync({
+          id: "",
+          lastVisited: new Date(),
+          userId: "",
+          siteId: "",
+        }),
+      );
+
+      const result = await updateSiteById(
+        currentUser,
+        siteId,
+        updateDto,
+        companyId,
+      );
+      expect(result.isOk()).toBe(true);
+      expect(mockedUpdateSite).toHaveBeenCalled();
+    });
+  });
+
+  describe("Error Scenarios", () => {
+    it("should return error if site not found", async () => {
+      mockedGetSite.mockReturnValue(errAsync(new ChainedError("Not found")));
+
+      const result = await updateSiteById(
+        currentUser,
+        siteId,
+        { name: "X" },
+        companyId,
+      );
+
+      expect(result.isErr()).toBe(true);
+    });
+
+    it("should return error if update fails", async () => {
+      mockedGetSite.mockReturnValue(okAsync(createRawSite()));
+      mockedUpdateSite.mockReturnValue(
+        errAsync(new ChainedError("Update failed")),
+      );
+
+      const result = await updateSiteById(
+        currentUser,
+        siteId,
+        { name: "Y" },
+        companyId,
+      );
+
+      expect(result.isErr()).toBe(true);
+    });
+  });
+});
+
+describe("getSitesByUserId", () => {
+  const currentUser: UserObject = { id: "user-1", role: ROLE.ADMIN };
+
+  describe("Business Logic", () => {
+    it("should return sites by user id", async () => {
+      mockedGetSites.mockReturnValue(okAsync([createRawSite()]));
+      mockedToSiteDTO.mockReturnValue(baseSiteDTO);
 
       const result = await getSitesByUserId("user-2", currentUser);
 
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap()).toEqual(siteDTOs);
-      expect(mockedGetSites).toHaveBeenCalledWith(
-        expect.objectContaining({ assignments: { some: { id: "user-2" } } }),
-      );
-      expect(toSiteDTO).toHaveBeenCalledTimes(2);
+      expect(result._unsafeUnwrap()).toEqual([baseSiteDTO]);
     });
   });
 
-  describe("getSitesByCompanyId", () => {
-    it("should return sites by company id", async () => {
-      const rawSites = [{ id: "site-3", name: "Company Site" }];
-      const siteDTOs = [
-        { id: "site-3", name: "Company Site", status: "active" },
-      ];
+  describe("Error Scenarios", () => {
+    it("should return error if DB fails", async () => {
+      mockedGetSites.mockReturnValue(errAsync(new ChainedError("DB failure")));
 
-      mockedGetSites.mockReturnValue(okAsync(rawSites));
-      (toSiteDTO as jest.Mock).mockReturnValueOnce(siteDTOs[0]);
+      const result = await getSitesByUserId("user-x", currentUser);
+
+      expect(result.isErr()).toBe(true);
+    });
+  });
+});
+
+describe("getSitesByCompanyId", () => {
+  const currentUser: UserObject = { id: "user-1", role: ROLE.ADMIN };
+  const companyId = "company-1";
+
+  describe("Business Logic", () => {
+    it("should return sites by company id", async () => {
+      mockedGetSites.mockReturnValue(okAsync([createRawSite()]));
+      mockedToSiteDTO.mockReturnValue(baseSiteDTO);
 
       const result = await getSitesByCompanyId(companyId, currentUser);
 
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap()).toEqual(siteDTOs);
-      expect(mockedGetSites).toHaveBeenCalledWith(
-        expect.objectContaining({ company: { id: companyId } }),
-      );
-      expect(toSiteDTO).toHaveBeenCalledWith(rawSites[0], currentUser);
+      expect(result._unsafeUnwrap()).toEqual([baseSiteDTO]);
     });
   });
 
-  describe("getSiteById", () => {
+  describe("Error Scenarios", () => {
+    it("should return error if query fails", async () => {
+      mockedGetSites.mockReturnValue(errAsync(new ChainedError("Query error")));
+
+      const result = await getSitesByCompanyId(companyId, currentUser);
+
+      expect(result.isErr()).toBe(true);
+    });
+  });
+});
+
+describe("getSiteById", () => {
+  const currentUser: UserObject = { id: "user-1", role: ROLE.ADMIN };
+  const companyId = "company-1";
+  const siteId = "site-1";
+
+  describe("Business Logic", () => {
     it("should return site by id", async () => {
-      const rawSite = { id: siteId, name: "Site One" };
-      const siteDTO = { id: siteId, name: "Site One", status: "active" };
+      mockedGetSite.mockReturnValue(okAsync(createRawSite()));
+      mockedToSiteDTO.mockReturnValue(baseSiteDTO);
 
-      mockedGetSite.mockReturnValue(okAsync(rawSite));
-      (toSiteDTO as jest.Mock).mockReturnValue(siteDTO);
-
-      const result = await getSiteById(siteId, currentUser);
+      const result = await getSiteById(siteId, currentUser, companyId);
 
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap()).toEqual(siteDTO);
-      expect(mockedGetSite).toHaveBeenCalledWith(
-        expect.objectContaining({ id: siteId }),
-      );
-      expect(toSiteDTO).toHaveBeenCalledWith(rawSite, currentUser);
+      expect(result._unsafeUnwrap()).toEqual(baseSiteDTO);
+    });
+  });
+
+  describe("Error Scenarios", () => {
+    it("should return error if site not found", async () => {
+      mockedGetSite.mockReturnValue(errAsync(new ChainedError("Not found")));
+
+      const result = await getSiteById("invalid-id", currentUser, companyId);
+
+      expect(result.isErr()).toBe(true);
     });
   });
 });

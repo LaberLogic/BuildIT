@@ -87,6 +87,26 @@ export const updateUser = async (
   }
 };
 
+export const updateProfile = async (
+  payload: UpdateUserDto,
+): Promise<UserResponseDto | null> => {
+  try {
+    const authStore = useAuthStore();
+    const result = await $fetch<UserResponseDto>(`/api/users/me`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+      },
+      body: payload,
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Failed to update user:", error);
+    return null;
+  }
+};
+
 export const deleteUser = async (
   companyId: string,
   userId: string,

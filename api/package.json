@@ -17,7 +17,7 @@
     "migrate:reset": "prisma migrate reset --force",
     "migrate:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
-    "migrate:data": "tsx prisma/seed.ts",
+    "migrate:data": "tsx prisma/seed-run.ts",
     "schema:change": "pnpm run migrate:reset && pnpm run prisma:generate && pnpm run migrate:data"
   },
   "dependencies": {

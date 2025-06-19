@@ -12,6 +12,7 @@
           v-for="item in navItems"
           :key="item.href"
           :to="item.href"
+          :data-cy="item.label"
           class="flex flex-col justify-center items-center"
         >
           <div
