@@ -97,7 +97,7 @@ const route = useRoute();
 const token = route.query.token;
 
 const onSubmit = () => {
-  formRef.value.validate(async (valid) => {
+  formRef?.value.validate(async (valid) => {
     if (!valid) return;
 
     loading.value = true;

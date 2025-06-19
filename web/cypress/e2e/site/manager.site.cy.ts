@@ -73,89 +73,82 @@ describe("Site Details Page (Manager)", () => {
 
 describe("Adjust Material (Manager)", () => {
   it("increments and decrements material amount", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("site-card").first().click();
+    cy.loginByApi("manager@example.com", "secret");
+    cy.getByCy("site-card").first().click();
 
-      cy.getByCy("material-card").first().as("card");
+    cy.getByCy("material-card").first().as("card");
 
-      cy.get("@card")
-        .find("[data-cy=material-amount]")
-        .invoke("text")
-        .then((text) => {
-          const [initial] = text.trim().split(" ");
-          const initialAmount = parseInt(initial);
+    cy.get("@card")
+      .find("[data-cy=material-amount]")
+      .invoke("text")
+      .then((text) => {
+        const [initial] = text.trim().split(" ");
+        const initialAmount = parseInt(initial);
 
-          cy.get("@card").find("[data-cy=material-increment]").click();
+        cy.get("@card").find("[data-cy=material-increment]").click();
 
-          cy.get("@card")
-            .find("[data-cy=material-amount]")
-            .should("contain", initialAmount + 1);
+        cy.get("@card")
+          .find("[data-cy=material-amount]")
+          .should("contain", initialAmount + 1);
 
-          cy.get("@card").find("[data-cy=material-decrement]").click();
+        cy.get("@card").find("[data-cy=material-decrement]").click();
 
-          cy.get("@card")
-            .find("[data-cy=material-amount]")
-            .should("contain", initialAmount);
-        });
-    });
+        cy.get("@card")
+          .find("[data-cy=material-amount]")
+          .should("contain", initialAmount);
+      });
   });
 });
 
 describe("Material Card - Long Press and Threshold Warning (Manager)", () => {
   it("increments material value with long press", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("site-card").first().click();
-      cy.getByCy("material-card").first().as("card");
+    cy.loginByApi("manager@example.com", "secret");
+    cy.getByCy("site-card").first().click();
+    cy.getByCy("material-card").first().as("card");
 
-      cy.get("@card")
-        .find("[data-cy=material-amount]")
-        .invoke("text")
-        .then((text) => {
-          const [initial] = text.trim().split(" ");
-          const initialAmount = parseInt(initial);
+    cy.get("@card")
+      .find("[data-cy=material-amount]")
+      .invoke("text")
+      .then((text) => {
+        const [initial] = text.trim().split(" ");
+        const initialAmount = parseInt(initial);
 
-          cy.get("@card")
-            .find("[data-cy=material-increment]")
-            .trigger("mousedown");
-          cy.wait(800);
-          cy.get("@card")
-            .find("[data-cy=material-increment]")
-            .trigger("mouseup");
+        cy.get("@card")
+          .find("[data-cy=material-increment]")
+          .trigger("mousedown");
+        cy.wait(800);
+        cy.get("@card").find("[data-cy=material-increment]").trigger("mouseup");
 
-          cy.get("@card")
-            .find("[data-cy=material-amount]")
-            .invoke("text")
-            .then((newText) => {
-              const [after] = newText.trim().split(" ");
-              const afterAmount = parseInt(after);
-              expect(afterAmount).to.be.greaterThan(initialAmount + 1);
-            });
-        });
-    });
+        cy.get("@card")
+          .find("[data-cy=material-amount]")
+          .invoke("text")
+          .then((newText) => {
+            const [after] = newText.trim().split(" ");
+            const afterAmount = parseInt(after);
+            expect(afterAmount).to.be.greaterThan(initialAmount + 1);
+          });
+      });
   });
 
   it("decrements material to 0 and checks warning threshold", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("site-card").first().click();
-      cy.getByCy("material-card").first().as("card");
+    cy.loginByApi("manager@example.com", "secret");
+    cy.getByCy("site-card").first().click();
+    cy.getByCy("material-card").first().as("card");
 
-      const pressAndWait = () => {
-        cy.get("@card")
-          .find("[data-cy=material-decrement]")
-          .trigger("mousedown");
-        cy.wait(6000);
-      };
+    const pressAndWait = () => {
+      cy.get("@card").find("[data-cy=material-decrement]").trigger("mousedown");
+      cy.wait(6000);
+    };
 
-      cy.get("@card")
-        .find("[data-cy=material-decrement]")
-        .then(($btn) => {
-          if (!$btn.is(":disabled")) {
-            pressAndWait();
-          }
-        });
+    cy.get("@card")
+      .find("[data-cy=material-decrement]")
+      .then(($btn) => {
+        if (!$btn.is(":disabled")) {
+          pressAndWait();
+        }
+      });
 
-      cy.get("@card").find("[data-cy=material-amount]").should("contain", "0");
-    });
+    cy.get("@card").find("[data-cy=material-amount]").should("contain", "0");
   });
 });
 
