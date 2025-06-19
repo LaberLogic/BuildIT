@@ -1,12 +1,8 @@
-before(() => {
+beforeEach(() => {
   cy.request("POST", "http://localhost:3001/test/reset-db");
 });
 
 describe("Site Overview (Admin)", () => {
-  before(() => {
-    cy.request("POST", "http://localhost:3001/test/reset-db");
-  });
-
   it("should log in as admin and validate the first site card", () => {
     cy.loginAsAdmin().then(() => {
       cy.getByCy("company-overview-card").click();

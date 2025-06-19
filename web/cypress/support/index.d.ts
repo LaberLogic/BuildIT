@@ -6,7 +6,11 @@
 
 declare namespace Cypress {
   interface Chainable<Subject = any> {
-    loginByApi(email: string, password: string): Chainable<void>;
+    loginByApi(
+      email: string,
+      password: string,
+      expectFailure?: boolean,
+    ): Chainable<Response>;
     loginAsManager(): Chainable<void>;
     loginAsAdmin(): Chainable<void>;
     goToFirstSiteAsManager(): Chainable<void>;

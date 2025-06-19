@@ -5,6 +5,7 @@ import { siteRef, userRef as $ref } from "shared";
 import {
   getCurrentUser,
   getUserByIdController,
+  updateSelfController,
 } from "../controllers/user.controller";
 
 const userRoutes = async (app: FastifyInstance) => {
@@ -19,6 +20,20 @@ const userRoutes = async (app: FastifyInstance) => {
       },
     },
     handler: getCurrentUser,
+  });
+
+  app.route({
+    method: "PUT",
+    url: "/me",
+    preHandler: [app.authenticate],
+    schema: {
+      tags: ["Users"],
+      body: $ref("updateUserSchema"),
+      response: {
+        200: $ref("userResponseSchema"),
+      },
+    },
+    handler: updateSelfController,
   });
 
   // (admin only)

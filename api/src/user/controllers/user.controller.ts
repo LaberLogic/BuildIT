@@ -34,6 +34,19 @@ export const updateUserController = async (
   );
 };
 
+export const updateSelfController = async (
+  req: FastifyRequest<{ Body: UpdateUserDto }>,
+  reply: FastifyReply,
+) => {
+  const { id, companyId } = req.user;
+  return userService
+    .updateUser(req.user, id, req.body, companyId || "ADMIN")
+    .match(
+      (user) => reply.status(httpStatus.OK).send(user),
+      (error) => sendChainedErrorReply(reply, error),
+    );
+};
+
 export const deleteUserController = async (
   req: FastifyRequest<{ Params: UserIdParams }>,
   reply: FastifyReply,
