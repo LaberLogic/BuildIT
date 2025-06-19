@@ -61,7 +61,6 @@ export const userService = {
     data: UpdateUserDto,
     companyId: string,
   ) => {
-    console.log("REACHED");
     return scopeCheckCompany(currentUser, companyId).andThen(() => {
       return getUser(scopedUserWhere(currentUser, { id }))
         .andThen((targetUser) => {

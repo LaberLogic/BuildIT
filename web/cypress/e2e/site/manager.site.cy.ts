@@ -1,4 +1,4 @@
-before(() => {
+beforeEach(() => {
   cy.request("POST", "http://localhost:3001/test/reset-db");
 });
 

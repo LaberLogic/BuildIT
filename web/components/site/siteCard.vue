@@ -218,7 +218,6 @@ const hasWarningsOrChats = computed(() => {
 });
 
 const formattedDeadline = computed(() => {
-  console.log(props.site.endDate);
   return props.site.endDate
     ? new Date(props.site.endDate).toLocaleDateString("en-US", {
         month: "short",
