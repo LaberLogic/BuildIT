@@ -3,6 +3,7 @@
     <el-card
       shadow="hover"
       class="border border-gray-200 alert-bar w-full"
+      data-cy="user-card"
       :body-style="{ padding: '0px' }"
     >
       <div class="p-4 flex items-start space-x-4">
@@ -27,13 +28,19 @@
                 {{ user.status }}
               </el-tag>
 
-              <el-button size="small" class="btn-icon" @click="editOpen = true">
+              <el-button
+                size="small"
+                class="btn-icon"
+                data-cy="edit-user-button"
+                @click="editOpen = true"
+              >
                 <el-icon><Edit /></el-icon>
               </el-button>
 
               <el-button
                 size="small"
                 class="btn-icon"
+                data-cy="delete-user-button"
                 @click="deleteOpen = true"
               >
                 <el-icon><Trash2 /></el-icon>

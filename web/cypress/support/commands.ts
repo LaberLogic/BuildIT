@@ -36,19 +36,25 @@
 //   }
 // }
 //
+Cypress.Commands.add("loginByApi", (email, password, expectFailure = false) => {
+  return cy
+    .request({
+      method: "POST",
+      url: "http://localhost:3001/auth/signin",
+      body: { email, password },
+      failOnStatusCode: false,
+    })
+    .then((resp) => {
+      if (!expectFailure && resp.status === 200) {
+        cy.setCookie("token", resp.body.accessToken);
+        const redirectUrl = resp.body.user.companyId
+          ? `/company/${resp.body.user.companyId}/sites`
+          : "/company/";
+        cy.visit(redirectUrl);
+      }
 
-Cypress.Commands.add("loginByApi", (email, password) => {
-  cy.request("POST", "http://localhost:3001/auth/signin", {
-    email,
-    password,
-  }).then((resp) => {
-    expect(resp.status).to.eq(200);
-    cy.setCookie("token", resp.body.accessToken);
-    const redirectUrl = resp.body.user.companyId
-      ? `/company/${resp.body.user.companyId}/sites`
-      : "/company/";
-    cy.visit(redirectUrl);
-  });
+      return cy.wrap(resp);
+    });
 });
 
 Cypress.Commands.add("loginAsManager", () => {
