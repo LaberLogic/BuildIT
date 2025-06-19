@@ -7,7 +7,7 @@ const config = {
     "./plugins/**/*.{js,ts}",
     "./nuxt.config.ts",
   ],
-  darkMode: "class", // Enables `.dark` class for dark mode
+  darkMode: "class",
   theme: {
     extend: {
       colors: {

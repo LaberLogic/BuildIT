@@ -1,7 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
 import { hash } from "bcryptjs";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 
 import { PrismaClient, ROLE, SITE_STATUS } from "../generated/prisma";
 
@@ -122,29 +120,33 @@ export const seedSiteAssignments = [
 
 export const seedMaterials = [
   {
+    id: createId(),
     siteId: seedSite1.id,
     name: "Concrete",
     unit: "cubic meters",
-    amount: 100,
+    amount: 30,
     threshold: 25,
   },
   {
+    id: createId(),
     siteId: seedSite1.id,
     name: "Rebar",
     unit: "tons",
-    amount: 50,
+    amount: 20,
     threshold: 10,
   },
   {
+    id: createId(),
     siteId: seedSite2.id,
     name: "Glass Panels",
     unit: "units",
-    amount: 200,
+    amount: 45,
     threshold: 40,
   },
 ];
 
 export async function seedDatabase() {
+  console.log("REACHED");
   await prisma.siteAssignment.deleteMany();
   await prisma.material.deleteMany();
   await prisma.site.deleteMany();
@@ -175,12 +177,4 @@ export async function seedDatabase() {
   await prisma.siteAssignment.createMany({ data: seedSiteAssignments });
 
   await prisma.material.createMany({ data: seedMaterials });
-
-  console.log("Seed finished");
-}
-
-const __filename = fileURLToPath(import.meta.url);
-
-if (process.argv[1] === __filename) {
-  seedDatabase();
 }

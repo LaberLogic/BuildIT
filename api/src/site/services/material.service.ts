@@ -1,50 +1,67 @@
 import { ChainedError } from "@utils/chainedError";
-import { scopeCheckMaterial, scopeCheckSite } from "@utils/scopeCheck";
-import { errAsync } from "neverthrow";
-import { UpdateMaterialCountDto } from "shared";
+import { scopeCheckCompany, scopeCheckSiteAccess } from "@utils/scopeCheck";
+import { errAsync, ResultAsync } from "neverthrow";
+import { MaterialResponseDto, UpdateMaterialCountDto } from "shared";
 import { CreateMaterialDto, UpdateMaterialDto } from "shared";
 import { UserObject } from "types";
 
+import { toMaterialDTO } from "../dtos/material.dto";
 import {
   createMaterial,
   deleteMaterial,
   getMaterialById,
+  Material,
   updateMaterial,
 } from "../repositories/material.repostiory";
 
 export const createNewMaterial = (
   currentUser: UserObject,
   siteId: string,
+  companyId: string,
   data: CreateMaterialDto,
-) => {
-  return scopeCheckSite(currentUser, siteId).andThen(() =>
-    createMaterial(mapCreateBodyToPayload(siteId, data)),
-  );
+): ResultAsync<MaterialResponseDto, ChainedError> => {
+  return scopeCheckCompany(currentUser, companyId)
+    .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
+    .andThen(() =>
+      createMaterial(mapCreateBodyToPayload(siteId, data)).map((material) =>
+        toMaterialDTO(material),
+      ),
+    );
 };
 
 export const updateMaterialProperties = (
   currentUser: UserObject,
+  companyId: string,
   siteId: string,
   materialId: string,
   data: UpdateMaterialDto,
-) => {
-  return scopeCheckSite(currentUser, siteId).andThen(() =>
-    updateMaterial({ id: materialId }, data),
-  );
+): ResultAsync<MaterialResponseDto, ChainedError> => {
+  return scopeCheckCompany(currentUser, companyId)
+    .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
+    .andThen(() => updateMaterial({ id: materialId }, data))
+    .map((material: Material) => toMaterialDTO(material))
+    .mapErr((e) => {
+      console.log(e);
+      return e;
+    });
 };
 
 export const incrementDecrementMaterial = (
   currentUser: UserObject,
+  companyId: string,
   siteId: string,
   materialId: string,
   { delta }: UpdateMaterialCountDto,
-) => {
-  return scopeCheckMaterial(currentUser, siteId)
+): ResultAsync<MaterialResponseDto, ChainedError> => {
+  return scopeCheckCompany(currentUser, companyId)
+    .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
     .andThen(() => getMaterialById({ id: materialId }))
-    .andThen((material) => {
+    .andThen((material: Material) => {
+      console.log("REACHED");
       if (material.amount + delta < 0) {
+        console.log("REACHED2");
         return errAsync(
-          new ChainedError("Material amount cannot be negative", 401),
+          new ChainedError("Material amount cannot be negative", 403),
         );
       }
 
@@ -52,17 +69,19 @@ export const incrementDecrementMaterial = (
         { id: materialId },
         { amount: { increment: delta } },
       );
-    });
+    })
+    .map((material: Material) => toMaterialDTO(material));
 };
 
 export const deleteMaterialFromSite = (
   currentUser: UserObject,
+  companyId: string,
   siteId: string,
   materialId: string,
-) => {
-  return scopeCheckSite(currentUser, siteId).andThen(() =>
-    deleteMaterial({ id: materialId }),
-  );
+): ResultAsync<{ id: string }, ChainedError> => {
+  return scopeCheckCompany(currentUser, companyId)
+    .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
+    .andThen(() => deleteMaterial({ id: materialId }));
 };
 
 export const mapCreateBodyToPayload = (

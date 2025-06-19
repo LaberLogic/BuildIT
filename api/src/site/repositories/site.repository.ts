@@ -4,6 +4,8 @@ import { prismaErrorCodeToHttpStatus } from "@utils/errorCodeMapper";
 import { ResultAsync } from "neverthrow";
 const prisma = new PrismaClient();
 
+export type Site = Prisma.SiteGetPayload<{ select: typeof siteSelect }>;
+
 const siteSelect = {
   id: true,
   name: true,
@@ -46,7 +48,9 @@ const siteSelect = {
   },
 };
 
-export const createSite = (data: Prisma.SiteCreateInput) => {
+export const createSite = (
+  data: Prisma.SiteCreateInput,
+): ResultAsync<Site, ChainedError> => {
   return ResultAsync.fromPromise(
     prisma.site.create({ data, select: siteSelect }),
     (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
@@ -56,14 +60,16 @@ export const createSite = (data: Prisma.SiteCreateInput) => {
 export const updateSite = (
   where: Prisma.SiteWhereUniqueInput,
   data: Prisma.SiteUpdateInput,
-) => {
+): ResultAsync<Site, ChainedError> => {
   return ResultAsync.fromPromise(
     prisma.site.update({ where, data, select: siteSelect }),
     (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),
   );
 };
 
-export const getSites = (where: Prisma.SiteWhereInput) => {
+export const getSites = (
+  where: Prisma.SiteWhereInput,
+): ResultAsync<Site[], ChainedError> => {
   return ResultAsync.fromPromise(
     prisma.site.findMany({
       where,
@@ -73,7 +79,9 @@ export const getSites = (where: Prisma.SiteWhereInput) => {
   );
 };
 
-export const getSite = (where: Prisma.SiteWhereUniqueInput) => {
+export const getSite = (
+  where: Prisma.SiteWhereUniqueInput,
+): ResultAsync<Site, ChainedError> => {
   return ResultAsync.fromPromise(
     prisma.site.findUniqueOrThrow({ where, select: siteSelect }),
     (e) => new ChainedError(e, prismaErrorCodeToHttpStatus(e)),

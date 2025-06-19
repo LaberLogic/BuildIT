@@ -25,6 +25,5 @@ const companies = computed(() => {
 
 onMounted(async () => {
   await companyStore.fetchCompanies();
-  console.log(companyStore);
 });
 </script>

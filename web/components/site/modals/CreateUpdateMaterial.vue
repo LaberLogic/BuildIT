@@ -1,35 +1,50 @@
 <template>
-  <el-dialog :model-value="true" :title="title" width="425px" @close="onCancel">
+  <el-dialog
+    :model-value="true"
+    :title="title"
+    width="425px"
+    data-cy="material-dialog"
+    @close="onCancel"
+  >
     <el-form
       ref="formRef"
       :model="model"
       :rules="rules"
       label-position="top"
       class="space-y-4"
+      data-cy="material-form"
     >
       <el-form-item label="Material Name" prop="name">
-        <el-input v-model="model.name" />
+        <el-input v-model="model.name" data-cy="input-name" />
       </el-form-item>
 
       <div class="flex gap-4">
         <el-form-item label="Amount" prop="amount" class="flex-1">
-          <el-input v-model.number="model.amount" type="number" />
+          <el-input
+            v-model.number="model.amount"
+            type="number"
+            data-cy="input-amount"
+          />
         </el-form-item>
 
         <el-form-item label="Unit" prop="unit" class="flex-1">
-          <el-input v-model="model.unit" />
+          <el-input v-model="model.unit" data-cy="input-unit" />
         </el-form-item>
       </div>
 
       <el-form-item label="Threshold" prop="threshold">
-        <el-input v-model.number="model.threshold" type="number" />
+        <el-input
+          v-model.number="model.threshold"
+          type="number"
+          data-cy="input-threshold"
+        />
       </el-form-item>
     </el-form>
 
     <template #footer>
       <div class="flex justify-end space-x-2">
-        <el-button @click="onCancel">Cancel</el-button>
-        <el-button type="primary" @click="handleSave">
+        <el-button data-cy="cancel-button" @click="onCancel">Cancel</el-button>
+        <el-button type="primary" data-cy="save-button" @click="handleSave">
           {{ props.material ? "Save Changes" : "Create Material" }}
         </el-button>
       </div>

@@ -14,14 +14,17 @@ import {
 } from "../services/material.service";
 
 export const createMaterialController = async (
-  req: FastifyRequest<{ Params: { siteId: string }; Body: CreateMaterialDto }>,
+  req: FastifyRequest<{
+    Params: { siteId: string; companyId: string };
+    Body: CreateMaterialDto;
+  }>,
   reply: FastifyReply,
 ) => {
-  const { siteId } = req.params;
+  const { siteId, companyId } = req.params;
   const data = req.body;
   const currentUser = req.user as UserObject;
 
-  return createNewMaterial(currentUser, siteId, data).match(
+  return createNewMaterial(currentUser, siteId, companyId, data).match(
     (material) => reply.status(httpStatus.CREATED).send(material),
     (error) => sendChainedErrorReply(reply, error),
   );
@@ -29,29 +32,44 @@ export const createMaterialController = async (
 
 export const updateMaterialController = async (
   req: FastifyRequest<{
-    Params: { siteId: string; materialId: string };
+    Params: { siteId: string; materialId: string; companyId: string };
     Body: UpdateMaterialDto;
   }>,
   reply: FastifyReply,
 ) => {
-  const { siteId, materialId } = req.params;
+  const { siteId, materialId, companyId } = req.params;
   const data = req.body;
+
+  console.log(companyId);
   const currentUser = req.user as UserObject;
 
-  return updateMaterialProperties(currentUser, siteId, materialId, data).match(
+  return updateMaterialProperties(
+    currentUser,
+    companyId,
+    siteId,
+    materialId,
+    data,
+  ).match(
     (material) => reply.status(httpStatus.OK).send(material),
     (error) => sendChainedErrorReply(reply, error),
   );
 };
 
 export const deleteMaterialController = async (
-  req: FastifyRequest<{ Params: { siteId: string; materialId: string } }>,
+  req: FastifyRequest<{
+    Params: { siteId: string; materialId: string; companyId: string };
+  }>,
   reply: FastifyReply,
 ) => {
-  const { siteId, materialId } = req.params;
+  const { siteId, materialId, companyId } = req.params;
   const currentUser = req.user as UserObject;
 
-  return deleteMaterialFromSite(currentUser, siteId, materialId).match(
+  return deleteMaterialFromSite(
+    currentUser,
+    companyId,
+    siteId,
+    materialId,
+  ).match(
     () => reply.status(httpStatus.NO_CONTENT).send(),
     (error) => sendChainedErrorReply(reply, error),
   );
@@ -59,17 +77,18 @@ export const deleteMaterialController = async (
 
 export const adjustMaterialQuantityController = async (
   req: FastifyRequest<{
-    Params: { siteId: string; materialId: string };
+    Params: { siteId: string; materialId: string; companyId: string };
     Body: UpdateMaterialCountDto;
   }>,
   reply: FastifyReply,
 ) => {
-  const { siteId, materialId } = req.params;
+  const { siteId, materialId, companyId } = req.params;
   const data = req.body;
   const currentUser = req.user as UserObject;
 
   return incrementDecrementMaterial(
     currentUser,
+    companyId,
     siteId,
     materialId,
     data,

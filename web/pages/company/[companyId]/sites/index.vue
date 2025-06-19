@@ -11,6 +11,8 @@
       </div>
 
       <el-button
+        v-if="isAdminOrManager"
+        data-cy="create-site-button"
         type="default"
         circle
         class="h-12 w-12 bg-white border border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center"
@@ -19,7 +21,7 @@
         <Plus class="h-6 w-6 text-blue-500" />
         <span class="sr-only">Add new site</span>
       </el-button>
-      <site-modals--create-update-site
+      <site-modals-create-update-site
         v-model="createOpen"
         :users="users"
         @close="createOpen = false"
@@ -51,7 +53,10 @@ const route = useRoute();
 const companyId = route.params.companyId as string;
 const sites = computed(() => companyStore.sites);
 const users = computed(() => companyStore.users);
+const isAdminOrManager = computed(() => authStore.isManagerOrAdmin);
+
 const companyStore = useCompanyStore();
+const authStore = useAuthStore();
 
 const createOpen = ref(false);
 

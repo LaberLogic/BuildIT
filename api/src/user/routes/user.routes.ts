@@ -1,11 +1,12 @@
 import { isAdmin } from "@src/plugins/roleGuards";
 import { FastifyInstance } from "fastify";
-import { siteRef,userRef as $ref } from "shared";
+import { siteRef, userRef as $ref } from "shared";
 
 import {
   getCurrentUser,
   getUserByIdController,
-} from "./controllers/user.controller";
+  updateSelfController,
+} from "../controllers/user.controller";
 
 const userRoutes = async (app: FastifyInstance) => {
   app.route({
@@ -21,6 +22,20 @@ const userRoutes = async (app: FastifyInstance) => {
     handler: getCurrentUser,
   });
 
+  app.route({
+    method: "PUT",
+    url: "/me",
+    preHandler: [app.authenticate],
+    schema: {
+      tags: ["Users"],
+      body: $ref("updateUserSchema"),
+      response: {
+        200: $ref("userResponseSchema"),
+      },
+    },
+    handler: updateSelfController,
+  });
+
   // (admin only)
   app.route({
     method: "GET",
@@ -28,7 +43,7 @@ const userRoutes = async (app: FastifyInstance) => {
     preHandler: [app.authenticate, isAdmin],
     schema: {
       tags: ["Users"],
-      params: $ref("userIdParamsSchema"),
+      params: $ref("userIdParamsOnlyIdSchema"),
       response: {
         200: $ref("userResponseSchema"),
         404: siteRef("errorResponseSchema"),
