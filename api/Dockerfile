@@ -3,14 +3,14 @@ FROM node:22-alpine
 WORKDIR /app
 
 RUN npm install -g pnpm
+RUN apk add --no-cache git
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-COPY api/package.json ./api/package.json api/prisma/
+COPY api/ ./api/
+COPY shared/ ./shared/
 
-RUN pnpm install --filter api...
-
-COPY . .
+RUN pnpm install
 
 RUN pnpm --filter=api prisma:generate
 
