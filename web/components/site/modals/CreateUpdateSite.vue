@@ -235,7 +235,6 @@ const onCancel = () => {
 const handleSave = async () => {
   await formRef.value?.validate(async (valid: boolean) => {
     if (!valid) return;
-    console.log(includeAddress);
     const { address, ...rest } = model.value;
     const payload = {
       ...rest,

@@ -52,10 +52,14 @@
 </template>
 
 <script setup lang="ts">
+import type { FormInstance } from "element-plus";
+
 definePageMeta({
   layout: "auth",
 });
-const formRef = ref(null);
+
+const formRef = ref<FormInstance | null>(null);
+
 const form = ref({
   password: "",
   confirmPassword: "",
@@ -77,7 +81,8 @@ const rules = {
       trigger: "blur",
     },
     {
-      validator: (rule, value, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      validator: (rule: any, value: string, callback: any) => {
         if (value !== form.value.password) {
           callback(new Error("Passwords don't match"));
         } else {
@@ -92,26 +97,35 @@ const rules = {
 const loading = ref(false);
 const success = ref(false);
 const error = ref("");
+
 const router = useRouter();
 const route = useRoute();
-const token = route.query.token;
+
+const tokenRaw = route.query.token;
+const token = Array.isArray(tokenRaw)
+  ? (tokenRaw[0] as string)
+  : ((tokenRaw ?? "") as string);
 
 const onSubmit = () => {
-  formRef.value.validate(async (valid) => {
+  if (!formRef.value) return;
+
+  formRef.value.validate((valid: boolean) => {
     if (!valid) return;
 
     loading.value = true;
     error.value = "";
-    try {
-      await setPassword({ password: form.value.password }, token);
-      success.value = true;
-      setTimeout(() => router.push("/auth/login"), 1500);
-    } catch (err) {
-      error.value =
-        err?.data?.error || "An error occurred while setting your password.";
-    } finally {
-      loading.value = false;
-    }
+    setPassword({ password: form.value.password }, token)
+      .then(() => {
+        success.value = true;
+        setTimeout(() => router.push("/auth/login"), 1500);
+      })
+      .catch((err) => {
+        error.value =
+          err?.data?.error || "An error occurred while setting your password.";
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   });
 };
 </script>
