@@ -1,4 +1,4 @@
-import path from 'path'
+import path from "path";
 export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: "2024-11-01",
@@ -11,16 +11,17 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       "/api": {
-        target: "http://localhost:3001",
+        target: "http://api:3001",
         changeOrigin: true,
         prependPath: false,
       },
     },
   },
+
   vite: {
     resolve: {
       alias: {
-        'shared': path.resolve(__dirname, '../shared/src'),
+        shared: path.resolve(__dirname, "../shared/src"),
       },
     },
   },
