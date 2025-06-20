@@ -55,6 +55,7 @@ export const canCreateUser = async (
 ) => {
   const currentUser = req.user;
   const targetRole = req.body?.role;
+
   if (
     !currentUser ||
     Object.keys(currentUser).length === 0 ||
@@ -78,6 +79,25 @@ export const canCreateUser = async (
 const isInvalidRole = (role?: string): boolean =>
   !role || !Object.hasOwn(rolePriority, role);
 
+const validateRequestedRole = (
+  requestedRole: string,
+  currentRole: string,
+  reply: FastifyReply,
+): boolean => {
+  if (isInvalidRole(requestedRole)) {
+    sendBadRequest(reply, `Invalid role: '${requestedRole}'`);
+    return false;
+  }
+  if (rolePriority[requestedRole] > rolePriority[currentRole]) {
+    sendForbidden(
+      reply,
+      `You cannot assign the role '${requestedRole}' higher than your own.`,
+    );
+    return false;
+  }
+  return true;
+};
+
 export const canManageUser = async (
   req: FastifyRequest<{
     Params: { userId: string };
@@ -87,7 +107,7 @@ export const canManageUser = async (
 ) => {
   const currentUser = req.user;
   const targetUserId = req.params.userId;
-  const requestedRole = req.body?.role || req.body?.targetRole;
+  const requestedRole = req.body?.role ?? req.body?.targetRole;
 
   if (!currentUser || !targetUserId) {
     return sendForbidden(reply, "Missing authentication or user ID.");
@@ -103,21 +123,17 @@ export const canManageUser = async (
 
   const targetRole = targetUserResult.value.role;
 
-  if (isSelf) {
-    if (requestedRole) {
-      if (isInvalidRole(requestedRole)) {
-        return sendBadRequest(reply, `Invalid role: '${requestedRole}'`);
-      }
-
-      if (rolePriority[requestedRole] > rolePriority[currentRole]) {
-        return sendForbidden(
-          reply,
-          "You cannot assign yourself a role higher than your current role.",
-        );
-      }
+  if (isSelf && requestedRole) {
+    if (!validateRequestedRole(requestedRole, currentRole, reply)) {
+      return;
     }
 
-    return;
+    if (rolePriority[requestedRole] > rolePriority[currentRole]) {
+      return sendForbidden(
+        reply,
+        "You cannot assign yourself a role higher than your current role.",
+      );
+    }
   }
 
   if (currentRole === "WORKER") {
@@ -132,19 +148,10 @@ export const canManageUser = async (
   }
 
   if (requestedRole) {
-    if (isInvalidRole(requestedRole)) {
-      return sendBadRequest(reply, `Invalid role: '${requestedRole}'`);
-    }
-
-    if (rolePriority[requestedRole] > rolePriority[currentRole]) {
-      return sendForbidden(
-        reply,
-        `You cannot assign the role '${requestedRole}' higher than your own.`,
-      );
+    if (!validateRequestedRole(requestedRole, currentRole, reply)) {
+      return;
     }
   }
-
-  return;
 };
 
 export const canViewUser = async (

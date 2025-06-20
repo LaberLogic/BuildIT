@@ -40,7 +40,7 @@ export const updateSelfController = async (
 ) => {
   const { id, companyId } = req.user;
   return userService
-    .updateUser(req.user, id, req.body, companyId || "ADMIN")
+    .updateUser(req.user, id, req.body, companyId ?? "ADMIN")
     .match(
       (user) => reply.status(httpStatus.OK).send(user),
       (error) => sendChainedErrorReply(reply, error),

@@ -158,13 +158,15 @@ const confirmPasswordError = computed(() =>
     : "",
 );
 
-const dialogTitle = computed(() =>
-  isCreate.value
-    ? "Create User"
-    : props.isProfile
-      ? "Edit Profile"
-      : "Edit User",
-);
+const dialogTitle = computed(() => {
+  if (isCreate.value) {
+    return "Create User";
+  } else if (props.isProfile) {
+    return "Edit Profile";
+  } else {
+    return "Edit User";
+  }
+});
 
 const onPasswordInput = () => {
   if (!model.password) model.confirmPassword = "";

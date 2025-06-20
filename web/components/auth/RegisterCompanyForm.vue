@@ -11,18 +11,27 @@
       <el-input
         v-model="form.companyName"
         placeholder="Your Construction Company"
+        data-cy="company-name-input"
       />
     </el-form-item>
 
     <el-row :gutter="20">
       <el-col :span="14">
         <el-form-item label="Street" prop="address.street">
-          <el-input v-model="form.address.street" placeholder="Main Street" />
+          <el-input
+            v-model="form.address.street"
+            placeholder="Main Street"
+            data-cy="street-input"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="10">
         <el-form-item label="Street Number" prop="address.streetNumber">
-          <el-input v-model="form.address.streetNumber" placeholder="123" />
+          <el-input
+            v-model="form.address.streetNumber"
+            placeholder="123"
+            data-cy="street-number-input"
+          />
         </el-form-item>
       </el-col>
     </el-row>
@@ -30,18 +39,30 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <el-form-item label="City" prop="address.city">
-          <el-input v-model="form.address.city" placeholder="New York" />
+          <el-input
+            v-model="form.address.city"
+            placeholder="New York"
+            data-cy="city-input"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="Postal Code" prop="address.postalCode">
-          <el-input v-model="form.address.postalCode" placeholder="10001" />
+          <el-input
+            v-model="form.address.postalCode"
+            placeholder="10001"
+            data-cy="postal-code-input"
+          />
         </el-form-item>
       </el-col>
     </el-row>
 
     <el-form-item label="Country" prop="address.country">
-      <el-input v-model="form.address.country" placeholder="United States" />
+      <el-input
+        v-model="form.address.country"
+        placeholder="United States"
+        data-cy="country-input"
+      />
     </el-form-item>
 
     <el-form-item class="mb-4">
@@ -49,6 +70,7 @@
         <el-button
           type="default"
           class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50"
+          data-cy="back-button"
           @click="handleBack"
         >
           <ArrowLeft class="w-4 h-4 mr-2" />
@@ -59,8 +81,9 @@
           type="primary"
           native-type="submit"
           class="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+          data-cy="create-button"
         >
-          Continue
+          Create
         </el-button>
       </div>
     </el-form-item>

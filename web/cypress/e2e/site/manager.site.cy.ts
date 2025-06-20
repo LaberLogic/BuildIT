@@ -1,4 +1,4 @@
-before(() => {
+beforeEach(() => {
   cy.request("POST", "http://localhost:3001/test/reset-db");
 });
 
@@ -73,89 +73,82 @@ describe("Site Details Page (Manager)", () => {
 
 describe("Adjust Material (Manager)", () => {
   it("increments and decrements material amount", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("site-card").first().click();
+    cy.loginByApi("manager@example.com", "secret");
+    cy.getByCy("site-card").first().click();
 
-      cy.getByCy("material-card").first().as("card");
+    cy.getByCy("material-card").first().as("card");
 
-      cy.get("@card")
-        .find("[data-cy=material-amount]")
-        .invoke("text")
-        .then((text) => {
-          const [initial] = text.trim().split(" ");
-          const initialAmount = parseInt(initial);
+    cy.get("@card")
+      .find("[data-cy=material-amount]")
+      .invoke("text")
+      .then((text) => {
+        const [initial] = text.trim().split(" ");
+        const initialAmount = parseInt(initial);
 
-          cy.get("@card").find("[data-cy=material-increment]").click();
+        cy.get("@card").find("[data-cy=material-increment]").click();
 
-          cy.get("@card")
-            .find("[data-cy=material-amount]")
-            .should("contain", initialAmount + 1);
+        cy.get("@card")
+          .find("[data-cy=material-amount]")
+          .should("contain", initialAmount + 1);
 
-          cy.get("@card").find("[data-cy=material-decrement]").click();
+        cy.get("@card").find("[data-cy=material-decrement]").click();
 
-          cy.get("@card")
-            .find("[data-cy=material-amount]")
-            .should("contain", initialAmount);
-        });
-    });
+        cy.get("@card")
+          .find("[data-cy=material-amount]")
+          .should("contain", initialAmount);
+      });
   });
 });
 
 describe("Material Card - Long Press and Threshold Warning (Manager)", () => {
   it("increments material value with long press", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("site-card").first().click();
-      cy.getByCy("material-card").first().as("card");
+    cy.loginByApi("manager@example.com", "secret");
+    cy.getByCy("site-card").first().click();
+    cy.getByCy("material-card").first().as("card");
 
-      cy.get("@card")
-        .find("[data-cy=material-amount]")
-        .invoke("text")
-        .then((text) => {
-          const [initial] = text.trim().split(" ");
-          const initialAmount = parseInt(initial);
+    cy.get("@card")
+      .find("[data-cy=material-amount]")
+      .invoke("text")
+      .then((text) => {
+        const [initial] = text.trim().split(" ");
+        const initialAmount = parseInt(initial);
 
-          cy.get("@card")
-            .find("[data-cy=material-increment]")
-            .trigger("mousedown");
-          cy.wait(800);
-          cy.get("@card")
-            .find("[data-cy=material-increment]")
-            .trigger("mouseup");
+        cy.get("@card")
+          .find("[data-cy=material-increment]")
+          .trigger("mousedown");
+        cy.wait(800);
+        cy.get("@card").find("[data-cy=material-increment]").trigger("mouseup");
 
-          cy.get("@card")
-            .find("[data-cy=material-amount]")
-            .invoke("text")
-            .then((newText) => {
-              const [after] = newText.trim().split(" ");
-              const afterAmount = parseInt(after);
-              expect(afterAmount).to.be.greaterThan(initialAmount + 1);
-            });
-        });
-    });
+        cy.get("@card")
+          .find("[data-cy=material-amount]")
+          .invoke("text")
+          .then((newText) => {
+            const [after] = newText.trim().split(" ");
+            const afterAmount = parseInt(after);
+            expect(afterAmount).to.be.greaterThan(initialAmount + 1);
+          });
+      });
   });
 
   it("decrements material to 0 and checks warning threshold", () => {
-    cy.loginByApi("manager@example.com", "secret").then(() => {
-      cy.getByCy("site-card").first().click();
-      cy.getByCy("material-card").first().as("card");
+    cy.loginByApi("manager@example.com", "secret");
+    cy.getByCy("site-card").first().click();
+    cy.getByCy("material-card").first().as("card");
 
-      const pressAndWait = () => {
-        cy.get("@card")
-          .find("[data-cy=material-decrement]")
-          .trigger("mousedown");
-        cy.wait(6000);
-      };
+    const pressAndWait = () => {
+      cy.get("@card").find("[data-cy=material-decrement]").trigger("mousedown");
+      cy.wait(6000);
+    };
 
-      cy.get("@card")
-        .find("[data-cy=material-decrement]")
-        .then(($btn) => {
-          if (!$btn.is(":disabled")) {
-            pressAndWait();
-          }
-        });
+    cy.get("@card")
+      .find("[data-cy=material-decrement]")
+      .then(($btn) => {
+        if (!$btn.is(":disabled")) {
+          pressAndWait();
+        }
+      });
 
-      cy.get("@card").find("[data-cy=material-amount]").should("contain", "0");
-    });
+    cy.get("@card").find("[data-cy=material-amount]").should("contain", "0");
   });
 });
 
@@ -210,54 +203,26 @@ describe("Site Management", () => {
   });
 
   it("creates a new site", () => {
-    cy.getByCy("create-site-button").click();
+    const exampleSite = {
+      name: "Main Office",
+      status: "ACTIVE",
+      priority: "High",
+      startDate: "2025-06-01",
+      endDate: "2026-06-01",
+      address: {
+        street: "Maple Avenue",
+        number: "123",
+        city: "Springfield",
+        postalCode: "98765",
+        country: "USA",
+      },
+      assignedUser: "Worker Two",
+    };
 
-    cy.getByCy("input-site-name").type("Warehouse Alpha");
-
-    cy.getByCy("input-status").click();
-    cy.getByCy("input-status-option").contains("ACTIVE").click();
-
-    cy.getByCy("input-priority").click();
-    cy.getByCy("input-priority-option").contains("Low").click();
-
-    cy.getByCy("input-start-date")
-      .find("input")
-      .invoke("removeAttr", "readonly")
-      .clear()
-      .type("2025-04-04")
-      .blur();
-    cy.getByCy("input-end-date")
-      .find("input")
-      .invoke("removeAttr", "readonly")
-      .clear()
-      .type("2025-04-10")
-      .blur();
-
-    cy.getByCy("input-street").type("Logistics Blvd");
-    cy.getByCy("input-street-number").type("42A");
-    cy.getByCy("input-city").type("Portville");
-    cy.getByCy("input-postal-code").type("90001");
-    cy.getByCy("input-country").type("Freedonia");
-
-    cy.getByCy("input-users").click();
-    cy.get("[data-cy^=user-option]").first().click();
-    cy.get("body").click();
-
-    cy.getByCy("create-update-site-save-button").click();
-
-    cy.contains("Site created successfully").should("exist");
-    cy.getByCy("site-card").should("contain", "Warehouse Alpha");
+    cy.createSite(exampleSite);
   });
 
   it("updates an existing site", () => {
-    cy.getByCy("site-card").contains("Warehouse Alpha").click();
-    cy.getByCy("site-edit-button").click();
-
-    cy.getByCy("input-site-name").clear().type("Warehouse Beta");
-
-    cy.getByCy("create-update-site-save-button").click();
-
-    cy.contains("Site updated successfully").should("exist");
-    cy.getByCy("site-name").should("contain", "Warehouse Beta");
+    cy.updateSiteName("Main Construction Site", "Second Construction Site");
   });
 });

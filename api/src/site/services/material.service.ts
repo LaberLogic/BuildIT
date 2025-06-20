@@ -1,8 +1,12 @@
 import { ChainedError } from "@utils/chainedError";
 import { scopeCheckCompany, scopeCheckSiteAccess } from "@utils/scopeCheck";
 import { errAsync, ResultAsync } from "neverthrow";
-import { MaterialResponseDto, UpdateMaterialCountDto } from "shared";
-import { CreateMaterialDto, UpdateMaterialDto } from "shared";
+import {
+  CreateMaterialDto,
+  MaterialResponseDto,
+  UpdateMaterialCountDto,
+  UpdateMaterialDto,
+} from "shared";
 import { UserObject } from "types";
 
 import { toMaterialDTO } from "../dtos/material.dto";
@@ -39,11 +43,7 @@ export const updateMaterialProperties = (
   return scopeCheckCompany(currentUser, companyId)
     .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
     .andThen(() => updateMaterial({ id: materialId }, data))
-    .map((material: Material) => toMaterialDTO(material))
-    .mapErr((e) => {
-      console.log(e);
-      return e;
-    });
+    .map((material: Material) => toMaterialDTO(material));
 };
 
 export const incrementDecrementMaterial = (
@@ -57,9 +57,7 @@ export const incrementDecrementMaterial = (
     .andThen(() => scopeCheckSiteAccess(currentUser, siteId, companyId))
     .andThen(() => getMaterialById({ id: materialId }))
     .andThen((material: Material) => {
-      console.log("REACHED");
       if (material.amount + delta < 0) {
-        console.log("REACHED2");
         return errAsync(
           new ChainedError("Material amount cannot be negative", 403),
         );

@@ -1,0 +1,79 @@
+flowchart TD
+ subgraph Plugins["Plugins"]
+    direction TB
+        JWT["jwt.ts"]
+        RG["roleGuards.ts"]
+  end
+ subgraph mail["mail"]
+        MS["mail.service.ts"]
+        MSender["mail.sender.ts"]
+  end
+ subgraph company["company"]
+        CC["company.controller.ts"]
+        CD["company.dto.ts"]
+        CS["company.service.ts"]
+        CR["company.repository.ts"]
+        CRoutes["company.routes.ts"]
+  end
+ subgraph health["health"]
+        HC["health.controller.ts"]
+        HRoutes["health.routes.ts"]
+  end
+ subgraph site["site"]
+        SC["site.controller.ts"]
+        SD["site.dto.ts"]
+        SS["site.service.ts"]
+        SR["site.repository.ts"]
+        SRoutes["site.routes.ts"]
+        MC["material.controller.ts"]
+        MD["material.dto.ts"]
+        MSite["material.service.ts"]
+        MR["material.repository.ts"]
+        MRoutes["material.routes.ts"]
+  end
+ subgraph user["user"]
+        AC["auth.controller.ts"]
+        UC["user.controller.ts"]
+        UD["user.dto.ts"]
+        AS["auth.service.ts"]
+        US["user.service.ts"]
+        UR["user.repository.ts"]
+        ARoutes["auth.routes.ts"]
+        CURoutes["company.user.routes.ts"]
+        URoutes["user.routes.ts"]
+  end
+ subgraph API["API"]
+    direction TB
+        Plugins
+        mail
+        company
+        health
+        site
+        user
+  end
+    MS --> MSender
+    CC --> CD
+    CD --> CS
+    CS --> CR
+    SC --> SD
+    SD --> SS
+    SS --> SR
+    MC --> MD
+    MD --> MSite
+    MSite --> MR
+    AC --> UD
+    UD --> AS & US
+    AS --> UR & MS
+    US --> MS & UR
+    HC --> MS
+    UC --> UD
+    CC -- Uses --> JWT & RG
+    SC -- Uses --> JWT & RG
+    MC -- Uses --> JWT & RG
+    AC -- Uses --> JWT & RG
+    UC -- Uses --> JWT & RG
+    FEApp["Frontend Application"] --> CC & SC & MC & AC & UC
+    CR --> DBInstance[("Database Instance")]
+    SR --> DBInstance
+    MR --> DBInstance
+    UR --> DBInstance

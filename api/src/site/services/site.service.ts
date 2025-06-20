@@ -120,7 +120,7 @@ const mapSiteUpdateUserPayload = (
   existingUserIds: string[],
 ): Prisma.SiteUpdateInput => {
   const { users: userIds, address, status, startDate, endDate, ...rest } = data;
-  const toAdd = userIds?.filter((id) => !existingUserIds.includes(id)) || [];
+  const toAdd = userIds?.filter((id) => !existingUserIds.includes(id)) ?? [];
 
   return {
     ...rest,

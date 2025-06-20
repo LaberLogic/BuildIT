@@ -1,5 +1,5 @@
-before(() => {
-  cy.request("POST", "http://localhost:3000/test/reset-db");
+beforeEach(() => {
+  cy.request("POST", "http://localhost:3001/test/reset-db");
 });
 
 describe("User Tests", () => {

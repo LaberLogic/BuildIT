@@ -17,5 +17,12 @@ declare namespace Cypress {
     goToSitesTabAsAdmin(): Chainable<void>;
     goToFirstSiteAsAdmin(): Chainable<void>;
     getByCy(dataCy: string): Chainable<JQuery<HTMLElement>>;
+    createSite(site: Site): Chainable<void>;
+    updateSiteName(oldName: string, newName: string): Chainable<void>;
+    createMaterial(material: Material): Chainable<void>;
+    updateMaterial(
+      amount: string | number,
+      threshold: string | number,
+    ): Chainable<void>;
   }
 }
