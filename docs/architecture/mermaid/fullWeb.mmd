@@ -1,0 +1,95 @@
+flowchart TD
+
+  %% === FRONTEND WRAPPER ===
+  subgraph Frontend["Frontend"]
+    direction TB
+
+    %% Pages
+    subgraph Pages["Pages"]
+      direction TB
+        PageLogin["/auth/login.vue"]
+        PageRegister["/auth/register.vue"]
+        PageCompany["/company/index.vue"]
+        PageCompanyId["/company/[companyId]/index.vue"]
+        PageCompanyUsers["/company/[companyId]/users/index.vue"]
+        PageCompanySites["/company/[companyId]/sites/index.vue"]
+        PageSiteId["/company/[companyId]/sites/[siteId]/index.vue"]
+        PageProfile["/profile.vue"]
+        PageReset["/reset-password.vue"]
+        PageSet["/set-password.vue"]
+        PageIndex["/index.vue"]
+    end
+
+    %% Components
+    subgraph Auth["Auth"]
+      CHWI["HeaderWithIcon.vue"]
+      CLF["LoginForm.vue"]
+      CRUF["RegisterUserForm.vue"]
+      CRCF["RegisterCompanyForm.vue"]
+    end
+
+    subgraph Company["Company"]
+      CCO["OverviewCard.vue"]
+      CCD["CompanyDetailsCard.vue"]
+    end
+
+    subgraph Users["Users"]
+      CUS["UserStatistics.vue"]
+      CUDA["UserDashboardActions.vue"]
+      CUC["UserCard.vue"]
+      CUM["modals/CreateUpdateUser.vue"]
+    end
+
+    subgraph Site["Site"]
+      CSBI["BasicInfo.vue"]
+      CST["Tabs.vue"]
+      CSC["SiteCard.vue"]
+      CSM["modals/CreateUpdateSite.vue"]
+      CMTC["MaterialCard.vue"]
+      CMT["MaterialTracker.vue"]
+      CTTC["TimeTracker.vue"]
+      CSDC["SiteDetailsCard.vue"]
+      CUMAT["modals/CreateUpdateMaterial.vue"]
+    end
+
+    subgraph General["General"]
+      CGCA["ConfirmAction.vue"]
+    end
+
+    subgraph Components["Components"]
+      direction TB
+        Auth
+        Company
+        Users
+        Site
+        General
+    end
+
+    %% Component Usage by Pages
+    PageLogin --> CHWI & CLF
+    PageRegister --> CHWI & CRUF & CRCF
+    PageCompany --> CCO
+    PageCompanyId --> CCD
+    PageCompanyUsers --> CUS & CUDA & CUC
+    PageCompanySites --> CSC & CSM
+    PageSiteId --> CSBI & CST
+    PageProfile --> CUC
+    PageReset --> CHWI
+    PageSet --> CHWI
+
+    %% Internal Component Links
+    CST --> CTTC & CMT & CSDC
+    CMT --> CMTC & CUMAT
+    CMTC --> CGCA
+    CUC --> CGCA
+
+  end
+
+  %% EXTERNAL SYSTEMS (Black Boxes)
+  API(("API"))
+  DB(("Database"))
+  Mailgun(("Mailgun"))
+
+  %% Connections
+  Frontend --> API
+  API --> DB & Mailgun

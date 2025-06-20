@@ -1,0 +1,19 @@
+flowchart TD
+  subgraph Frontend["Frontend"]
+    direction TB
+    Pages
+    Components
+    Composables
+    Layouts
+    Middlewares
+    Plugins
+    Server
+    Stores
+  end
+
+  API(("API"))
+  DB(("Database"))
+  Mailgun(("Mailgun"))
+
+  Frontend --> API
+  API --> DB & Mailgun
