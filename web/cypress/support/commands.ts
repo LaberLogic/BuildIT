@@ -84,3 +84,51 @@ Cypress.Commands.add("goToFirstSiteAsAdmin", () => {
 Cypress.Commands.add("getByCy", (dataCy) => {
   return cy.get(`[data-cy="${dataCy}"]`);
 });
+
+Cypress.Commands.add("createSite", (site) => {
+  cy.getByCy("create-site-button").click();
+
+  cy.getByCy("input-site-name").type(site.name);
+
+  cy.getByCy("input-status").click();
+  cy.getByCy("input-status-option").contains(site.status).click();
+
+  cy.getByCy("input-priority").click();
+  cy.getByCy("input-priority-option").contains(site.priority).click();
+
+  cy.getByCy("input-start-date")
+    .find("input")
+    .invoke("removeAttr", "readonly")
+    .clear()
+    .type(site.startDate)
+    .blur();
+
+  cy.getByCy("input-end-date")
+    .find("input")
+    .invoke("removeAttr", "readonly")
+    .clear()
+    .type(site.endDate)
+    .blur();
+
+  cy.getByCy("input-street").type(site.address.street);
+  cy.getByCy("input-street-number").type(site.address.number);
+  cy.getByCy("input-city").type(site.address.city);
+  cy.getByCy("input-postal-code").type(site.address.postalCode);
+  cy.getByCy("input-country").type(site.address.country);
+
+  cy.getByCy("input-users").click();
+  cy.get(`[data-cy^=user-option]`).contains(site.assignedUser).click();
+  cy.get("body").click();
+
+  cy.getByCy("create-update-site-save-button").click();
+  cy.contains("Site created successfully").should("exist");
+});
+
+Cypress.Commands.add("updateSiteName", (oldName, newName) => {
+  cy.getByCy("site-card").contains(oldName).click();
+  cy.getByCy("site-edit-button").click();
+  cy.getByCy("input-site-name").clear().type(newName);
+  cy.getByCy("create-update-site-save-button").click();
+  cy.contains("Site updated successfully").should("exist");
+  cy.getByCy("site-name").should("contain", newName);
+});

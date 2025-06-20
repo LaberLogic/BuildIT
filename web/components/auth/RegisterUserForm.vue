@@ -5,23 +5,36 @@
     :rules="rules"
     label-position="top"
     class="max-w-xl mx-auto space-y-4"
+    data-cy="register-form"
     @submit.prevent="onSubmit"
   >
     <el-row :gutter="20">
       <el-col :span="12">
         <el-form-item label="First Name" prop="firstName">
-          <el-input v-model="form.firstName" placeholder="Enter first name" />
+          <el-input
+            v-model="form.firstName"
+            placeholder="Enter first name"
+            data-cy="first-name-input"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="Last Name" prop="lastName">
-          <el-input v-model="form.lastName" placeholder="Enter last name" />
+          <el-input
+            v-model="form.lastName"
+            placeholder="Enter last name"
+            data-cy="last-name-input"
+          />
         </el-form-item>
       </el-col>
     </el-row>
 
     <el-form-item label="Email" prop="email">
-      <el-input v-model="form.email" placeholder="Enter email" />
+      <el-input
+        v-model="form.email"
+        placeholder="Enter email"
+        data-cy="email-input"
+      />
     </el-form-item>
 
     <el-form-item label="Password" prop="password">
@@ -29,6 +42,7 @@
         v-model="form.password"
         :type="showPassword ? 'text' : 'password'"
         placeholder="Enter password"
+        data-cy="password-input"
       >
         <template #suffix>
           <el-icon class="cursor-pointer" @click="togglePasswordVisibility">
@@ -44,6 +58,7 @@
           type="primary"
           native-type="submit"
           class="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+          data-cy="continue-button"
         >
           Continue
         </el-button>
