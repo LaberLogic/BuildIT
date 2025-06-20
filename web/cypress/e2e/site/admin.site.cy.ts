@@ -232,54 +232,26 @@ describe("Site Management (Admin)", () => {
   });
 
   it("creates a new site", () => {
-    cy.getByCy("create-site-button").click();
+    const exampleSite = {
+      name: "Main Office",
+      status: "ACTIVE",
+      priority: "High",
+      startDate: "2025-06-01",
+      endDate: "2026-06-01",
+      address: {
+        street: "Maple Avenue",
+        number: "123",
+        city: "Springfield",
+        postalCode: "98765",
+        country: "USA",
+      },
+      assignedUser: "Worker Two",
+    };
 
-    cy.getByCy("input-site-name").type("Warehouse Alpha");
-
-    cy.getByCy("input-status").click();
-    cy.getByCy("input-status-option").contains("ACTIVE").click();
-
-    cy.getByCy("input-priority").click();
-    cy.getByCy("input-priority-option").contains("Low").click();
-
-    cy.getByCy("input-start-date")
-      .find("input")
-      .invoke("removeAttr", "readonly")
-      .clear()
-      .type("2025-04-04")
-      .blur();
-    cy.getByCy("input-end-date")
-      .find("input")
-      .invoke("removeAttr", "readonly")
-      .clear()
-      .type("2025-04-10")
-      .blur();
-
-    cy.getByCy("input-street").type("Logistics Blvd");
-    cy.getByCy("input-street-number").type("42A");
-    cy.getByCy("input-city").type("Portville");
-    cy.getByCy("input-postal-code").type("90001");
-    cy.getByCy("input-country").type("Freedonia");
-
-    cy.getByCy("input-users").click();
-    cy.get("[data-cy^=user-option]").first().click();
-    cy.get("body").click();
-
-    cy.getByCy("create-update-site-save-button").click();
-
-    cy.contains("Site created successfully").should("exist");
-    cy.getByCy("site-card").should("contain", "Warehouse Alpha");
+    cy.createSite(exampleSite);
   });
 
   it("updates an existing site", () => {
-    cy.getByCy("site-card").contains("Warehouse Alpha").click();
-    cy.getByCy("site-edit-button").click();
-
-    cy.getByCy("input-site-name").clear().type("Warehouse Beta");
-
-    cy.getByCy("create-update-site-save-button").click();
-
-    cy.contains("Site updated successfully").should("exist");
-    cy.getByCy("site-name").should("contain", "Warehouse Beta");
+    cy.updateSiteName("Main Construction Site", "Second Construction Site");
   });
 });

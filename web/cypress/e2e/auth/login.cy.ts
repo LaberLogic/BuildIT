@@ -1,4 +1,8 @@
 describe("Base Cases", () => {
+  before(() => {
+    cy.request("POST", "http://localhost:3001/test/reset-db");
+  });
+
   beforeEach(() => {
     cy.visit("http://localhost:3000/auth/login");
   });
