@@ -1,75 +1,119 @@
-# Building Block View {#section-building-block-view}
+# Building Block View
 
-## Whitebox Overall System {#_whitebox_overall_system}
+## Whitebox Overall System
 
-***\<Overview Diagram>***
+**Overview Diagram**
+![System Overview Diagram](./diagrams/system-overview.png)
 
-Motivation
+**Motivation**
+To give a clear understanding of the architecture across the client (Vue) and server (API) and how they connect with external systems like the database and email service.
 
-:   *\<text explanation>*
+**Contained Building Blocks**
 
-Contained Building Blocks
+* `Frontend` – Vue-based SPA with pages and components
+* `API` – Node/Nest backend application exposing RESTful services
+* External Blackboxes:
 
-:   *\<Description of contained building block (black boxes)>*
+  * `Database` (PostgreSQL)
+  * `Mailgun` (Email delivery)
 
-Important Interfaces
+**Important Interfaces**
 
-:   *\<Description of important interfaces>*
+* HTTP interface between Frontend and API
+* Internal ORM and notification service interfaces within the API
 
-### \<Name black box 1> {#__name_black_box_1}
+---
 
-*\<Purpose/Responsibility>*
+## Level 2
 
-*\<Interface(s)>*
+### White Box *Frontend*
 
-*\<(Optional) Quality/Performance Characteristics>*
+**Diagram**
+![Frontend Component Dependency Diagram](./diagrams/frontend-dependencies.png)
 
-*\<(Optional) Directory/File Location>*
+**Description**
+Vue 3 SPA structured around pages, reusable components, and composables. Pages render domain-specific content, components encapsulate UI behavior. All data-fetching is abstracted in composables.
 
-*\<(Optional) Fulfilled Requirements>*
+**Contained Elements**
 
-*\<(optional) Open Issues/Problems/Risks>*
+* Pages (`.vue` under `/pages/`)
+* Components (grouped by domain: `Auth`, `Users`, `Sites`, etc.)
+* Composables (data fetching logic — blackboxed)
 
-### \<Name black box 2> {#__name_black_box_2}
+**Interfaces**
 
-*\<black box template>*
+* Uses Vue Router for navigation
+* All API calls are performed inside composables via `useFetchXyz()` patterns
+* Components communicate via props and events
 
-### \<Name black box n> {#__name_black_box_n}
+---
 
-*\<black box template>*
+### White Box *API*
 
-### \<Name interface 1> {#__name_interface_1}
+**Diagram**
+![API Structure Diagram](./diagrams/api-structure.png)
 
-...
+**Description**
+Fastify backend following a layered structure (Controller → Service → Repository). Routes handle logic for authentication, user and company management, site tracking, and email notifications.
 
-### \<Name interface m> {#__name_interface_m}
+**Contained Elements**
 
-## Level 2 {#_level_2}
+* Controllers: `AuthController`, `CompanyController`, `SiteController`, `UserController`, etc.
+* Services: Corresponding services encapsulating business logic
+* Repositories / ORM: Abstraction layer for DB operations
+* MailerService: Integrates with Mailgun
 
-### White Box *\<building block 1>* {#_white_box_emphasis_building_block_1_emphasis}
+**Interfaces**
 
-*\<white box template>*
+* REST endpoints exposed to the frontend
+* Internal service methods invoked across layers
+* Email interface via a Mailgun wrapper
+* Database interface via ORM (e.g., Prisma or TypeORM)
 
-### White Box *\<building block 2>* {#_white_box_emphasis_building_block_2_emphasis}
+---
 
-*\<white box template>*
+## Level 3
 
-...
+### White Box `_API Internal Structure_`
 
-### White Box *\<building block m>* {#_white_box_emphasis_building_block_m_emphasis}
+**Diagram**
+![API Internal Structure](./diagrams/api-structure.png)
 
-*\<white box template>*
+**Purpose**
+Show modular controller-service-repository breakdown of the backend, to illustrate separation of concerns and dependency flow.
 
-## Level 3 {#_level_3}
+**Responsibilities**
 
-### White Box \<\_building block x.1\_\> {#_white_box_building_block_x_1}
+* **Controllers** handle routing and validation
+* **Services** manage core logic and coordination
+* **Repositories** abstract database communication
+* **Mailer** sends notifications through Mailgun
 
-*\<white box template>*
+**Interfaces**
 
-### White Box \<\_building block x.2\_\> {#_white_box_building_block_x_2}
+* API routes
+* ORM queries
+* External mail service
 
-*\<white box template>*
+---
 
-### White Box \<\_building block y.1\_\> {#_white_box_building_block_y_1}
+### White Box `_Frontend Dependency Map_`
 
-*\<white box template>*
+**Diagram**
+![Vue Component Dependency Structure](./diagrams/frontend-dependencies.png)
+
+**Purpose**
+Visualize how Vue pages use nested components across modules like `Auth`, `Company`, `Users`, and `Site`.
+
+**Responsibilities**
+
+* **Pages** organize route-based rendering
+* **Components** encapsulate UI and domain-specific logic
+* **Composables** are blackboxes handling data-fetching
+
+**Interfaces**
+
+* Prop/event system within components
+* Composable API used across pages and components
+
+---

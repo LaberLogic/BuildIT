@@ -4,7 +4,7 @@
 
 **Overview Diagram**
 
-![Infrastructure Level 1 Diagram](./images/deployment_level_1.png)
+![Infrastructure Level 1 Diagram](./images/OverviewDeployment.png)
 
 **Motivation**
 
@@ -14,7 +14,7 @@ The deployment architecture is designed to enable rapid beta testing with minima
 
 - Low latency and fast content delivery via Edge CDN for the frontend.
 - Simplified beta infrastructure reduces costs and complexity, enabling quick iterations.
-- Kubernetes-based production deployment ensures high availability, horizontal scalability, and zero-downtime deployments.
+- Kubernetes-based production deployment ensures high availability, horizontal scalability, and zero-downtime deployments if needed in later .
 - Managed or orchestrated database ensures data durability and backup capabilities.
 
 **Mapping of Building Blocks to Infrastructure**
@@ -30,7 +30,7 @@ The deployment architecture is designed to enable rapid beta testing with minima
 
 ### "Edge Frontend Platform" {#__emphasis_infrastructure_element_1_emphasis}
 
-![Edge Frontend Platform Diagram](./images/deployment_edge_frontend.png)
+![Edge Frontend Platform Diagram](./images/DetailsFE.png)
 
 The frontend SPA built with Nuxt 3 is deployed on an Edge platform that provides a global CDN with server-side rendering capabilities. This ensures low-latency delivery and high availability without manual scaling or infrastructure management.
 
@@ -38,7 +38,7 @@ The frontend SPA built with Nuxt 3 is deployed on an Edge platform that provides
 
 ### "Beta Backend and Database on Cloud Droplet" {#__emphasis_infrastructure_element_2_emphasis}
 
-![Beta Backend and Database Diagram](./images/deployment_beta_backend.png)
+![Beta Backend and Database Diagram](./images/DetailsAPIDeployment.png)
 
 For beta, the backend API server and the PostgreSQL database run on a single cloud droplet to minimize complexity and cost. The API handles all business logic and communicates with the database and Mailgun email service.
 
@@ -46,6 +46,6 @@ For beta, the backend API server and the PostgreSQL database run on a single clo
 
 ### "Production Kubernetes Cluster" {#__emphasis_infrastructure_element_3_emphasis}
 
-![Production Kubernetes Cluster Diagram](./images/deployment_kubernetes.png)
+![Production Kubernetes Cluster Diagram](./images/DetailsKubernetes.png)
 
 In production, the backend API and database are containerized and deployed inside a Kubernetes cluster. A load balancer routes traffic to multiple API pods for high availability and scalability. The database runs either as a managed service or a Kubernetes StatefulSet with persistent storage. The frontend remains deployed on the Edge platform.
