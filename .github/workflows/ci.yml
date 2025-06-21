@@ -93,13 +93,14 @@ jobs:
   #     - run: pnpm --filter web run build
 
   test-api:
-    # Remove 'needs' for now, since other jobs are commented
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -116,8 +117,20 @@ jobs:
           echo DEFAULT_RECEIVER_EMAIL=your-email >> api/.env
           echo USE_DEFAULT_EMAIL_RECEIVER=true >> api/.env
           echo SKIP_EMAIL_SENDING=true >> api/.env
+
+      - name: Debug List api folder and show .env
+        run: |
+          ls -la api/
           cat api/.env
 
-      - run: pnpm install
-      - run: pnpm --filter api prisma:generate
-      - run: pnpm --filter api run test
+      - name: Install dependencies inside /api
+        working-directory: ./api
+        run: pnpm install
+
+      - name: Generate prisma client inside /api
+        working-directory: ./api
+        run: pnpm prisma generate
+
+      - name: Run API tests
+        working-directory: ./api
+        run: pnpm run test
