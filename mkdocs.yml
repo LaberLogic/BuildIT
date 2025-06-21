@@ -1,6 +1,7 @@
 site_name: Construx
 
 nav:
+  - Home: architecture/index.md
   - Architecture:
       - "00 Overview": architecture/index.md
       - "01. Introduction and Goals": architecture/01_introduction_and_goals.md
