@@ -17,10 +17,3 @@ This section helps stakeholders understand why certain technologies and approach
 ## Purpose and Scope
 
 Architectural decisions recorded here cover the major technical choices that influence the system's development, deployment, and evolution.
-
-Some decisions are documented locally within component or building block documentation, but those with broad impact are centralized here for ease of reference.
-
-## Additional Notes
-
-- Decisions are reviewed and updated as the project evolves.
-- The ADR documents include context, options considered, chosen alternative, and consequences.
