@@ -18,8 +18,8 @@ services:
     container_name: web
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=development
+    env_file:
+      - web/.env
     depends_on:
       - api
 
