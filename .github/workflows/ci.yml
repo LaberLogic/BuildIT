@@ -114,8 +114,8 @@ test-api:
         export DATABASE_URL="postgresql://user:password@localhost:5433/mydb"
         export JWT_SECRET=your-very-secret-string-here
         export API_BASE_URL=http://localhost:3001
-        export MAILGUN_API_KEY=b7fec4e9117626f67d0552aa0fe98a01-5bb33252-8f33f78a
-        export MAILGUN_DOMAIN=sandbox179ca9f3201b487585b1c0ccc20c4993.mailgun.org
+        export MAILGUN_API_KEY=key-dummy
+        export MAILGUN_DOMAIN=some-domain.com
         export DEFAULT_RECEIVER_EMAIL=mail
         export USE_DEFAULT_EMAIL_RECEIVER=true
         export SKIP_EMAIL_SENDING=true
