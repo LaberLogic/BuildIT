@@ -96,16 +96,6 @@ jobs:
   test-api:
     needs: build-api
     runs-on: ubuntu-22.04
-    env:
-      NODE_ENV: development
-      PORT: 3001
-      DATABASE_URL: "postgresql://user:password@db:5432/mydb"
-      JWT_SECRET: your-very-secret-string-here
-      MAILGUN_API_KEY: some-key
-      MAILGUN_DOMAIN: some-domain
-      DEFAULT_RECEIVER_EMAIL: your-email
-      USE_DEFAULT_EMAIL_RECEIVER: "true"
-      SKIP_EMAIL_SENDING: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -115,19 +105,23 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
+
+      - name: Create .env file
+        run: |
+          echo NODE_ENV=development >> .env
+          echo PORT=3001 >> .env
+          echo DATABASE_URL="postgresql://user:password@db:5432/mydb" >> .env
+          echo JWT_SECRET=your-very-secret-string-here >> .env
+          echo MAILGUN_API_KEY=some-key >> .env
+          echo MAILGUN_DOMAIN=some-domain >> .env
+          echo DEFAULT_RECEIVER_EMAIL=your-email >> .env
+          echo USE_DEFAULT_EMAIL_RECEIVER=true >> .env
+          echo SKIP_EMAIL_SENDING=true >> .env
+          cat .env
+
       - run: pnpm install
       - run: pnpm --filter api prisma:generate
 
-      - run: |
-          echo "NODE_ENV=$NODE_ENV"
-          echo "PORT=$PORT"
-          echo "DATABASE_URL=***REDACTED***"
-          echo "JWT_SECRET=***REDACTED***"
-          echo "MAILGUN_API_KEY=***REDACTED***"
-          echo "MAILGUN_DOMAIN=$MAILGUN_DOMAIN"
-          echo "DEFAULT_RECEIVER_EMAIL=$DEFAULT_RECEIVER_EMAIL"
-          echo "USE_DEFAULT_EMAIL_RECEIVER=$USE_DEFAULT_EMAIL_RECEIVER"
-          echo "SKIP_EMAIL_SENDING=$SKIP_EMAIL_SENDING"
       - run: pnpm --filter api run test
 
   test-web:
