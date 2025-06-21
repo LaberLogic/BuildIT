@@ -107,7 +107,7 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm --filter api prisma:generate
-      - run: pnpm --filter api run test 
+      - run: pnpm --filter api run test:unit
 
   test-web:
     needs: [build-web]
