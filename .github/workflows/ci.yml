@@ -96,6 +96,16 @@ jobs:
   test-api:
     needs: build-api
     runs-on: ubuntu-22.04
+    env:
+      NODE_ENV: development
+      PORT: 3001
+      DATABASE_URL: "postgresql://user:password@db:5432/mydb"
+      JWT_SECRET: your-very-secret-string-here
+      MAILGUN_API_KEY: some-key
+      MAILGUN_DOMAIN: some-domain
+      DEFAULT_RECEIVER_EMAIL: your-email
+      USE_DEFAULT_EMAIL_RECEIVER: "true"
+      SKIP_EMAIL_SENDING: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -107,7 +117,7 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm --filter api prisma:generate
-      - run: pnpm --filter api run test 
+      - run: pnpm --filter api run test
 
   test-web:
     needs: [build-web]
