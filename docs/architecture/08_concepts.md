@@ -5,7 +5,7 @@
 The system uses JWT-based authentication managed by the backend API. Role-based access control ensures that Construction Managers, Site Workers, and Admins can only access features and data they are authorized for. This concept impacts the frontend, backend, and API security layers.
 
 ## Data Validation
-Input validation is enforced on both client (frontend using Zod) and server (backend DTOs with Zod schemas) to ensure data integrity and prevent invalid data from propagating through the system. This validation is tightly integrated across multiple layers.
+Input validation is enforced on both client (frontend using rules from async-validator) and server (backend DTOs with Zod schemas) to ensure data integrity and prevent invalid data from propagating through the system. This validation is tightly integrated across multiple layers.
 
 ## Multi-tenancy
 

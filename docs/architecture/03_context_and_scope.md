@@ -56,6 +56,6 @@ The system follows a **layered architecture** inside a Node.js-based monorepo:
 | `PostgreSQL`  | Data storage via Prisma, enforcing company-based multi-tenancy.                  |
 | `Mailgun`     | Used for sending all system-triggered emails (invite, reset, notifications).    |
 
-## 3.6 C4 Level 2 – Container Diagram
+## 3.6 Level 2 – Container Diagram
 
 ![Technical Context](./images/C2Technical.png)

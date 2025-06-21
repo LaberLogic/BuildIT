@@ -1,6 +1,6 @@
-# 1. Introduction and Goals {#section-introduction-and-goals}
+# 1. Introduction and Goals
 
-## 1.1 Requirements Overview {#_requirements_overview}
+## 1.1 Requirements Overview
 
 This construction management software is developed for **[Fliesen Hönle(https://www.fliesen-hoenle.de/)**, a construction company focused on tiling and interior works. The system aims to streamline and digitize daily operational tasks, primarily related to personnel, site, and material management.
 
@@ -14,7 +14,7 @@ This construction management software is developed for **[Fliesen Hönle(https:/
   - Managers can manage sites, users, and materials.
   - Regular users have access to their assigned site data.
 
-## 1.2 Quality Goals {#_quality_goals}
+## 1.2 Quality Goals
 
 | Priority | Quality Goal     | Description                                                                 |
 |----------|------------------|-----------------------------------------------------------------------------|
@@ -23,11 +23,11 @@ This construction management software is developed for **[Fliesen Hönle(https:/
 | 3        | Maintainability  | Code should be easy to extend as the business grows or features evolve.    |
 | 4        | Availability     | System must be reliable during working hours with minimal downtime.        |
 
-## 1.3 Stakeholders {#_stakeholders}
+## 1.3 Stakeholders
 
 | Role/Name             | Contact                           | Expectations                                                             |
 |-----------------------|-----------------------------------|--------------------------------------------------------------------------|
-| Client Company        | [Fliesen Höhnle GmbH](https://www.fliesen-hoenle.de/) | Software that simplifies management of workers, sites, and materials.     |
+| Client Company        | [Fliesen Hönle ](https://www.fliesen-hoenle.de/) | Software that simplifies management of workers, sites, and materials.     |
 |  Jonas Labermeier   | *Product Owner & Developer*       | Clear vision, simple architecture, easy to maintain and grow.            |
 | Construction Manager  | Internal                          | Quick access to site info, user assignments, and material overviews.     |
 | On-Site Workers       | Internal                          | Minimal interface to view site tasks and assigned materials.             |
