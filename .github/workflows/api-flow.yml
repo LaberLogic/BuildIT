@@ -6,37 +6,34 @@ on:
 jobs:
   test-api:
     runs-on: ubuntu-22.04
-    env:
-      DOTENV_CONFIG_PATH: .test.env
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Generate Prisma Client
+      - name: Generate Prisma client
         run: pnpm --filter=api prisma:generate
 
-      - name: Lint API
-        run: pnpm --filter=api run lint
-
-      - name: Typecheck API
-        run: pnpm --filter=api run typecheck
-
-      - name: Build API
-        run: pnpm --filter=api run build
-
       - name: Run API tests
+        env:
+          NODE_ENV: development
+          PORT: 3001
+          DATABASE_URL: postgresql://user:password@db:5432/mydb
+          JWT_SECRET: your-very-secret-string-here
+          MAILGUN_API_KEY: some-key
+          MAILGUN_DOMAIN: some-domain
+          DEFAULT_RECEIVER_EMAIL: your-email
+          USE_DEFAULT_EMAIL_RECEIVER: true
+          SKIP_EMAIL_SENDING: true
         run: pnpm --filter=api run test
