@@ -3,5 +3,17 @@ import { FastifyInstance } from "fastify";
 import { healthCheck } from "./health.controller";
 
 export const healthRoutes = async (fastify: FastifyInstance) => {
-  fastify.get("/health", healthCheck);
+  fastify.route({
+    method: "GET",
+    url: "/health",
+    handler: healthCheck,
+    schema: {
+      tags: ["Health"],
+      response: {
+        200: {
+          type: "object",
+        },
+      },
+    },
+  });
 };

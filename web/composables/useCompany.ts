@@ -3,8 +3,10 @@ import type { CompanyResponseDto } from "shared";
 const getToken = () => `Bearer ${useAuthStore().token}`;
 
 export const useCompanies = () => {
+  const config = useRuntimeConfig();
+
   const { data, pending, error, refresh } = useFetch<CompanyResponseDto[]>(
-    () => `/api/companies/`,
+    () => `${config.public.API_BASE_URL}/companies/`,
     {
       headers: {
         Authorization: getToken(),
@@ -21,8 +23,10 @@ export const useCompanies = () => {
 };
 
 export const useCompany = (companyId: string) => {
+  const config = useRuntimeConfig();
+
   const { data, pending, error, refresh } = useFetch<CompanyResponseDto>(
-    () => `/api/companies/${companyId}`,
+    () => `${config.public.API_BASE_URL}/companies/${companyId}`,
     {
       headers: {
         Authorization: getToken(),

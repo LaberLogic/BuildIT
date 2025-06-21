@@ -9,47 +9,63 @@ export const setPassword = async (
   data: { password: string },
   token: string,
 ) => {
-  return await $fetch<RegisterResponseDto>("/api/auth/set-password", {
-    method: "POST",
-    body: data,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+  const config = useRuntimeConfig();
+  return await $fetch<RegisterResponseDto>(
+    `${config.public.API_BASE_URL}/auth/set-password`,
+    {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
 };
 
 export const resetPasswordRequest = async (data: { email: string }) => {
-  return await $fetch<RegisterResponseDto>("/api/auth/reset-password", {
-    method: "POST",
-    body: data,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-export const register = async (data: RegisterDto) => {
-  return await $fetch<RegisterResponseDto>("/api/auth/register", {
-    method: "POST",
-    body: data,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-export const signIn = async (data: SignInDto) => {
-  try {
-    const authStore = useAuthStore();
-
-    const res = await $fetch<SignInResponseDto>("/api/auth/signin", {
+  const config = useRuntimeConfig();
+  return await $fetch<RegisterResponseDto>(
+    `${config.public.API_BASE_URL}/auth/reset-password`,
+    {
       method: "POST",
       body: data,
       headers: {
         "Content-Type": "application/json",
       },
-    });
+    },
+  );
+};
+
+export const register = async (data: RegisterDto) => {
+  const config = useRuntimeConfig();
+  return await $fetch<RegisterResponseDto>(
+    `${config.public.API_BASE_URL}/auth/register`,
+    {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+};
+
+export const signIn = async (data: SignInDto) => {
+  try {
+    const authStore = useAuthStore();
+    const config = useRuntimeConfig();
+
+    const res = await $fetch<SignInResponseDto>(
+      `${config.public.API_BASE_URL}/auth/signin`,
+      {
+        method: "POST",
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
     if (!res.accessToken) {
       console.warn("No access token received from server");

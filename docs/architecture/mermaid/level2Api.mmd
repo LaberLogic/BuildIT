@@ -1,0 +1,31 @@
+C4Container
+title Level 2 - API Backend (Fastify)
+
+Person(user, "User")
+
+System_Ext(frontend, "Nuxt Frontend")
+System_Ext(mailgun, "Mailgun")
+SystemDb(database, "Database")
+System_Ext(sharedSchemas, "Shared Schemas")
+
+Container_Boundary(api, "Fastify API") {
+  Container(routes, "Routes", "Fastify", "Handles endpoints, uses schemas")
+  Container(services, "Services", "Node.js", "Business logic layer")
+  Container(repositories, "Repositories", "Prisma", "DB access")
+  Container(mail, "Mail", "Mailgun Client", "Email utility")
+  Container(scopeCheck, "ScopeCheck", "Utility", "Permission checks")
+  Container(dto, "DTOs", "Transformers", "Formats data for response")
+}
+
+Rel(user, frontend, "Uses")
+Rel(frontend, routes, "HTTP")
+Rel(routes, sharedSchemas, "Validates input")
+Rel(routes, services, "Calls")
+Rel(services, repositories, "Reads/Writes")
+Rel(services, mail, "Sends emails")
+Rel(services, scopeCheck, "Checks permissions")
+Rel(services, dto, "Maps response data")
+Rel(repositories, database, "Queries")
+Rel(mail, mailgun, "Delivers")
+
+UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

@@ -1,4 +1,4 @@
-# Risks and Technical Debts {#section-technical-risks}
+# Risks and Technical Debts
 
 ## 11.1 Risks
 

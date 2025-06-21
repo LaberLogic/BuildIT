@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant Client
+    participant FastifyRoute as Fastify Route
+    participant Controller as signInController
+    participant Service as authService
+    participant UserRepo as User Repository
+    participant PasswordUtil as Password Utility
+    participant Reply as Fastify Reply
+
+    Client->>FastifyRoute: POST /auth/sign-in
+    FastifyRoute->>Controller: handle(req, reply)
+    Controller->>Service: signIn(email, password)
+
+    Service->>UserRepo: findUserByEmail(email)
+    UserRepo-->>Service: user | null
+
+    alt User not found
+        Service-->>Controller: Error("User not found")
+        Controller->>Reply: 401 Unauthorized
+    else User found
+        Service->>PasswordUtil: verifyPassword(inputPassword, storedHash)
+        PasswordUtil->>PasswordUtil: bcrypt.compare(...)
+        PasswordUtil-->>Service: isMatch
+
+        alt Invalid password
+            Service-->>Controller: Error("Invalid Password")
+            Controller->>Reply: 401 Unauthorized
+        else Valid password
+            Service->>PasswordUtil: generateJWT({ id, role, companyId })
+            PasswordUtil->>PasswordUtil: jwt.sign(...)
+            PasswordUtil-->>Service: accessToken
+
+            Service-->>Controller: { accessToken, user }
+            Controller->>Reply: 200 OK + userInfo
+        end
+    end
+
+    Reply-->>Client: JSON response

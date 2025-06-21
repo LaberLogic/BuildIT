@@ -1,19 +1,26 @@
-flowchart TD
-  subgraph Frontend["Frontend"]
-    direction TB
-    Pages
-    Components
-    Composables
-    Layouts
-    Middlewares
-    Plugins
-    Server
-    Stores
-  end
+C4Container
+title Level 2 - Frontend (Nuxt Web App)
 
-  API(("API"))
-  DB(("Database"))
-  Mailgun(("Mailgun"))
+Person(user, "User", "Uses the app via browser")
 
-  Frontend --> API
-  API --> DB & Mailgun
+System_Ext(api, "API Backend", "Fastify server providing business logic")
+
+Container_Boundary(frontend, "Nuxt Web App") {
+  Container(pages, "Pages", "Vue/Nuxt Pages", "Route-driven views")
+  Container(components, "Components", "Vue UI", "Reusable view components")
+  Container(layouts, "Layouts", "Vue Layouts", "Page wrappers/layout shells")
+  Container(middleware, "Middleware", "Nuxt Middleware", "Guards & access control")
+  Container(plugins, "Plugins", "Nuxt Plugins", "Runtime extensions")
+  Container(composables, "Composables", "Reusable Logic", "API fetching, utils, etc.")
+  Container(stores, "Stores", "Pinia", "Global shared state")
+}
+
+Rel(user, pages, "Navigates and interacts")
+Rel(pages, layouts, "Wrapped in")
+Rel(pages, components, "Composed of")
+Rel(pages, middleware, "Passes through")
+Rel(components, composables, "Uses")
+Rel(pages, stores, "Reads & updates state")
+Rel(composables, api, "Sends API requests")
+
+UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

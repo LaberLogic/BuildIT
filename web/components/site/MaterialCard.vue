@@ -32,23 +32,6 @@
         <el-button
           class="btn-icon"
           plain
-          data-cy="material-increment"
-          @mousedown="holdIncrement.start"
-          @mouseup="holdIncrement.stop"
-          @mouseleave="holdIncrement.stop"
-          @touchstart.prevent="holdIncrement.start"
-          @touchend="holdIncrement.stop"
-        >
-          <el-icon><Plus /></el-icon>
-        </el-button>
-
-        <span class="mx-2 min-w-[40px] text-center" data-cy="material-amount">
-          {{ localAmount }} {{ material.unit }}
-        </span>
-
-        <el-button
-          class="btn-icon"
-          plain
           :disabled="localAmount <= 0"
           data-cy="material-decrement"
           @mousedown="holdDecrement.start"
@@ -58,6 +41,22 @@
           @touchend="holdDecrement.stop"
         >
           <el-icon><Minus /></el-icon>
+        </el-button>
+        <span class="mx-2 min-w-[40px] text-center" data-cy="material-amount">
+          {{ localAmount }} {{ material.unit }}
+        </span>
+
+        <el-button
+          class="btn-icon"
+          plain
+          data-cy="material-increment"
+          @mousedown="holdIncrement.start"
+          @mouseup="holdIncrement.stop"
+          @mouseleave="holdIncrement.stop"
+          @touchstart.prevent="holdIncrement.start"
+          @touchend="holdIncrement.stop"
+        >
+          <el-icon><Plus /></el-icon>
         </el-button>
       </div>
 

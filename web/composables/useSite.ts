@@ -8,9 +8,10 @@ import type {
 
 export const useCompanySites = (companyId: string) => {
   const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
   const { data, pending, error, refresh } = useFetch<SiteResponseDto[]>(
-    () => `/api/companies/${companyId}/sites`,
+    () => `${config.public.API_BASE_URL}/companies/${companyId}/sites`,
     {
       method: "GET",
       headers: {
@@ -29,9 +30,11 @@ export const useCompanySites = (companyId: string) => {
 
 export const useCompanyUserSites = (companyId: string, userId: string) => {
   const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
   const { data, pending, error, refresh } = useFetch<SiteResponseDto[]>(
-    () => `/api/companies/${companyId}/sites/user/${userId}`,
+    () =>
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/user/${userId}`,
     {
       method: "GET",
       headers: {
@@ -50,9 +53,11 @@ export const useCompanyUserSites = (companyId: string, userId: string) => {
 
 export const useCompanySiteDetails = (companyId: string, siteId: string) => {
   const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
   const { data, pending, error, refresh } = useFetch<SiteResponseDto>(
-    () => `/api/companies/${companyId}/sites/${siteId}`,
+    () =>
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}`,
     {
       method: "GET",
       headers: {
@@ -76,8 +81,10 @@ export const updateSite = async (
   try {
     const { companyId, siteId } = params;
     const authStore = useAuthStore();
+    const config = useRuntimeConfig();
+
     const result = await $fetch<SiteResponseDto>(
-      `/api/companies/${companyId}/sites/${siteId}`,
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}`,
       {
         method: "PATCH",
         body,
@@ -101,8 +108,10 @@ export const createSite = async (
   try {
     const { companyId } = params;
     const authStore = useAuthStore();
+    const config = useRuntimeConfig();
+
     const result = await $fetch<SiteResponseDto>(
-      `/api/companies/${companyId}/sites/`,
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/`,
       {
         method: "POST",
         headers: {

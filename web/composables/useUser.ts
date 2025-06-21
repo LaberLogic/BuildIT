@@ -3,8 +3,10 @@ import type { CreateUserDto, UpdateUserDto, UserResponseDto } from "shared";
 const getToken = () => `Bearer ${useAuthStore().token}`;
 
 export const useCompanyUsers = (companyId: string) => {
+  const config = useRuntimeConfig();
+
   const { data, pending, error, refresh } = useFetch<UserResponseDto[]>(
-    () => `/api/companies/${companyId}/users`,
+    () => `${config.public.API_BASE_URL}/companies/${companyId}/users`,
     {
       headers: {
         Authorization: getToken(),
@@ -21,8 +23,10 @@ export const useCompanyUsers = (companyId: string) => {
 };
 
 export const useUserById = (userId: string) => {
+  const config = useRuntimeConfig();
+
   const { data, pending, error, refresh } = useFetch<UserResponseDto>(
-    () => `/api/users/${userId}`,
+    () => `${config.public.API_BASE_URL}/users/${userId}`,
     {
       headers: {
         Authorization: getToken(),
@@ -44,8 +48,10 @@ export const createUser = async (
 ): Promise<UserResponseDto | null> => {
   try {
     const authStore = useAuthStore();
+    const config = useRuntimeConfig();
+
     const result = await $fetch<UserResponseDto>(
-      `/api/companies/${companyId}/users`,
+      `${config.public.API_BASE_URL}/companies/${companyId}/users`,
       {
         method: "POST",
         headers: {
@@ -69,8 +75,10 @@ export const updateUser = async (
 ): Promise<UserResponseDto | null> => {
   try {
     const authStore = useAuthStore();
+    const config = useRuntimeConfig();
+
     const result = await $fetch<UserResponseDto>(
-      `/api/companies/${companyId}/users/${userId}`,
+      `${config.public.API_BASE_URL}/companies/${companyId}/users/${userId}`,
       {
         method: "PUT",
         headers: {
@@ -92,13 +100,18 @@ export const updateProfile = async (
 ): Promise<UserResponseDto | null> => {
   try {
     const authStore = useAuthStore();
-    const result = await $fetch<UserResponseDto>(`/api/users/me`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${authStore.token}`,
+    const config = useRuntimeConfig();
+
+    const result = await $fetch<UserResponseDto>(
+      `${config.public.API_BASE_URL}/users/me`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+        body: payload,
       },
-      body: payload,
-    });
+    );
 
     return result;
   } catch (error) {
@@ -113,12 +126,17 @@ export const deleteUser = async (
 ): Promise<null | undefined> => {
   try {
     const authStore = useAuthStore();
-    await $fetch<null>(`/api/companies/${companyId}/users/${userId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${authStore.token}`,
+    const config = useRuntimeConfig();
+
+    await $fetch<null>(
+      `${config.public.API_BASE_URL}/companies/${companyId}/users/${userId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
       },
-    });
+    );
 
     return null;
   } catch (error) {
