@@ -1,4 +1,4 @@
-# 9 Architecture Decisions {#section-design-decisions}
+# 9 Architecture Decisions
 
 Important architecture decisions made during the design and implementation of the Construction Management Platform are documented here. These decisions have significant impact on the system's structure, maintainability, and operational characteristics.
 

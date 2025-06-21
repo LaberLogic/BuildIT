@@ -1,0 +1,63 @@
+erDiagram
+    USER {
+      String id PK "cuid()"
+      DateTime createdAt
+      DateTime updatedAt
+      String email "unique"
+      String firstName
+      String lastName
+      String password
+      String status "default: ACTIVE"
+      ROLE role "default: WORKER"
+    }
+    COMPANY {
+      String id PK "cuid()"
+      DateTime createdAt
+      DateTime updatedAt
+      String name
+    }
+    ADDRESS {
+      String id PK "cuid()"
+      DateTime createdAt
+      DateTime updatedAt
+      String streetNumber
+      String street
+      String city
+      String country
+      String postalCode
+      String googlePlaceId
+    }
+    SITE {
+      String id PK "cuid()"
+      DateTime createdAt
+      DateTime updatedAt
+      String name
+      String priority
+      DateTime startDate
+      DateTime endDate
+      String notes
+      SITE_STATUS status "default: ACTIVE"
+    }
+    MATERIAL {
+      String id PK "cuid()"
+      DateTime createdAt
+      DateTime updatedAt
+      String name
+      String unit
+      Int amount
+      Int threshold
+    }
+    SITE_ASSIGNMENT {
+      String id PK "cuid()"
+      DateTime lastVisited
+    }
+
+    USER ||--o| COMPANY : "belongs to"
+    COMPANY ||--|| ADDRESS : "has"
+    COMPANY ||--|{ USER : "has"
+    SITE }o--|| COMPANY : "belongs to"
+    SITE ||--|| ADDRESS : "has"
+    SITE ||--o{ MATERIAL : "has"
+    SITE_ASSIGNMENT }o--|| USER : "assigned to"
+    SITE_ASSIGNMENT }o--|| SITE : "assigned to"
+    USER ||--o{ SITE_ASSIGNMENT : "has assignments"
