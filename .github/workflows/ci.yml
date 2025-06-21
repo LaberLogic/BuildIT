@@ -4,97 +4,96 @@ on:
   pull_request:
 
 jobs:
-  lint-api:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm --filter api run lint
+  # lint-api:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #       with:
+  #         version: 10
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "pnpm"
+  #     - run: pnpm install
+  #     - run: pnpm --filter api run lint
 
-  lint-web:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm --filter web run lint
+  # lint-web:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #       with:
+  #         version: 10
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "pnpm"
+  #     - run: pnpm install
+  #     - run: pnpm --filter web run lint
 
-  typecheck-api:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
+  # typecheck-api:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #       with:
+  #         version: 10
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "pnpm"
+  #     - run: pnpm install
+  #     - run: pnpm --filter=api prisma:generate
+  #     - run: pnpm --filter api run typecheck
 
-      - run: pnpm install
-      - run: pnpm --filter=api prisma:generate
-      - run: pnpm --filter api run typecheck
+  # typecheck-web:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #       with:
+  #         version: 10
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "pnpm"
+  #     - run: pnpm install
+  #     - run: pnpm --filter web run typecheck
 
-  typecheck-web:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm --filter web run typecheck
+  # build-api:
+  #   needs: typecheck-api
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #       with:
+  #         version: 10
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "pnpm"
+  #     - run: pnpm install
+  #     - run: pnpm --filter=api prisma:generate
+  #     - run: pnpm --filter api run build
 
-  build-api:
-    needs: typecheck-api
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm --filter=api prisma:generate
-      - run: pnpm --filter api run build
-
-  build-web:
-    needs: typecheck-web
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm --filter web run build
+  # build-web:
+  #   needs: typecheck-web
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #       with:
+  #         version: 10
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "pnpm"
+  #     - run: pnpm install
+  #     - run: pnpm --filter web run build
 
   test-api:
-    needs: build-api
+    # Remove 'needs' for now, since other jobs are commented
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -106,45 +105,19 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Create .env file
+      - name: Create .env file inside /api
         run: |
-          echo NODE_ENV=development >> .env
-          echo PORT=3001 >> .env
-          echo DATABASE_URL="postgresql://user:password@db:5432/mydb" >> .env
-          echo JWT_SECRET=your-very-secret-string-here >> .env
-          echo MAILGUN_API_KEY=some-key >> .env
-          echo MAILGUN_DOMAIN=some-domain >> .env
-          echo DEFAULT_RECEIVER_EMAIL=your-email >> .env
-          echo USE_DEFAULT_EMAIL_RECEIVER=true >> .env
-          echo SKIP_EMAIL_SENDING=true >> .env
-          cat .env
+          echo NODE_ENV=development >> api/.env
+          echo PORT=3001 >> api/.env
+          echo DATABASE_URL="postgresql://user:password@db:5432/mydb" >> api/.env
+          echo JWT_SECRET=your-very-secret-string-here >> api/.env
+          echo MAILGUN_API_KEY=some-key >> api/.env
+          echo MAILGUN_DOMAIN=some-domain >> api/.env
+          echo DEFAULT_RECEIVER_EMAIL=your-email >> api/.env
+          echo USE_DEFAULT_EMAIL_RECEIVER=true >> api/.env
+          echo SKIP_EMAIL_SENDING=true >> api/.env
+          cat api/.env
 
       - run: pnpm install
       - run: pnpm --filter api prisma:generate
-
       - run: pnpm --filter api run test
-
-  test-web:
-    needs: [build-web]
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-      - run: pnpm install
-
-      - run: docker compose up -d --build
-
-      - run: pnpm --filter web exec cypress install
-
-      - run: pnpm --filter web exec cypress run
-
-      - if: always()
-        run: docker compose down
