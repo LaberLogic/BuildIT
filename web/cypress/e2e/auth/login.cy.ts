@@ -1,10 +1,6 @@
 describe("Base Cases", () => {
   before(() => {
-    Cypress.Promise.try(() => {
-      return cy.request("POST", "http://localhost:3001/test/reset-db");
-    }).catch((error) => {
-      cy.log("Request to reset DB failed: " + error.message);
-    });
+    cy.request("POST", `${Cypress.env("apiUrl")}/test/reset-db`);
   });
 
   beforeEach(() => {
@@ -19,10 +15,7 @@ describe("Base Cases", () => {
   });
 
   it("shows error on invalid login", () => {
-    cy.intercept("POST", "/api/auth/signin", {
-      statusCode: 200,
-      body: { success: false },
-    }).as("signInRequest");
+ 
 
     cy.getByCy("email-input").type("wrong@example.com");
     cy.getByCy("password-input").type("wrongpassword");
