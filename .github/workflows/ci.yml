@@ -119,7 +119,7 @@ jobs:
           export DEFAULT_RECEIVER_EMAIL=mail
           export USE_DEFAULT_EMAIL_RECEIVER=true
           export SKIP_EMAIL_SENDING=true
-          pnpm run test:unit
+          pnpm run test
         working-directory: ./api
 
   test-web:
@@ -137,6 +137,16 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - run: pnpm install
+
+      - name: Create web/.env
+        run: |
+          echo "NUXT_API_BASE_URL=http://localhost:3001" > web/.env
+          echo "NUXT_PORT=3000" >> web/.env
+          echo "NUXT_NODE_ENV=development" >> web/.env
+
+      - name: Create api/.env
+        run: |
+          cp ./api/.test.env .env
 
       - run: docker compose up -d --build
 
