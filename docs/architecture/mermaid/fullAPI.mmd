@@ -1,79 +1,78 @@
-flowchart TD
- subgraph Plugins["Plugins"]
-    direction TB
-        JWT["jwt.ts"]
-        RG["roleGuards.ts"]
-  end
- subgraph mail["mail"]
-        MS["mail.service.ts"]
-        MSender["mail.sender.ts"]
-  end
- subgraph company["company"]
-        CC["company.controller.ts"]
-        CD["company.dto.ts"]
-        CS["company.service.ts"]
-        CR["company.repository.ts"]
-        CRoutes["company.routes.ts"]
-  end
- subgraph health["health"]
-        HC["health.controller.ts"]
-        HRoutes["health.routes.ts"]
-  end
- subgraph site["site"]
-        SC["site.controller.ts"]
-        SD["site.dto.ts"]
-        SS["site.service.ts"]
-        SR["site.repository.ts"]
-        SRoutes["site.routes.ts"]
-        MC["material.controller.ts"]
-        MD["material.dto.ts"]
-        MSite["material.service.ts"]
-        MR["material.repository.ts"]
-        MRoutes["material.routes.ts"]
-  end
- subgraph user["user"]
-        AC["auth.controller.ts"]
-        UC["user.controller.ts"]
-        UD["user.dto.ts"]
-        AS["auth.service.ts"]
-        US["user.service.ts"]
-        UR["user.repository.ts"]
-        ARoutes["auth.routes.ts"]
-        CURoutes["company.user.routes.ts"]
-        URoutes["user.routes.ts"]
-  end
- subgraph API["API"]
-    direction TB
-        Plugins
-        mail
-        company
-        health
-        site
-        user
-  end
-    MS --> MSender
-    CC --> CD
-    CD --> CS
-    CS --> CR
-    SC --> SD
-    SD --> SS
-    SS --> SR
-    MC --> MD
-    MD --> MSite
-    MSite --> MR
-    AC --> UD
-    UD --> AS & US
-    AS --> UR & MS
-    US --> MS & UR
-    HC --> MS
-    UC --> UD
-    CC -- Uses --> JWT & RG
-    SC -- Uses --> JWT & RG
-    MC -- Uses --> JWT & RG
-    AC -- Uses --> JWT & RG
-    UC -- Uses --> JWT & RG
-    FEApp["Frontend Application"] --> CC & SC & MC & AC & UC
-    CR --> DBInstance[("Database Instance")]
-    SR --> DBInstance
-    MR --> DBInstance
-    UR --> DBInstance
+C4Container
+title Level 3 - API Backend User Domain (Fastify)
+
+
+
+System_Ext(sharedSchemas, "Shared Schemas", "Validation schemas")
+
+Container_Boundary(api, "Fastify API") {
+
+  Container_Boundary(userDomain, "User Domain") {
+
+
+
+    Container_Boundary(pluginLayer, "Plugin Layer") {
+      Container(pluginsJWT, "jwt.ts", "Middleware", "JWT token handling")
+      Container(pluginsRoleGuards, "roleGuards.ts", "Middleware", "Role-based access control")
+
+    }
+
+    Container_Boundary(routesLayer, "Routes Layer") {
+      Container(authRoutes, "auth.routes.ts", "Fastify", "Authentication routes")
+      Container(companyUserRoutes, "company.user.routes.ts", "Fastify", "Company user routes")
+      Container(userRoutes, "user.routes.ts", "Fastify", "User routes")
+
+
+    }
+
+    Container_Boundary(controllerLayer, "Controller Layer") {
+      Container(authController, "auth.controller.ts", "Node.js", "Handles authentication endpoints")
+      Container(userController, "user.controller.ts", "Node.js", "Handles user management endpoints")
+    }
+
+    Container_Boundary(serviceLayer, "Service Layer") {
+      Container(authService, "auth.service.ts", "Node.js", "Authentication business logic")
+      Container(userService, "user.service.ts", "Node.js", "User business logic")
+    }
+
+    Container_Boundary(dtoLayer, "DTO Layer") {
+      Container(userDTO, "user.dto.ts", "TypeScript + Zod", "Transforms and validates user data")
+    }
+
+    Container_Boundary(repositoryLayer, "Repository Layer") {
+      Container(userRepository, "user.repository.ts", "Prisma", "User data access")
+    }
+  }
+
+  Container(companyDomain, "Company Domain", "Node.js", "Company domain modules (controller, service, repo)")
+  Container(mailDomain, "Mail Domain", "Node.js", "Mail related services")
+  Container(healthDomain, "Health Domain", "Node.js", "Health check modules")
+  Container(siteDomain, "Site Domain", "Node.js", "Site and Material related modules")
+}
+
+
+
+Rel(companyUserRoutes, pluginsJWT, "Uses")
+Rel(userRoutes, pluginsJWT, "Uses")
+
+Rel(companyUserRoutes, pluginsRoleGuards, "Uses")
+Rel(userRoutes, pluginsRoleGuards, "Uses")
+
+Rel(authRoutes, authController, "Routes to")
+Rel(companyUserRoutes, userController, "Routes to")
+Rel(userRoutes, userController, "Routes to")
+
+Rel(authController, authService, "Calls")
+Rel(userController, userService, "Calls")
+
+Rel(userService, userRepository, "Reads/Writes")
+
+Rel(userService, mailDomain, "Sends email")
+Rel(authService, mailDomain, "Sends email")
+
+
+Rel(companyUserRoutes, sharedSchemas, "uses")
+Rel(userRoutes, sharedSchemas, "uses")
+
+Rel(authService, userDTO, "Uses for data transformation")
+Rel(userService, userDTO, "Uses for data transformation")

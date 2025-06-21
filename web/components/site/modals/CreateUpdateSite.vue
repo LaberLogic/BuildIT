@@ -1,11 +1,15 @@
 <template>
-  <el-dialog :title="title" width="600px" @close="onCancel">
+  <el-dialog
+    :title="title"
+    class="w-[90vw] sm:w-[600px] max-w-full"
+    @close="onCancel"
+  >
     <el-form
       ref="formRef"
       :model="model"
       :rules="rules"
       label-position="top"
-      class="grid gap-6"
+      class="grid gap-4 sm:gap-6 px-4 sm:px-6"
     >
       <el-form-item label="Site Name" prop="name">
         <el-input v-model="model.name" data-cy="input-site-name" />

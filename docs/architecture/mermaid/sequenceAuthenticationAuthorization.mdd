@@ -1,0 +1,33 @@
+sequenceDiagram
+  participant Client as Client
+  participant FastifyRoute as Fastify Route
+  participant JWTPlugin as JWT Plugin
+  participant RoleGuard as isAdminOrManager Guard
+  participant Controller as createSiteController
+  participant Service as Site Service
+  participant Repo as Site Repository
+  participant Reply as Fastify Reply
+
+  Client ->> FastifyRoute: POST /site (with JWT token)
+  FastifyRoute ->> JWTPlugin: authenticate (request.jwtVerify())
+  alt JWT valid
+    JWTPlugin -->> FastifyRoute: user info attached to request
+    FastifyRoute ->> RoleGuard: check req.user.role
+    alt role is ADMIN or MANAGER
+      RoleGuard -->> FastifyRoute: authorized
+      FastifyRoute ->> Controller: handle request with\n(CreateSiteDto, companyId, user)
+      Controller ->> Service: createNewSite(currentUser, data, companyId)
+      Service ->> Service: scopeCheckCompany(currentUser, companyId)
+      Service ->> Repo: createSite(...)
+      Repo -->> Service: Site entity
+      Service -->> Controller: SiteResponseDto
+      Controller ->> Reply: 201 Created + SiteResponseDto
+    else role unauthorized
+      RoleGuard -->> FastifyRoute: forbidden error
+      FastifyRoute ->> Reply: 403 Forbidden
+    end
+  else JWT invalid or expired
+    JWTPlugin -->> FastifyRoute: authentication error
+    FastifyRoute ->> Reply: 401 Unauthorized
+  end
+  Reply -->> Client: JSON response

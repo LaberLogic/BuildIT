@@ -1,6 +1,6 @@
-# Deployment View {#section-deployment-view}
+# Deployment View
 
-## Infrastructure Level 1 {#_infrastructure_level_1}
+## Infrastructure Level 1
 
 **Overview Diagram**
 
@@ -26,9 +26,9 @@ The deployment architecture is designed to enable rapid beta testing with minima
 
 ---
 
-## Infrastructure Level 2 {#_infrastructure_level_2}
+## Infrastructure Level 2
 
-### "Edge Frontend Platform" {#__emphasis_infrastructure_element_1_emphasis}
+### Edge Frontend Platform
 
 ![Edge Frontend Platform Diagram](./images/DetailsFE.png)
 
@@ -36,7 +36,7 @@ The frontend SPA built with Nuxt 3 is deployed on an Edge platform that provides
 
 ---
 
-### "Beta Backend and Database on Cloud Droplet" {#__emphasis_infrastructure_element_2_emphasis}
+### Beta Backend and Database on Cloud Droplet
 
 ![Beta Backend and Database Diagram](./images/DetailsAPIDeployment.png)
 
@@ -44,7 +44,7 @@ For beta, the backend API server and the PostgreSQL database run on a single clo
 
 ---
 
-### "Production Kubernetes Cluster" {#__emphasis_infrastructure_element_3_emphasis}
+### Production Kubernetes Cluster
 
 ![Production Kubernetes Cluster Diagram](./images/DetailsKubernetes.png)
 

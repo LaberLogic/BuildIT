@@ -1,23 +1,23 @@
-# 2. Architecture Constraints {#section-architecture-constraints}
+# 2. Architecture Constraints
 
-This section documents fixed technical, organizational, and legal boundaries the architecture must conform to.
+This section outlines key technical, organizational, and "legal" constraints that shape the architecture. While this is an early-stage university-backed prototype, these constraints aim to balance practical delivery with long-term maintainability and compliance.
 
-| Category | Constraint | Rationale |
-|----------|------------|-----------|
-| **Technical – Frontend** | Built with **Nuxt 3 (Vue 3)** using **Tailwind CSS** and **Element Plus** UI. | Enables fast development and polished UI with modern Vue stack. |
-| **Technical – Backend** | Built with **Fastify** using **TypeScript**, **Prisma** for ORM, and **Zod** for validation. | Lightweight, fast Node.js backend aligned with developer’s expertise. |
-| **Technical – Monorepo Structure** | Uses a shared DTO and schema validation layer (`shared` package) between API and frontend. | Reduces duplication and improves consistency across app layers. |
-| **Technical – Database** | Uses **PostgreSQL** with Prisma migrations. | ACID-compliant, scalable, and well-supported in TypeScript ecosystems. |
-| **Technical – Validation & Schema** | All validation must be declared in **Zod** schemas, then converted to OpenAPI via Swagger. | Single source of truth for validation and API docs. |
-| **Technical – API Testing** | Uses **Supertest** for integration tests against Fastify API. | Ensures correctness of routing, middlewares, and error handling. |
-| **Technical – Static Analysis** | Uses **SonarQube** for code quality, coverage, and maintainability metrics. | Helps ensure long-term quality even in solo development. |
-| **Technical – CI/CD** | Lint, type-check, build, test, and deploy pipelines via GitHub Actions. | Automates quality gates and releases, especially for multi-developer environments. |
-| **Technical – Testing** | Uses **Jest** for unit tests and **Cypress** for end-to-end browser tests. | Covers logic and UI regressions efficiently. |
-| **Technical – Deployment** | Deployed via Docker containers, hosted on **Hetzner Cloud** in Germany. | GDPR-aligned hosting; predictable and cost-effective. |
-| **Security – Authentication** | JWT-based stateless auth using Fastify plugins; CUID identifiers for users/resources. | Secure and scalable auth method; prevents ID enumeration. |
-| **Security – Company Isolation** | All user and site access must be restricted by company ID (multi-tenancy). | Avoids data leakage across clients. |
-| **Organizational – Team** | One-person team: **Jonas Labermeier** (Product Owner and Developer). | Requires architecture to be simple, maintainable, and automatable. |
-| **Organizational – Stack Choice** | All tech must be based on open-source tools with strong TypeScript support. | Avoids vendor lock-in and aligns with skill set. |
-| **Legal – Hosting Location** | All services must be hosted in the **EU** if deployed. | Ensures compliance with **GDPR** |
-| **Legal – Privacy & Imprint** | Application must include German-language “**Impressum**” and “**Datenschutzerklärung**” when deployed | Required under German law |
-| **Availability – Performance Target** | Goals: Initial page load < 2s on web; backend APIs < 300ms p95; 99.5% uptime. | Ensures usability for field users and reliable access. |
+| Category                              | Constraint                                                                                      | Rationale                                                                        |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Technical – Frontend**              | Built with **Nuxt 3 (Vue 3)** using **Tailwind CSS** and **Element Plus**.                      | Enables rapid UI development with a modern, component-rich Vue stack.            |
+| **Technical – Backend**               | Developed using **Fastify** with **TypeScript**, **Prisma** ORM, and **Zod** for validation.    | Lightweight, type-safe stack aligned with developer skills and fast iteration.   |
+| **Technical – Monorepo Structure**    | Shared types and Zod schemas are maintained in a common `shared` package.                       | Improves consistency across frontend and backend while reducing duplication.     |
+| **Technical – Database**              | Uses **PostgreSQL** with Prisma for access and schema migrations.                               | Reliable, developer-friendly relational DB with good ecosystem support.          |
+| **Technical – Validation & Schema**   | Validation logic is centralized in **Zod** and reused for both runtime checks and OpenAPI docs. | Maintains a single source of truth for validation, even in small projects.       |
+| **Technical – API Testing**           | **Supertest** is used for backend integration testing where applicable.                         | Validates core API flows during development.                                     |
+| **Technical – Static Analysis**       | Optional use of **SonarQube** or similar tools for code quality and maintainability checks.     | Helpful for tracking code health, especially in longer-running iterations.       |
+| **Technical – CI/CD**                 | Basic GitHub Actions pipeline for linting, testing, and deploying.                              | Encourages repeatable development workflows without heavy tooling.               |
+| **Technical – Testing**               | **Jest** for unit tests; **Cypress** for critical end-to-end flows.                             | Ensures reliability of core app logic and basic UI flows.                        |
+| **Technical – Deployment**            | Docker-based deployment, optionally hosted on **Hetzner Cloud** (Germany).                      | Cost-effective, GDPR-friendly cloud option; easy to manage for a solo developer. |
+| **Security – Authentication**         | Stateless JWT auth with Fastify plugins; **CUIDs** used as identifiers.                         | Sufficiently secure and scalable for prototype use.                              |
+| **Security – Multi-Tenancy**          | Company-level access isolation via `companyId` checks on key routes.                            | Prevents accidental data exposure across tenants.                                |
+| **Organizational – Team**             | Project developed solely by **Jonas Labermeier** (PO & Dev).                                    | Architecture prioritizes simplicity, automation, and low maintenance.            |
+| **Organizational – Tech Stack**       | Prefer open-source, TypeScript-friendly tools.                                                  | Reduces cost and learning curve while aligning with developer strengths.         |
+| **Legal – Hosting Location**          | Services should be hosted in the **EU**, ideally Germany.                                       | Meets GDPR expectations for academic and future production use.                  |
+| **Legal – Privacy & Imprint**         | Include German-language **Impressum** and **Datenschutzerklärung** when deployed publicly.      | Required under German law, even for public prototypes.                           |
+| **Availability – Performance Target** | Aim for < 2s initial load time and < 500ms p95 API latency.                                     | Supports good UX without over-engineering early-stage performance.               |

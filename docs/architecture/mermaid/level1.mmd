@@ -1,0 +1,19 @@
+C4Context
+title System Context Diagram - Web App + API
+
+Enterprise_Boundary(webapp_stack, "WebApp Platform") {
+  Person(user, "User", "Interacts with the platform via the browser.")
+
+  System(webapp, "Web Application (Nuxt.js)", "Client-side frontend used by users to interact with the platform.")
+  System(api, "API Backend (Fastify)", "Handles business logic, routes, authentication, and interacts with DB & Mailgun.")
+
+  SystemDb(db, "PostgreSQL Database", "Stores structured application data: users, companies, sites, materials, etc.")
+  System_Ext(mailgun, "Mailgun", "3rd-party email service for transactional emails.")
+
+  Rel(user, webapp, "Uses via browser")
+  Rel(webapp, api, "Sends HTTP requests (REST)")
+  Rel(api, db, "Reads from and writes to")
+  Rel(api, mailgun, "Sends email via")
+}
+
+UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

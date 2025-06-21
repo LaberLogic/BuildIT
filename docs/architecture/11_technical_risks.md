@@ -1,26 +1,33 @@
-# Risks and Technical Debts {#section-technical-risks}
+## 11. Risks and Technical Debt
 
-## 11.1 Risks
+### 11.1 Risks
 
-| ID   | Risk Description                                                                                      | Impact                    | Likelihood | Mitigation Strategy                              |
-|-------|----------------------------------------------------------------------------------------------------|---------------------------|------------|------------------------------------------------|
-| R-1   | Single third-party dependency on Mailgun for email delivery could cause system notification failures | Medium                    | Medium     | Implement fallback email provider or alerting  |
-| R-2   | Performance degradation under high load due to monolithic backend architecture                      | High                      | Low        | Monitor performance; consider microservices if needed |
-| R-3   | Security vulnerabilities due to improper validation or authorization gaps                           | High                      | Medium     | Enforce strict input validation (Zod), use role guards, conduct security audits |
-| R-4   | Data inconsistency risks from concurrent database updates                                           | High                      | Low        | Use Prisma transactions and database constraints |
-| R-5   | GDPR compliance risk if personal data handling is incorrect                                        | High                      | Low        | Regular compliance reviews; automated data audits |
-| R-6   | Developer onboarding difficulties due to complexity or lack of documentation                       | Medium                    | Medium     | Maintain clear architecture documentation and coding standards |
-
-## 11.2 Technical Debt
-
-| ID   | Area                         | Description                                                                              | Impact                           | Remediation Plan                               |
-|-------|------------------------------|------------------------------------------------------------------------------------------|---------------------------------|------------------------------------------------|
-| TD-1  | API Layer                    | Some API routes lack complete automated test coverage                                  | Reduced confidence in deployments | Add missing unit and integration tests         |
-| TD-2  | Frontend Codebase            | Inconsistent component styling and duplicated code in UI modules                       | Increased maintenance effort     | Refactor UI components; enforce style guides   |
-| TD-3  | Database Migrations          | Manual intervention sometimes needed during migrations                                | Deployment delays and risks      | Automate migration validation and rollback     |
-| TD-4  | Shared DTOs and Validation   | Limited shared validation schemas cause duplication between frontend and backend       | Higher chance of validation errors | Expand shared schemas and enforce usage        |
-| TD-5  | Monitoring and Logging       | Insufficient centralized logging and alerting for backend errors                      | Delayed issue detection          | Integrate centralized logging and alert system |
+| ID  | Risk Description                                                                                    | Impact | Likelihood | Mitigation Strategy                                                                                                                   |
+| --- | --------------------------------------------------------------------------------------------------- | ------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| R-1 | **Single email provider dependency (Mailgun)** may lead to delivery failures if the service is down | Medium | Medium     | Use a circuit breaker (e.g., `opossum`); implement fallback to a second provider or queueing mechanism                                |
+| R-2 | **Backend performance bottlenecks under high traffic** due to tightly coupled monolithic structure  | High   | Low        | Monitor with structured logs (e.g., `pino`), load testing (`k6`); modularize domains further or consider future service decomposition |
+| R-3 | **Security vulnerabilities** (e.g., lax input validation or route access misconfiguration)          | High   | Medium     | Enforce `zod` validation, centralized role guards, and periodic security audits                                                       |
+| R-4 | **Concurrent data mutations** could lead to race conditions or partial writes                       | High   | Low        | Use Prisma transactions; add locking or constraint-based conflict resolution                                                          |
+| R-5 | **GDPR/data privacy non-compliance**, especially in user and site modules                           | High   | Low        | Incorporate regular data handling reviews; automate data anonymization and deletion flows                                             |
+| R-6 | **Steep onboarding curve** for new developers due to cross-repo structure (API/Web/Shared)          | Medium | Medium     | Maintain clear `README`s, architecture diagrams, and enforce naming conventions                                                       |
+| R-7 | **Insufficient test coverage in core routes (auth, user, company)** leads to regressions            | High   | Medium     | Expand unit/integration coverage using `jest`, `supertest`, and CI enforcement                                                        |
 
 ---
 
-These risks and technical debts should be actively monitored and mitigated as part of the ongoing development and maintenance lifecycle to ensure system stability, security, and maintainability.
+### 11.2 Technical Debt
+
+| ID   | Area                      | Description                                                                  | Impact                              | Remediation Plan                                                                                                      |
+| ---- | ------------------------- | ---------------------------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| TD-1 | **API Testing**           | Incomplete test coverage across route/controller/service layers              | High confidence risk                | Add unit tests (`jest`), integration tests (`supertest`); enforce coverage thresholds in CI                           |
+| TD-2 | **Frontend Consistency**  | UI component duplication and inconsistent styling in domain modules          | Medium maintainability risk         | Refactor shared components; enforce design tokens and Tailwind CSS conventions                                        |
+| TD-3 | **DB Migration Workflow** | Occasional need for manual correction during migration rollout               | Deployment reliability risk         | Automate via `prisma migrate deploy`; add pre-migration validation and rollback hooks                                 |
+| TD-4 | **Shared Validation**     | Some forms still use locally scoped validation instead of shared Zod schemas | Data inconsistency, duplicate logic | Extend use of `shared` package in all forms; validate prop types against Zod directly                                 |
+| TD-5 | **Observability**         | Logging is not centralized and lacks correlation IDs for tracing             | Debugging and error triage pain     | Integrate structured logging (`pino` + transport), connect with external observability tools (e.g., Logtail, Datadog) |
+| TD-6 | **Test Automation**       | Load and spike testing is isolated (`k6` not integrated into CI pipeline)    | Scalability blind spots             | Schedule `k6` runs in CI/CD pipelines to monitor regressions before production                                        |
+
+---
+
+### Mitigation Strategy
+
+* **CI pipeline hardening:** Include `typecheck`, `lint`, `test:unit`, `test:integration`, and optionally `test:k6` stages before merging.
+* **Zod-first design:** Standardize all DTOs and frontend forms to use shared schemas; enforce in multi team  with lint rules or dev checks.

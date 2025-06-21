@@ -1,95 +1,87 @@
-flowchart TD
+C4Container
+title Level 3 - Frontend Application (Nuxt)
 
-  %% === FRONTEND WRAPPER ===
-  subgraph Frontend["Frontend"]
-    direction TB
 
-    %% Pages
-    subgraph Pages["Pages"]
-      direction TB
-        PageLogin["/auth/login.vue"]
-        PageRegister["/auth/register.vue"]
-        PageCompany["/company/index.vue"]
-        PageCompanyId["/company/[companyId]/index.vue"]
-        PageCompanyUsers["/company/[companyId]/users/index.vue"]
-        PageCompanySites["/company/[companyId]/sites/index.vue"]
-        PageSiteId["/company/[companyId]/sites/[siteId]/index.vue"]
-        PageProfile["/profile.vue"]
-        PageReset["/reset-password.vue"]
-        PageSet["/set-password.vue"]
-        PageIndex["/index.vue"]
-    end
 
-    %% Components
-    subgraph Auth["Auth"]
-      CHWI["HeaderWithIcon.vue"]
-      CLF["LoginForm.vue"]
-      CRUF["RegisterUserForm.vue"]
-      CRCF["RegisterCompanyForm.vue"]
-    end
+Container_Boundary(frontend, "Frontend (Nuxt)") {
 
-    subgraph Company["Company"]
-      CCO["OverviewCard.vue"]
-      CCD["CompanyDetailsCard.vue"]
-    end
+  Container_Boundary(pages, "Pages") {
+    Container(pageLogin, "/auth/login.vue", "Page", "Login page")
+    Container(pageRegister, "/auth/register.vue", "Page", "Register page")
+    Container(pageCompany, "/company/index.vue", "Page", "Company overview page")
+    Container(pageCompanyId, "/company/[companyId]/index.vue", "Page", "Company detail page")
+    Container(pageCompanyUsers, "/company/[companyId]/users/index.vue", "Page", "Company users page")
+    Container(pageCompanySites, "/company/[companyId]/sites/index.vue", "Page", "Company sites page")
+    Container(pageSiteId, "/company/[companyId]/sites/[siteId]/index.vue", "Page", "Site detail page")
+    Container(pageProfile, "/profile.vue", "Page", "User profile page")
+    Container(pageReset, "/reset-password.vue", "Page", "Password reset page")
+    Container(pageSet, "/set-password.vue", "Page", "Set password page")
+    Container(pageIndex, "/index.vue", "Page", "Home page")
+  }
 
-    subgraph Users["Users"]
-      CUS["UserStatistics.vue"]
-      CUDA["UserDashboardActions.vue"]
-      CUC["UserCard.vue"]
-      CUM["modals/CreateUpdateUser.vue"]
-    end
+  Container_Boundary(components, "Components") {
 
-    subgraph Site["Site"]
-      CSBI["BasicInfo.vue"]
-      CST["Tabs.vue"]
-      CSC["SiteCard.vue"]
-      CSM["modals/CreateUpdateSite.vue"]
-      CMTC["MaterialCard.vue"]
-      CMT["MaterialTracker.vue"]
-      CTTC["TimeTracker.vue"]
-      CSDC["SiteDetailsCard.vue"]
-      CUMAT["modals/CreateUpdateMaterial.vue"]
-    end
+    Container_Boundary(auth, "Auth Components") {
+      Container(headerWithIcon, "HeaderWithIcon.vue", "Component", "Header with icon")
+      Container(loginForm, "LoginForm.vue", "Component", "Login form")
+      Container(registerUserForm, "RegisterUserForm.vue", "Component", "User registration form")
+      Container(registerCompanyForm, "RegisterCompanyForm.vue", "Component", "Company registration form")
+    }
 
-    subgraph General["General"]
-      CGCA["ConfirmAction.vue"]
-    end
+    Container_Boundary(company, "Company Components") {
+      Container(overviewCard, "OverviewCard.vue", "Component", "Company overview card")
+      Container(companyDetailsCard, "CompanyDetailsCard.vue", "Component", "Company details card")
+    }
 
-    subgraph Components["Components"]
-      direction TB
-        Auth
-        Company
-        Users
-        Site
-        General
-    end
+    Container_Boundary(users, "Users Components") {
+      Container(userStatistics, "UserStatistics.vue", "Component", "User statistics")
+      Container(userDashboardActions, "UserDashboardActions.vue", "Component", "Dashboard actions")
+      Container(userCard, "UserCard.vue", "Component", "User card")
+      Container(createUpdateUserModal, "modals/CreateUpdateUser.vue", "Component", "User create/update modal")
+    }
 
-    %% Component Usage by Pages
-    PageLogin --> CHWI & CLF
-    PageRegister --> CHWI & CRUF & CRCF
-    PageCompany --> CCO
-    PageCompanyId --> CCD
-    PageCompanyUsers --> CUS & CUDA & CUC
-    PageCompanySites --> CSC & CSM
-    PageSiteId --> CSBI & CST
-    PageProfile --> CUC
-    PageReset --> CHWI
-    PageSet --> CHWI
+    Container_Boundary(site, "Site Components") {
+      Container(basicInfo, "BasicInfo.vue", "Component", "Site basic info")
+      Container(tabs, "Tabs.vue", "Component", "Site tabs")
+      Container(siteCard, "SiteCard.vue", "Component", "Site card")
+      Container(createUpdateSiteModal, "modals/CreateUpdateSite.vue", "Component", "Site create/update modal")
+      Container(materialCard, "MaterialCard.vue", "Component", "Material card")
+      Container(materialTracker, "MaterialTracker.vue", "Component", "Material tracker")
+      Container(timeTracker, "TimeTracker.vue", "Component", "Time tracker")
+      Container(siteDetailsCard, "SiteDetailsCard.vue", "Component", "Site details card")
+      Container(createUpdateMaterialModal, "modals/CreateUpdateMaterial.vue", "Component", "Material create/update modal")
+    }
 
-    %% Internal Component Links
-    CST --> CTTC & CMT & CSDC
-    CMT --> CMTC & CUMAT
-    CMTC --> CGCA
-    CUC --> CGCA
+    Container_Boundary(general, "General Components") {
+      Container(confirmAction, "ConfirmAction.vue", "Component", "Confirm action modal")
+    }
 
-  end
+  }
+}
 
-  %% EXTERNAL SYSTEMS (Black Boxes)
-  API(("API"))
-  DB(("Database"))
-  Mailgun(("Mailgun"))
+Rel(pageLogin, headerWithIcon, "Uses")
+Rel(pageLogin, loginForm, "Uses")
+Rel(pageRegister, headerWithIcon, "Uses")
+Rel(pageRegister, registerUserForm, "Uses")
+Rel(pageRegister, registerCompanyForm, "Uses")
+Rel(pageCompany, overviewCard, "Uses")
+Rel(pageCompanyId, companyDetailsCard, "Uses")
+Rel(pageCompanyUsers, userStatistics, "Uses")
+Rel(pageCompanyUsers, userDashboardActions, "Uses")
+Rel(pageCompanyUsers, userCard, "Uses")
+Rel(pageCompanySites, siteCard, "Uses")
+Rel(pageCompanySites, createUpdateSiteModal, "Uses")
+Rel(userCard, createUpdateUserModal, "Uses")
+Rel(pageSiteId, basicInfo, "Uses")
+Rel(pageSiteId, tabs, "Uses")
+Rel(pageProfile, createUpdateUserModal, "Uses")
+Rel(pageReset, headerWithIcon, "Uses")
+Rel(pageSet, headerWithIcon, "Uses")
 
-  %% Connections
-  Frontend --> API
-  API --> DB & Mailgun
+Rel(tabs, timeTracker, "Uses")
+Rel(tabs, materialTracker, "Uses")
+Rel(tabs, siteDetailsCard, "Uses")
+Rel(materialTracker, materialCard, "Uses")
+Rel(materialTracker, createUpdateMaterialModal, "Uses")
+Rel(materialCard, confirmAction, "Uses")
+Rel(userCard, confirmAction, "Uses")

@@ -1,0 +1,35 @@
+C4Container
+title Level 2 - Shared Module
+
+Person(user, "User")
+System_Ext(frontend, "Nuxt Frontend", "Web application used by the user")
+System_Ext(mailgun, "Mailgun", "Email delivery provider")
+SystemDb(database, "Database", "Persistent storage for application data")
+System_Ext(api, "Fastify API", "Backend application using shared modules")
+
+Container_Boundary(shared, "Shared Module") {
+  Container(companyShared, "company.ts", "Zod + TypeScript", "Schemas and DTO types for Company domain")
+  Container(materialShared, "material.ts", "Zod + TypeScript", "Schemas and DTO types for Material domain")
+  Container(siteShared, "site.ts", "Zod + TypeScript", "Schemas and DTO types for Site domain")
+  Container(userShared, "user.ts", "Zod + TypeScript", "Schemas and DTO types for User domain")
+  Container(authShared, "auth.ts", "Zod + TypeScript", "Schemas and DTO types for Auth domain")
+}
+
+Rel(api, companyShared, "Uses")
+Rel(api, materialShared, "Uses")
+Rel(api, siteShared, "Uses")
+Rel(api, userShared, "Uses")
+Rel(api, authShared, "Uses")
+
+Rel(frontend, companyShared, "Uses")
+Rel(frontend, materialShared, "Uses")
+Rel(frontend, siteShared, "Uses")
+Rel(frontend, userShared, "Uses")
+Rel(frontend, authShared, "Uses")
+
+Rel(user, frontend, "Interacts with")
+Rel(frontend, api, "Sends requests")
+Rel(api, database, "Reads/Writes")
+Rel(api, mailgun, "Sends emails")
+
+UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")

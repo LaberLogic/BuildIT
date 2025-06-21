@@ -1,6 +1,6 @@
-# 10. Quality Requirements {#section-quality-scenarios}
+# 10. Quality Requirements
 
-## 10.1 Quality Tree {#_quality_tree}
+## 10.1 Quality Tree
 
 The following quality attributes are prioritized for the Construction Management Platform:
 
@@ -8,28 +8,25 @@ The following quality attributes are prioritized for the Construction Management
    - The system shall respond to user interactions within 1 second under typical load.
    - API endpoints must process requests within 300ms on average.
 
-2. **Reliability**
-   - The platform shall be available 99.9% of the time.
-   - All critical operations (e.g., assigning workers, material tracking) must guarantee data consistency.
 
-3. **Security**
+2. **Security**
    - User authentication and authorization must be enforced on all API endpoints.
    - Sensitive data must be encrypted at rest and in transit.
    - GDPR compliance is mandatory for all personal data processing.
 
-4. **Maintainability**
+3. **Maintainability**
    - The codebase should be modular and layered to facilitate independent updates.
    - Automated tests must cover at least 80% of the backend and frontend code.
 
-5. **Scalability**
+4. **Scalability**
    - The system must support multiple construction companies with isolated data.
    - The architecture shall allow adding new tenants without downtime.
 
-6. **Usability**
+5. **Usability**
    - The web frontend shall support responsive design for desktop and mobile use.
    - Common workflows (e.g., site check-in, material requests) must be intuitive and require minimal training.
 
-## 10.2 Quality Scenarios {#_quality_scenarios}
+## 10.2 Quality Scenarios
 
 ### Usage Scenarios
 
