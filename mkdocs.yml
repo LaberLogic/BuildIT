@@ -1,0 +1,6 @@
+site_name: Construx
+nav:
+  - Home: docs/index.md
+
+theme:
+  name: readthedocs
