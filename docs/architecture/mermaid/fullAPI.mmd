@@ -11,7 +11,7 @@ Container_Boundary(api, "Fastify API") {
 
 
 
-    Container_Boundary(pluginLayer, "Routes Layer") {
+    Container_Boundary(pluginLayer, "Plugin Layer") {
       Container(pluginsJWT, "jwt.ts", "Middleware", "JWT token handling")
       Container(pluginsRoleGuards, "roleGuards.ts", "Middleware", "Role-based access control")
 
