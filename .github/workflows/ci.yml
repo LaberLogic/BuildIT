@@ -117,6 +117,17 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm --filter api prisma:generate
+
+      - run: |
+          echo "NODE_ENV=$NODE_ENV"
+          echo "PORT=$PORT"
+          echo "DATABASE_URL=***REDACTED***"
+          echo "JWT_SECRET=***REDACTED***"
+          echo "MAILGUN_API_KEY=***REDACTED***"
+          echo "MAILGUN_DOMAIN=$MAILGUN_DOMAIN"
+          echo "DEFAULT_RECEIVER_EMAIL=$DEFAULT_RECEIVER_EMAIL"
+          echo "USE_DEFAULT_EMAIL_RECEIVER=$USE_DEFAULT_EMAIL_RECEIVER"
+          echo "SKIP_EMAIL_SENDING=$SKIP_EMAIL_SENDING"
       - run: pnpm --filter api run test
 
   test-web:
