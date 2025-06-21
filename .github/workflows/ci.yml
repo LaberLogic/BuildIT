@@ -146,7 +146,7 @@ jobs:
 
       - name: Create api/.env
         run: |
-          cp ./api/.test.env .env
+          cp ./api/.test.env /api/.env
 
       - run: docker compose up -d --build
 
