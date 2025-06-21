@@ -119,7 +119,7 @@ jobs:
           export DEFAULT_RECEIVER_EMAIL=mail
           export USE_DEFAULT_EMAIL_RECEIVER=true
           export SKIP_EMAIL_SENDING=true
-          pnpm run test
+          pnpm run test:unit
         working-directory: ./api
 
   test-web:
@@ -146,7 +146,7 @@ jobs:
 
       - name: Create api/.env
         run: |
-          cp ./api/.test.env /api/.env
+          cp ./api/.test.env ./api/.env
 
       - run: docker compose up -d --build
 
