@@ -16,7 +16,7 @@
       </div>
 
       <div v-else-if="activeTab === 'sites'" class="space-y-4 pb-4 mb-24">
-        <div class="flex w-1/3 justify-between items-center mb-6">
+        <div class="flex w-full justify-between items-center mb-6">
           <div class="ml-2">
             <h1 class="text-2xl font-bold text-gray-900">My Sites</h1>
             <p class="text-sm text-gray-500 mt-1">

@@ -16,10 +16,11 @@ export const incrementDecrementMaterial = async ({
   delta: number;
 }) => {
   const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
   try {
     const response = await $fetch<MaterialResponseDto>(
-      `/api/companies/${companyId}/sites/${siteId}/materials/${materialId}/adjust-quantity`,
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}/materials/${materialId}/adjust-quantity`,
       {
         method: "POST",
         body: { delta },
@@ -46,10 +47,11 @@ export const createMaterial = async ({
   payload: CreateMaterialDto;
 }): Promise<MaterialResponseDto> => {
   const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
   try {
     const response = await $fetch<MaterialResponseDto>(
-      `/api/companies/${companyId}/sites/${siteId}/materials/`,
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}/materials/`,
       {
         method: "POST",
         body: payload,
@@ -78,10 +80,11 @@ export const updateMaterial = async ({
   payload: UpdateMaterialDto;
 }): Promise<MaterialResponseDto> => {
   const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
   try {
     const response = await $fetch<MaterialResponseDto>(
-      `/api/companies/${companyId}/sites/${siteId}/materials/${materialId}`,
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}/materials/${materialId}`,
       {
         method: "PATCH",
         body: payload,

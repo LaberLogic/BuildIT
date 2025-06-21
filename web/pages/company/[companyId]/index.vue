@@ -7,7 +7,7 @@
       :company="company"
       :users="users"
       :sites="sites"
-      class="w-1/3"
+      class="w-full md:w-1/3"
     />
   </div>
 </template>

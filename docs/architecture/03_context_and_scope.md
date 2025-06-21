@@ -1,4 +1,4 @@
-# 3. System Scope and Context {#section-system-scope-and-context}
+# 3. System Scope and Context
 
 ## 3.1 Business Context
 
@@ -10,7 +10,7 @@ Its primary use cases include:
 - Tracking **materials** needed or delivered on sites
 - Sending transactional emails (invitations, password resets, notifications)
 
-It is used and commissioned by **Fliesen Höhnle GmbH**, a tile and flooring company in Germany.
+It is used and commissioned by **Fliesen Hönle**, a tile and flooring company in Germany.
 
 ### Primary Users
 
@@ -56,6 +56,6 @@ The system follows a **layered architecture** inside a Node.js-based monorepo:
 | `PostgreSQL`  | Data storage via Prisma, enforcing company-based multi-tenancy.                  |
 | `Mailgun`     | Used for sending all system-triggered emails (invite, reset, notifications).    |
 
-## 3.6 C4 Level 2 – Container Diagram
+## 3.6 Level 2 – Container Diagram
 
 ![Technical Context](./images/C2Technical.png)

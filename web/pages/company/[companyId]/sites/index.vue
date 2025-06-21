@@ -2,7 +2,7 @@
   <div
     class="min-h-screen bg-gray-50 flex flex-col items-center pt-4 space-y-4"
   >
-    <div class="flex w-1/3 justify-between items-center mb-6">
+    <div class="flex w-full md:w-1/3 justify-between items-center mb-6">
       <div class="ml-2">
         <h1 class="text-2xl font-bold text-gray-900">My Sites</h1>
         <p class="text-sm text-gray-500 mt-1">
@@ -27,7 +27,7 @@
         @close="createOpen = false"
       />
     </div>
-    <div class="w-1/3 space-y-4 pb-4 mb-28">
+    <div class="w-full md:w-1/3 space-y-4 pb-4 mb-28">
       <div
         v-for="(site, index) in sites"
         :key="site.id"

@@ -1,21 +1,27 @@
-# 6 Runtime View {#section-runtime-view}
+# 6 Runtime View
 
-This section describes important runtime scenarios of the system, illustrating how key interactions happen step-by-step.
+This section describes key runtime scenarios of the system, illustrating important step-by-step interactions and workflows.
 
-## 6.1 Authentication Flow
+## 6.1 Sign-In Flow
 
-This scenario covers the process of a user logging into the system, obtaining authentication tokens, and establishing a session.
+* ![Sign-In Flow Sequence Diagram](./images/sequenceSignIn.png)
 
-![Authentication Flow Sequence Diagram](./images/authentication-flow-sequence.png)
+* This scenario covers the process of a user logging into the system, including verifying credentials, generating JWT tokens, and returning authentication information.
 
-## 6.2 Material Delta Tracking
+* Notable aspects include the validation of user credentials, password hashing verification, JWT token generation with embedded claims, and error handling for invalid login attempts.
 
-This scenario shows how site workers or managers track material deliveries or consumption on a construction site, including updates to the backend and notifications if needed.
+## 6.2 Authentication and Authorization Flow
 
-![Material Delta Sequence Diagram](./images/material-delta-sequence.png)
+* ![Authentication and Authorization Sequence Diagram](./images/sequenceAuth.png)
 
-## 6.3 Creating User with Email and Scope Checks
+* This scenario illustrates how protected routes are secured by verifying JWT tokens and enforcing role-based access control with guards, ensuring only authorized users can access specific resources.
 
-This scenario demonstrates how a Construction Manager creates a new user, triggering email invitations via Mailgun and applying role-based access controls.
+* Key interactions include JWT verification middleware, role guard checks, and how unauthorized requests are rejected before reaching business logic.
 
-![User Creation Sequence Diagram](./images/user-creation-sequence.png)
+## 6.3 Email Invitation Flow
+
+* ![User Creation and Email Invitation Sequence Diagram](./images/sequenceEmail.png)
+
+* This scenario demonstrates how a Construction Manager creates a new user, triggering an invitation email via Mailgun, while role-based access control ensures proper permissions are enforced.
+
+* Important aspects involve company scope validation, user creation with default inactive status, asynchronous email invitation dispatch, and handling email sending success/failure.

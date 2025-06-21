@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant Client
+    participant Controller as createUserController
+    participant Service as User Service
+    participant Repo as User Repository
+    participant EmailService as Email Service
+    participant Reply as Fastify Reply
+
+    Client->>Controller: POST /users (CreateUserDto)
+    Controller->>Service: createUser(companyId, currentUser, data)
+    Service->>Service: scopeCheckCompany(currentUser, companyId)
+    Service->>Repo: createUser(userPayload)
+    Repo-->>Service: createdUser
+
+    par Send Invitation Email (async)
+        Service->>EmailService: sendInvitationMail(createdUser)
+        alt Email sent
+            EmailService-->>Service: success
+            Service->>Console: log "Email sent successfully"
+        else Email failed
+            EmailService-->>Service: error
+            Service->>Console: warn "Failed to send invitation email"
+        end
+    and Main flow continues
+        Service-->>Controller: UserDTO
+        Controller->>Reply: 201 Created + UserDTO
+    end
+
+    Reply-->>Client: JSON response

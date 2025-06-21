@@ -20,4 +20,5 @@ export const env = cleanEnv(removeEmptyStringValues(process.env), {
   DEFAULT_RECEIVER_EMAIL: str(),
   USE_DEFAULT_EMAIL_RECEIVER: bool(),
   SKIP_EMAIL_SENDING: bool(),
+  API_BASE_URL: str(),
 });

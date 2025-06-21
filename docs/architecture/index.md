@@ -1,10 +1,10 @@
 # Architecture Documentation Index
 
-Welcome to the architecture documentation for the Construction Management Platform.
+Welcome to the architecture documentation for the **Construction Management Platform** — a prototype system designed to streamline operations for construction teams through a modern web application stack.
 
 ---
 
-## Table of Contents
+##  Table of Contents
 
 1. [Introduction and Goals](./01_introduction_and_goals.md)
 2. [Architecture Constraints](./02_architecture_constraints.md)
@@ -21,15 +21,22 @@ Welcome to the architecture documentation for the Construction Management Platfo
 
 ---
 
-## Architecture Decisions Records (ADRs)
+##  Architecture Decision Records (ADRs)
 
-- [Architecture Style](./adrs/adr-1-architecture-style.md)
-- [Technology Stack Selection](./adrs/adr-2-technology-stack.md)
-- [Authentication Approach](./adrs/adr-3-authentication.md)
-- [Database and ORM Choice](./adrs/adr-4-orm-and-db.md)
-- [Email Integration](./adrs/adr-5-email.md)
+* [ADR-001: Architecture Style](./adrs/adr-1-architecture-style.md)
+* [ADR-002: Technology Stack Selection](./adrs/adr-2-technology-stack.md)
+* [ADR-003: Authentication Approach](./adrs/adr-3-authentication.md)
+* [ADR-004: Database and ORM Choice](./adrs/adr-4-orm-and-db.md)
+* [ADR-005: Email Integration](./adrs/adr-5-email.md)
 
 ---
 
+##  API Documentation
 
-*This document serves as the entry point to the full architecture documentation for this project.*
+An interactive **OpenAPI specification** for the backend API is available locally during development at:
+
+```
+http://localhost:3001/docs
+```
+
+This provides a live view of all available endpoints, request/response structures, and schema validations.

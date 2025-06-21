@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center mt-4 overflow-scroll">
-    <div class="w-1/3 space-y-4 pb-4 mb-24">
+    <div class="w-full md:w-1/3 space-y-4 pb-4 mb-24">
       <div
         v-for="(company, index) in companies"
         :key="company.id"

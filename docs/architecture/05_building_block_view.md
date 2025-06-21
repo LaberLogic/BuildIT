@@ -2,118 +2,165 @@
 
 ## Whitebox Overall System
 
-**Overview Diagram**
-![System Overview Diagram](./diagrams/system-overview.png)
+![SystemOverview](./images/SystemOverview.png)
 
 **Motivation**
-To give a clear understanding of the architecture across the client (Vue) and server (API) and how they connect with external systems like the database and email service.
+This system is a modular, full-stack web application supporting multi-tenant company management, role-based access control, site and material tracking, and email-based authentication. The architecture separates concerns clearly into frontend, backend, shared validation, and third-party integrations.
 
 **Contained Building Blocks**
-
-* `Frontend` – Vue-based SPA with pages and components
-* `API` – Node/Nest backend application exposing RESTful services
-* External Blackboxes:
-
-  * `Database` (PostgreSQL)
-  * `Mailgun` (Email delivery)
+* **Web Frontend (Nuxt)**
+* **API Backend (Fastify)** — includes controllers, services, repositories, routes, and DTOs for domain mapping
+* **PostgreSQL Database**
+* **Shared Zod Schemas and TypeScript Types**
+* **Mailgun Integration**
 
 **Important Interfaces**
+* REST API between frontend and backend
+* Prisma ORM between backend and database
+* Mailgun HTTP API integration
+* Shared validation schemas (Zod) used across frontend and backend
 
-* HTTP interface between Frontend and API
-* Internal ORM and notification service interfaces within the API
+---
+
+### Web Frontend
+
+**Purpose/Responsibility**
+Client-side Nuxt app with pages and components mirroring backend domains and routes. Uses shared types for validation and props.
+
+**Interfaces**
+* REST API
+* Shared Zod-inferred types
+
+**Location**
+`/frontend/`
+
+---
+
+### API Backend
+
+**Purpose/Responsibility**
+Fastify-based backend structured by domain modules. Each domain encapsulates controllers, services, repositories, routes, and DTOs (data transfer objects) that handle input/output mapping and business logic. DTOs transform data between raw inputs, validated shared schemas, and internal domain models.
+
+**Interfaces**
+* REST API
+* Prisma ORM
+* Shared Zod schemas for validation
+* Internal DTOs for data mapping
+
+**Location**
+`/backend/`
+
+---
+
+### PostgreSQL Database
+
+**Purpose/Responsibility**
+Persistent storage of domain data such as companies, users, sites, and materials.
+
+**Interfaces**
+* Prisma ORM
+
+---
+
+### Shared Zod Schemas and Types
+
+**Purpose/Responsibility**
+Reusable, strongly-typed validation schemas shared between backend and frontend. Defines input/output contract schemas for routes and forms.
+
+**Interfaces**
+* Consumed by API backend and frontend app for validation and type safety
+
+**Location**
+`/shared/`
+
+---
+
+### Mailgun Integration
+
+**Purpose/Responsibility**
+Third-party transactional email service used by backend’s mail module. Abstracted into service and sender layers.
+
+**Interfaces**
+* Mailgun HTTP API
+* Used by authentication and user services
 
 ---
 
 ## Level 2
 
-### White Box *Frontend*
+### Web Frontend (Nuxt)
 
-**Diagram**
-![Frontend Component Dependency Diagram](./diagrams/frontend-dependencies.png)
+![Level 2 Web](./images/Level2Web.png)
 
-**Description**
-Vue 3 SPA structured around pages, reusable components, and composables. Pages render domain-specific content, components encapsulate UI behavior. All data-fetching is abstracted in composables.
-
-**Contained Elements**
-
-* Pages (`.vue` under `/pages/`)
-* Components (grouped by domain: `Auth`, `Users`, `Sites`, etc.)
-* Composables (data fetching logic — blackboxed)
-
-**Interfaces**
-
-* Uses Vue Router for navigation
-* All API calls are performed inside composables via `useFetchXyz()` patterns
-* Components communicate via props and events
+* File-based routing with pages for auth, company, user, site, and profile
+* Modular components grouped by domain (Auth, Company, Users, Site)
+* Uses shared Zod types for form validation and props
 
 ---
 
-### White Box *API*
+### API Backend (Fastify)
 
-**Diagram**
-![API Structure Diagram](./diagrams/api-structure.png)
+![Level 2 Web](./images/Level2Api.png)
 
-**Description**
-Fastify backend following a layered structure (Controller → Service → Repository). Routes handle logic for authentication, user and company management, site tracking, and email notifications.
+- **Plugins:** JWT auth, role guards
+- **Mail module:** mail.service.ts and mail.sender.ts
+- **Health check module**
+- **Company module** (controller, service, repository, dto, routes)
+- **User module** (auth and user controllers, services, repositories, dtos, routes)
+- **Site module** with nested materials submodule (all layers)
+- DTO layer maps shared schema types to domain models and response shapes
 
-**Contained Elements**
+---
 
-* Controllers: `AuthController`, `CompanyController`, `SiteController`, `UserController`, etc.
-* Services: Corresponding services encapsulating business logic
-* Repositories / ORM: Abstraction layer for DB operations
-* MailerService: Integrates with Mailgun
+### Shared Zod Schema Module
 
-**Interfaces**
+![Level 2 Shared](./images/Level2Api.png)
 
-* REST endpoints exposed to the frontend
-* Internal service methods invoked across layers
-* Email interface via a Mailgun wrapper
-* Database interface via ORM (e.g., Prisma or TypeORM)
+- Defines and exports Zod schemas and inferred types for validation
+- Shared by both backend and frontend for consistency and developer experience
+
+---
+
+
+Got it! Here's a polished **Level 3** description and summary for your User Domain API and Web Component Structure, aligned with your provided Level 2 context and diagram notes.
 
 ---
 
 ## Level 3
 
-### White Box `_API Internal Structure_`
+### User Domain API (Fastify)
 
-**Diagram**
-![API Internal Structure](./diagrams/api-structure.png)
+![Level 3 API](./images/Level3API.png)
 
-**Purpose**
-Show modular controller-service-repository breakdown of the backend, to illustrate separation of concerns and dependency flow.
+* **Layered architecture for User Domain:**
 
-**Responsibilities**
+  * **Routes:** `auth.routes.ts`, `user.routes.ts`, `company.user.routes.ts` — entry points defining HTTP endpoints and middleware integration (JWT, role guards).
+  * **Controllers:** `auth.controller.ts`, `user.controller.ts` — handle HTTP requests, invoke services, return responses.
+  * **Services:** `auth.service.ts`, `user.service.ts` — encapsulate business logic such as authentication, user management, and token handling.
+  * **DTOs:** `user.dto.ts` — transform and validate data models using TypeScript and Zod schemas, ensuring consistent API data shapes.
+  * **Repositories:** `user.repository.ts` — Prisma-powered data access layer interacting with the database for user persistence.
+* **Integration:**
 
-* **Controllers** handle routing and validation
-* **Services** manage core logic and coordination
-* **Repositories** abstract database communication
-* **Mailer** sends notifications through Mailgun
-
-**Interfaces**
-
-* API routes
-* ORM queries
-* External mail service
+  * **Mail Service:** sends transactional emails (password reset, verification).
+  * **Middleware:** JWT and role guards enforce security and authorization on routes.
+* **Decoupled Design:** Clear separation of concerns allows independent evolution of authentication and user management features.
 
 ---
 
-### White Box `_Frontend Dependency Map_`
+### Component Structure Web (Nuxt)
 
-**Diagram**
-![Vue Component Dependency Structure](./diagrams/frontend-dependencies.png)
+![Level 3 Web](./images/Level3Web.png)
 
-**Purpose**
-Visualize how Vue pages use nested components across modules like `Auth`, `Company`, `Users`, and `Site`.
+* **File-based routing structure** for auth, company, user, site, and profile pages.
+* **Modular component groups:**
 
-**Responsibilities**
-
-* **Pages** organize route-based rendering
-* **Components** encapsulate UI and domain-specific logic
-* **Composables** are blackboxes handling data-fetching
-
-**Interfaces**
-
-* Prop/event system within components
-* Composable API used across pages and components
+  * **Auth Components:** `HeaderWithIcon.vue`, `LoginForm.vue`, `RegisterUserForm.vue`, `RegisterCompanyForm.vue`
+  * **Company Components:** `OverviewCard.vue`, `CompanyDetailsCard.vue`
+  * **User Components:** `UserStatistics.vue`, `UserDashboardActions.vue`, `UserCard.vue`, `modals/CreateUpdateUser.vue`
+  * **Site Components:** `BasicInfo.vue`, `Tabs.vue`, `SiteCard.vue`, `modals/CreateUpdateSite.vue`, plus nested material tracking components.
+  * **General Components:** `ConfirmAction.vue` modal for confirmation dialogs.
+* **Pages use these components** to compose views such as login, registration, company user management, site detail, and profile.
+* **Consistent validation and typing** using shared Zod schemas across frontend and backend.
+* **Frontend connects to API** for data operations and business logic via HTTP calls.
 
 ---
