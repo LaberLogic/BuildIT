@@ -17,7 +17,15 @@ import {
   Material,
   updateMaterial,
 } from "../repositories/material.repostiory";
-
+/**
+ * Creates a new material for a specific site under a company after validating access.
+ *
+ * @param currentUser - The user performing the operation.
+ * @param siteId - The ID of the site the material belongs to.
+ * @param companyId - The ID of the company that owns the site.
+ * @param data - The data required to create a material.
+ * @returns A ResultAsync containing the created MaterialResponseDto or a ChainedError.
+ */
 export const createNewMaterial = (
   currentUser: UserObject,
   siteId: string,
@@ -33,6 +41,16 @@ export const createNewMaterial = (
     );
 };
 
+/**
+ * Updates the properties of a material (excluding count) after validating access.
+ *
+ * @param currentUser - The user performing the operation.
+ * @param companyId - The ID of the company that owns the site.
+ * @param siteId - The ID of the site the material belongs to.
+ * @param materialId - The ID of the material to update.
+ * @param data - The data to update the material with.
+ * @returns A ResultAsync containing the updated MaterialResponseDto or a ChainedError.
+ */
 export const updateMaterialProperties = (
   currentUser: UserObject,
   companyId: string,
@@ -46,6 +64,16 @@ export const updateMaterialProperties = (
     .map((material: Material) => toMaterialDTO(material));
 };
 
+/**
+ * Increments or decrements the amount of a material, ensuring it doesn't go below zero.
+ *
+ * @param currentUser - The user performing the operation.
+ * @param companyId - The ID of the company that owns the site.
+ * @param siteId - The ID of the site the material belongs to.
+ * @param materialId - The ID of the material to update.
+ * @param delta - Object containing the amount to increment or decrement.
+ * @returns A ResultAsync containing the updated MaterialResponseDto or a ChainedError.
+ */
 export const incrementDecrementMaterial = (
   currentUser: UserObject,
   companyId: string,
@@ -71,6 +99,15 @@ export const incrementDecrementMaterial = (
     .map((material: Material) => toMaterialDTO(material));
 };
 
+/**
+ * Deletes a material from a site after validating access.
+ *
+ * @param currentUser - The user performing the operation.
+ * @param companyId - The ID of the company that owns the site.
+ * @param siteId - The ID of the site the material belongs to.
+ * @param materialId - The ID of the material to delete.
+ * @returns A ResultAsync containing the ID of the deleted material or a ChainedError.
+ */
 export const deleteMaterialFromSite = (
   currentUser: UserObject,
   companyId: string,
@@ -82,6 +119,13 @@ export const deleteMaterialFromSite = (
     .andThen(() => deleteMaterial({ id: materialId }));
 };
 
+/**
+ * Maps the request body to a Prisma-compatible material creation payload.
+ *
+ * @param siteId - The ID of the site to associate with the new material.
+ * @param data - The data from the create material request body.
+ * @returns An object formatted for Prisma's createMaterial method.
+ */
 export const mapCreateBodyToPayload = (
   siteId: string,
   data: CreateMaterialDto,

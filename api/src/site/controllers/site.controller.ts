@@ -22,7 +22,7 @@ import {
  *
  * @param {FastifyRequest<{ Body: CreateSiteDto; Params: CompanyIdParams }>} req - Request containing site data and company ID.
  * @param {FastifyReply} reply - Fastify reply object.
- * @returns {Promise<void>} Sends the created site or an error.
+ * @returns { ResultAsync<SiteResponseDto, ChainedError>} Sends the created site or an error.
  */
 export const createSiteController = async (
   req: FastifyRequest<{ Body: CreateSiteDto; Params: CompanyIdParams }>,
@@ -43,7 +43,7 @@ export const createSiteController = async (
  *
  * @param {FastifyRequest<{ Params: SiteIdParams; Body: UpdateSiteDto }>} req - Request containing site ID, company ID, and update data.
  * @param {FastifyReply} reply - Fastify reply object.
- * @returns {Promise<void>} Sends the updated site or an error.
+ * @returns { ResultAsync<SiteResponseDto, ChainedError>} Sends the updated site or an error.
  */
 export const updateSiteController = async (
   req: FastifyRequest<{ Params: SiteIdParams; Body: UpdateSiteDto }>,
@@ -64,7 +64,7 @@ export const updateSiteController = async (
  *
  * @param {FastifyRequest<{ Params: UserIdParams }>} req - Request containing the user ID.
  * @param {FastifyReply} reply - Fastify reply object.
- * @returns {Promise<void>} Sends a list of sites or an error.
+ * @returns { SiteResponseDto[], ChainedError} Sends a list of sites or an error.
  */
 export const getSitesByUserIdController = async (
   req: FastifyRequest<{ Params: UserIdParams }>,
@@ -84,7 +84,7 @@ export const getSitesByUserIdController = async (
  *
  * @param {FastifyRequest<{ Params: CompanyIdParams }>} req - Request containing the company ID.
  * @param {FastifyReply} reply - Fastify reply object.
- * @returns {Promise<void>} Sends a list of sites or an error.
+ * @returns { SiteResponseDto, ChainedError} Sends a list of sites or an error.
  */
 export const getSitesByCompanyIdController = async (
   req: FastifyRequest<{ Params: CompanyIdParams }>,
