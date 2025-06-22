@@ -77,53 +77,39 @@ export const useCompanySiteDetails = (companyId: string, siteId: string) => {
 export const updateSite = async (
   params: SiteIdParams,
   body: UpdateSiteDto,
-): Promise<SiteResponseDto | null> => {
-  try {
-    const { companyId, siteId } = params;
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+): Promise<SiteResponseDto> => {
+  const { companyId, siteId } = params;
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
-    const result = await $fetch<SiteResponseDto>(
-      `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}`,
-      {
-        method: "PATCH",
-        body,
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
+  return await $fetch<SiteResponseDto>(
+    `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}`,
+    {
+      method: "PATCH",
+      body,
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
       },
-    );
-
-    return result;
-  } catch (error) {
-    console.error("Failed to update site:", error);
-    return null;
-  }
+    },
+  );
 };
 
 export const createSite = async (
   params: CompanyIdParams,
   body: CreateSiteDto,
-): Promise<SiteResponseDto | null> => {
-  try {
-    const { companyId } = params;
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+): Promise<SiteResponseDto> => {
+  const { companyId } = params;
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
-    const result = await $fetch<SiteResponseDto>(
-      `${config.public.API_BASE_URL}/companies/${companyId}/sites/`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
-        body,
+  return await $fetch<SiteResponseDto>(
+    `${config.public.API_BASE_URL}/companies/${companyId}/sites/`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
       },
-    );
-
-    return result;
-  } catch (error) {
-    console.error("Failed to update site:", error);
-    return null;
-  }
+      body,
+    },
+  );
 };

@@ -171,9 +171,20 @@ const dialogTitle = computed(() => {
 const onPasswordInput = () => {
   if (!model.password) model.confirmPassword = "";
 };
+const resetModel = () => {
+  model.firstName = "";
+  model.lastName = "";
+  model.email = "";
+  model.role = "";
+  model.password = "";
+  model.confirmPassword = "";
+};
 
 const onCancel = () => {
   emit("close", false);
+  if (isCreate.value) {
+    resetModel();
+  }
 };
 
 const handleSave = async () => {
@@ -199,6 +210,7 @@ const handleSave = async () => {
       if (isCreate.value) {
         await createUser(companyId, payload as CreateUserDto);
         ElMessage.success("User created successfully");
+        resetModel();
       } else if (props.isProfile) {
         await updateProfile(payload as UpdateUserDto);
         ElMessage.success("Profile updated successfully");
@@ -212,9 +224,14 @@ const handleSave = async () => {
       } else {
         await useAuthStore().fetchUser();
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Error saving user:", error);
-      ElMessage.error("An error occurred");
+      if (error?.status === 409) {
+        ElMessage.error("Email already exists. Please use a unique email.");
+      } else {
+        ElMessage.error("An error occurred");
+      }
     } finally {
       loading.value = false;
       emit("close", false);

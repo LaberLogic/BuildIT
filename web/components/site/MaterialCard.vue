@@ -30,7 +30,7 @@
 
       <div class="flex items-center space-x-2" data-cy="material-controls">
         <el-button
-          class="btn-icon"
+          class="btn-icon flex-shrink-0"
           plain
           :disabled="localAmount <= 0"
           data-cy="material-decrement"
@@ -42,12 +42,16 @@
         >
           <el-icon><Minus /></el-icon>
         </el-button>
-        <span class="mx-2 min-w-[40px] text-center" data-cy="material-amount">
+
+        <span
+          class="mx-1 w-16 text-center text-sm font-medium"
+          data-cy="material-amount"
+        >
           {{ localAmount }} {{ material.unit }}
         </span>
 
         <el-button
-          class="btn-icon"
+          class="btn-icon flex-shrink-0"
           plain
           data-cy="material-increment"
           @mousedown="holdIncrement.start"

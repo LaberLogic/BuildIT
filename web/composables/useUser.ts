@@ -45,102 +45,74 @@ export const useUserById = (userId: string) => {
 export const createUser = async (
   companyId: string,
   payload: CreateUserDto,
-): Promise<UserResponseDto | null> => {
-  try {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+): Promise<UserResponseDto> => {
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
-    const result = await $fetch<UserResponseDto>(
-      `${config.public.API_BASE_URL}/companies/${companyId}/users`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
-        body: payload,
+  return await $fetch<UserResponseDto>(
+    `${config.public.API_BASE_URL}/companies/${companyId}/users`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
       },
-    );
-
-    return result;
-  } catch (error) {
-    console.error("Failed to create user:", error);
-    return null;
-  }
+      body: payload,
+    },
+  );
 };
 
 export const updateUser = async (
   companyId: string,
   userId: string,
   payload: UpdateUserDto,
-): Promise<UserResponseDto | null> => {
-  try {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+): Promise<UserResponseDto> => {
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
-    const result = await $fetch<UserResponseDto>(
-      `${config.public.API_BASE_URL}/companies/${companyId}/users/${userId}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
-        body: payload,
+  return await $fetch<UserResponseDto>(
+    `${config.public.API_BASE_URL}/companies/${companyId}/users/${userId}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
       },
-    );
-
-    return result;
-  } catch (error) {
-    console.error("Failed to update user:", error);
-    return null;
-  }
+      body: payload,
+    },
+  );
 };
 
 export const updateProfile = async (
   payload: UpdateUserDto,
-): Promise<UserResponseDto | null> => {
-  try {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+): Promise<UserResponseDto> => {
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
-    const result = await $fetch<UserResponseDto>(
-      `${config.public.API_BASE_URL}/users/me`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
-        body: payload,
+  return await $fetch<UserResponseDto>(
+    `${config.public.API_BASE_URL}/users/me`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
       },
-    );
-
-    return result;
-  } catch (error) {
-    console.error("Failed to update user:", error);
-    return null;
-  }
+      body: payload,
+    },
+  );
 };
 
 export const deleteUser = async (
   companyId: string,
   userId: string,
-): Promise<null | undefined> => {
-  try {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+): Promise<void> => {
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
-    await $fetch<null>(
-      `${config.public.API_BASE_URL}/companies/${companyId}/users/${userId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
+  await $fetch<void>(
+    `${config.public.API_BASE_URL}/companies/${companyId}/users/${userId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
       },
-    );
-
-    return null;
-  } catch (error) {
-    console.error("Failed to delete user:", error);
-    return undefined;
-  }
+    },
+  );
 };
