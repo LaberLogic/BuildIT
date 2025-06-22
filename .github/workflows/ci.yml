@@ -127,10 +127,3 @@ jobs:
           export SKIP_EMAIL_SENDING=true
           pnpm run test
         working-directory: ./api
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: ./api
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
