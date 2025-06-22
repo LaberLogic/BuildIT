@@ -1,6 +1,6 @@
 describe("Sign Up Tests", () => {
   before(() => {
-    cy.request("POST", "http://localhost:3001/test/reset-db");
+    cy.request("POST", `${Cypress.env("apiUrl")}/test/reset-db`);
   });
 
   beforeEach(() => {
