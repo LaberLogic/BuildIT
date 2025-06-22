@@ -1,6 +1,6 @@
 describe("Base Cases", () => {
   before(() => {
-    cy.request("POST", `${Cypress.env("apiUrl")}/test/reset-db`);
+    cy.request("POST", "http://localhost:3001/test/reset-db");
   });
 
   beforeEach(() => {
@@ -15,13 +15,10 @@ describe("Base Cases", () => {
   });
 
   it("shows error on invalid login", () => {
- 
-
     cy.getByCy("email-input").type("wrong@example.com");
     cy.getByCy("password-input").type("wrongpassword");
     cy.getByCy("submit-button").click();
 
-    cy.wait("@signInRequest");
     cy.getByCy("error-message")
       .should("be.visible")
       .and("contain", "Wrong email or password.");
