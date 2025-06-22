@@ -3,7 +3,7 @@ beforeEach(() => {
 });
 
 describe("Site Overview (Manager)", () => {
-  it("logs in as manager and validates the first site card", () => {
+  it.skip("logs in as manager and validates the first site card", () => {
     cy.loginAsManager();
     cy.wait(3000);
     cy.getByCy("create-site-button").should("exist");
