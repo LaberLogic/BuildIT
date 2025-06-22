@@ -8,6 +8,7 @@ describe("Sign Up Tests", () => {
   });
 
   it("should redirect and show the form", () => {
+    cy.wait(2000);
     cy.getByCy("register-form").should("exist");
     cy.getByCy("email-input").should("exist");
     cy.getByCy("password-input").should("exist");

@@ -8,6 +8,7 @@ describe("Base Cases", () => {
   });
 
   it("should display the form", () => {
+    cy.wait(2000);
     cy.getByCy("signin-form").should("exist");
     cy.getByCy("email-input").should("exist");
     cy.getByCy("password-input").should("exist");
