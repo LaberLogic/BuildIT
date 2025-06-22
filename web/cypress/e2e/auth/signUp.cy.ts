@@ -1,6 +1,6 @@
-describe.skip("Sign Up Tests", () => {
+describe("Sign Up Tests", () => {
   before(() => {
-    cy.request("POST", `http://api:3001/test/reset-db`);
+    cy.request("POST", `http://localhost:3001/test/reset-db`);
   });
 
   beforeEach(() => {
@@ -8,6 +8,7 @@ describe.skip("Sign Up Tests", () => {
   });
 
   it("should redirect and show the form", () => {
+    cy.wait(2000);
     cy.getByCy("register-form").should("exist");
     cy.getByCy("email-input").should("exist");
     cy.getByCy("password-input").should("exist");

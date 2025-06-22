@@ -5,13 +5,17 @@ import jwt from "jsonwebtoken";
 import { ResultAsync } from "neverthrow";
 
 import { sendEmail } from "./mail.sender";
-
+/**
+ * Sends an invitation email with a one-time token link for setting a password.
+ *
+ * @param user - The user object containing relevant information for the invitation.
+ * @returns A ResultAsync indicating success or a ChainedError if the email fails to send.
+ */
 export const sendInvitationMail = (user: {
   email: string;
   firstName: string;
   lastName: string;
   role: ROLE;
-
   status: string;
   id: string;
   createdAt: Date;
@@ -29,7 +33,7 @@ export const sendInvitationMail = (user: {
   const actionUrl = `http://localhost:3000/set-password?token=${token}`;
 
   return sendEmail({
-    to: "jonas-labermeier@web.de",
+    to: "jonas-labermeier@web.de", // Replace with `user.email` if dynamic
     subject: "Welcome to Construx",
     template: "invitation",
     variables: {
@@ -39,6 +43,12 @@ export const sendInvitationMail = (user: {
   }).mapErr((e) => new ChainedError(e));
 };
 
+/**
+ * Sends a password reset email with a tokenized link for resetting a password.
+ *
+ * @param user - The user object containing identifying and contact information.
+ * @returns A ResultAsync indicating success or a ChainedError if the email fails to send.
+ */
 export const sendResetPasswordMail = (user: {
   email: string;
   firstName: string;

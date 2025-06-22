@@ -1,6 +1,6 @@
 describe("Base Cases", () => {
   before(() => {
-    cy.request("POST", `http://api:3001/test/reset-db`);
+    cy.request("POST", `http://localhost:3001/test/reset-db`);
   });
 
   beforeEach(() => {
@@ -8,6 +8,7 @@ describe("Base Cases", () => {
   });
 
   it("should display the form", () => {
+    cy.wait(2000);
     cy.getByCy("signin-form").should("exist");
     cy.getByCy("email-input").should("exist");
     cy.getByCy("password-input").should("exist");
@@ -58,6 +59,8 @@ describe("Sign In: Seeded User Roles", () => {
       cy.getByCy("email-input").type(email);
       cy.getByCy("password-input").type(password);
       cy.getByCy("submit-button").click();
+
+      cy.wait(1000);
 
       if (shouldRedirectTo) {
         cy.url().should("include", shouldRedirectTo);

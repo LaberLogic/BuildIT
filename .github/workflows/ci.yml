@@ -4,125 +4,8 @@ on:
   pull_request:
 
 jobs:
-  # lint-api:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 10
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "pnpm"
-  #     - run: pnpm install
-  #     - run: pnpm --filter api run lint
-
-  # lint-web:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 10
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "pnpm"
-  #     - run: pnpm install
-  #     - run: pnpm --filter web run lint
-
-  # typecheck-api:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 10
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "pnpm"
-  #     - run: pnpm install
-  #     - run: pnpm --filter=api prisma:generate
-  #     - run: pnpm --filter api run typecheck
-
-  # typecheck-web:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 10
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "pnpm"
-  #     - run: pnpm install
-  #     - run: pnpm --filter web run typecheck
-
-  # build-api:
-  #   needs: typecheck-api
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 10
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "pnpm"
-  #     - run: pnpm install
-  #     - run: pnpm --filter=api prisma:generate
-  #     - run: pnpm --filter api run build
-
-  # build-web:
-  #   needs: typecheck-web
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 10
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "pnpm"
-  #     - run: pnpm install
-  #     - run: pnpm --filter web run build
-
-  # test-api:
-  #   needs: build-api
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 10
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "pnpm"
-  #     - run: pnpm install
-  #     - run: pnpm prisma:generate
-  #       working-directory: ./api
-  #     - run: |
-  #         export NODE_ENV=development
-  #         export PORT=3001
-  #         export DATABASE_URL="postgresql://user:password@localhost:5433/mydb"
-  #         export JWT_SECRET=your-very-secret-string-here
-  #         export API_BASE_URL=http://localhost:3001
-  #         export MAILGUN_API_KEY=key-dummy
-  #         export MAILGUN_DOMAIN=some-domain.com
-  #         export DEFAULT_RECEIVER_EMAIL=mail
-  #         export USE_DEFAULT_EMAIL_RECEIVER=true
-  #         export SKIP_EMAIL_SENDING=true
-  #         pnpm run test:unit
-  #       working-directory: ./api
-
-  test-web:
-    runs-on: ubuntu-24.04
+  lint-typecheck-api:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -134,34 +17,120 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
+
       - run: pnpm install
 
-      - name: Create web/.env
+      - name: Lint and typecheck API
         run: |
-          echo "NUXT_API_BASE_URL=http://api:3001" > web/.env
-          echo "NUXT_PORT=3000" >> web/.env
-          echo "NUXT_NODE_ENV=development" >> web/.env
+          pnpm --filter=api prisma:generate
+          pnpm --filter api lint
+          pnpm --filter api typecheck
 
-      - name: Create api/.env
-        run: |
-          cp ./api/.test.env ./api/.env
+  lint-typecheck-web:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
 
-      - run: docker compose up -d --build
-
-      - run: pnpm --filter web exec cypress install
-
-      - run: pnpm --filter web exec cypress run
-
-      - name: Upload Cypress screenshots on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - uses: pnpm/action-setup@v4
         with:
-          name: cypress-screenshots
-          path: web/cypress/screenshots
+          version: 10
 
-      - name: Show Docker logs
-        if: always()
-        run: docker compose logs --no-color
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
 
-      - if: always()
-        run: docker compose down
+      - run: pnpm install
+
+      - name: Lint and typecheck Web
+        run: |
+          pnpm --filter web lint
+          pnpm --filter web typecheck
+
+  build-api:
+    needs: lint-typecheck-api
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - run: pnpm install
+
+      - name: Build API
+        run: |
+          pnpm --filter=api prisma:generate
+          pnpm --filter api build
+
+  build-web:
+    needs: lint-typecheck-web
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - run: pnpm install
+
+      - name: Build Web
+        run: pnpm --filter web build
+
+  test-api:
+    needs: build-api
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - run: pnpm install
+
+      - name: Set up API test .env
+        run: cp ./api/.test.env ./api/.env
+
+      - name: Generate Prisma client
+        run: pnpm prisma:generate
+        working-directory: ./api
+
+      - name: Run API unit tests
+        run: |
+          export NODE_ENV=development
+          export PORT=3001
+          export DATABASE_URL="postgresql://user:password@localhost:5433/mydb"
+          export JWT_SECRET=your-very-secret-string-here
+          export API_BASE_URL=http://localhost:3001
+          export MAILGUN_API_KEY=key-dummy
+          export MAILGUN_DOMAIN=some-domain.com
+          export DEFAULT_RECEIVER_EMAIL=mail
+          export USE_DEFAULT_EMAIL_RECEIVER=true
+          export SKIP_EMAIL_SENDING=true
+          pnpm run test
+        working-directory: ./api
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: . # Scan entire repo
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -16,7 +16,12 @@ export type SendEmailParams = {
   template?: string;
   variables?: Record<string, unknown>;
 };
-
+/**
+ * Builds and sends an email via Mailgun, optionally using a template and substitution variables.
+ *
+ * @param params - Email parameters including recipient, subject, and optional template settings.
+ * @returns A Mailgun message sending promise.
+ */
 export const buildAndSendEmail = (params: SendEmailParams) => {
   const { subject, template, variables } = params;
 
@@ -46,12 +51,21 @@ export const buildAndSendEmail = (params: SendEmailParams) => {
   return mailgunClient.messages().send(messagePayload);
 };
 
+/**
+ * Circuit breaker around the email sending logic, to prevent service flooding or overuse.
+ */
 export const mailBreaker = new opossum(buildAndSendEmail, {
   timeout: 5000,
   errorThresholdPercentage: 50,
   resetTimeout: 10000,
 });
 
+/**
+ * Sends an email using Mailgun with circuit breaker support and optional short-circuiting via config.
+ *
+ * @param params - Email sending parameters.
+ * @returns A ResultAsync resolving to null on success, or a ChainedError on failure.
+ */
 export const sendEmail = (
   params: SendEmailParams,
 ): ResultAsync<null, ChainedError> => {
