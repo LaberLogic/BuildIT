@@ -59,6 +59,8 @@ describe("Sign In: Seeded User Roles", () => {
       cy.getByCy("password-input").type(password);
       cy.getByCy("submit-button").click();
 
+      cy.wait(1000);
+
       if (shouldRedirectTo) {
         cy.url().should("include", shouldRedirectTo);
       }
