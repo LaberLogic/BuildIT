@@ -138,7 +138,7 @@ jobs:
 
       - name: Create web/.env
         run: |
-          echo "NUXT_API_BASE_URL=http://api:3001" > web/.env
+          echo "NUXT_API_BASE_URL=http://localhost:3001" > web/.env
           echo "NUXT_PORT=3000" >> web/.env
           echo "NUXT_NODE_ENV=development" >> web/.env
 
