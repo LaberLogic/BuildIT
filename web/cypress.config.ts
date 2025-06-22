@@ -9,5 +9,8 @@ export default defineConfig({
       runMode: 2,
       openMode: 1,
     },
+    env: {
+      apiUrl: process.env.NUXT_API_BASE_URL,
+    },
   },
 });
