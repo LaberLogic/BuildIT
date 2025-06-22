@@ -89,8 +89,43 @@ jobs:
       - name: Build Web
         run: pnpm --filter web build
 
+  test-api:
+    needs: build-api
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - run: pnpm install
+
+      - name: Setup API .env for testing
+        run: cp ./api/.test.env ./api/.env
+
+      - name: Run API unit tests
+        run: |
+          export NODE_ENV=development
+          export PORT=3001
+          export DATABASE_URL="postgresql://user:password@localhost:5433/mydb"
+          export JWT_SECRET=your-very-secret-string-here
+          export API_BASE_URL=http://localhost:3001
+          export MAILGUN_API_KEY=key-dummy
+          export MAILGUN_DOMAIN=some-domain.com
+          export DEFAULT_RECEIVER_EMAIL=mail
+          export USE_DEFAULT_EMAIL_RECEIVER=true
+          export SKIP_EMAIL_SENDING=true
+          pnpm run test:unit
+        working-directory: ./api
+
   test-web:
-    needs: lint-typecheck-web
+    needs: [build-web, build-api]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
