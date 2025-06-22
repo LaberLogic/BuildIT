@@ -106,8 +106,12 @@ jobs:
 
       - run: pnpm install
 
-      - name: Setup API .env for testing
+      - name: Set up API test .env
         run: cp ./api/.test.env ./api/.env
+
+      - name: Generate Prisma client
+        run: pnpm prisma:generate
+        working-directory: ./api
 
       - name: Run API unit tests
         run: |
