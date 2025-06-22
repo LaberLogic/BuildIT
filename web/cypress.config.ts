@@ -6,7 +6,7 @@ export default defineConfig({
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/e2e/auth/**/*.cy.{js,ts}",
     retries: {
-      runMode: 2,
+      runMode: 1,
       openMode: 1,
     },
     env: {
