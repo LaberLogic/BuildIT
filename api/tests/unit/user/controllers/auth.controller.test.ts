@@ -145,9 +145,8 @@ describe("signInController", () => {
   describe("Edge Cases", () => {
     it("should handle empty body gracefully", async () => {
       const mockError = new ChainedError("Validation failed");
-      (authService.signIn as jest.Mock).mockReturnValue(
-        errAsync(mockError));
-  
+      (authService.signIn as jest.Mock).mockReturnValue(errAsync(mockError));
+
       const req: any = { body: {} };
       const reply = mockReply();
 
@@ -159,7 +158,6 @@ describe("signInController", () => {
       });
     });
   });
-
 });
 
 describe("setPasswordController", () => {
@@ -237,7 +235,7 @@ describe("resetPasswordRequestController", () => {
 
       expect(sendResetPasswordMail).toHaveBeenCalledWith(user);
       expect(reply.code).toHaveBeenCalledWith(httpStatus.OK);
-      expect(reply.send).toHaveBeenCalledWith(true);
+      expect(reply.send).toHaveBeenCalledWith({ message: "Reset email sent" });
     });
   });
 

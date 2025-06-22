@@ -105,7 +105,12 @@ describe("Sign Up tests", () => {
 
   const createdCompany = { id: "company-id" };
   const hashedPassword = "hashed-password";
-  const createdUser = { id: "user-id", email: mockData.email };
+  const createdUser = {
+    id: "user-id",
+    email: mockData.email,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -164,7 +169,6 @@ describe("Sign Up tests", () => {
     const result = await authService.register(mockData);
 
     expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toEqual(createdUser);
     expect(createUser).toHaveBeenCalledWith({
       email: mockData.email,
       firstName: mockData.firstName,

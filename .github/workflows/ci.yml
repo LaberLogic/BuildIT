@@ -125,5 +125,5 @@ jobs:
           export DEFAULT_RECEIVER_EMAIL=mail
           export USE_DEFAULT_EMAIL_RECEIVER=true
           export SKIP_EMAIL_SENDING=true
-          pnpm run test:unit
+          pnpm run test
         working-directory: ./api
