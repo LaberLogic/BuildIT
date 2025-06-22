@@ -159,5 +159,9 @@ jobs:
           name: cypress-screenshots
           path: web/cypress/screenshots
 
+      - name: Show Docker logs
+        if: always()
+        run: docker compose logs --no-color
+
       - if: always()
         run: docker compose down
