@@ -84,8 +84,8 @@ describe("Sites API", () => {
               country: "Countryland",
               postalCode: "11111",
             },
-            startDate: "2025-06-14T08:08:18.997Z",
-            endDate: "2025-07-14T08:08:18.997Z",
+            startDate: "2025-05-28T00:00:00.000Z",
+            endDate: "2025-06-09T00:00:00.000Z",
             notes: "Site created by admin",
             users: [seedManager.id, seedWorker1.id],
           });
