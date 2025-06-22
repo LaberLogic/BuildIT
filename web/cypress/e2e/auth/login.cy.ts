@@ -1,6 +1,6 @@
 describe("Base Cases", () => {
   before(() => {
-    cy.request("POST", `${Cypress.env("apiUrl")}/test/reset-db`);
+    cy.request("POST", `http://api:3001/test/reset-db`);
   });
 
   beforeEach(() => {
