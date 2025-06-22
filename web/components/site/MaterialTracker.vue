@@ -28,11 +28,13 @@
       v-if="isAdminOrManager"
       v-model="createOpen"
       @save="handleCreateMaterial"
+      @close="createOpen = false"
     />
   </el-card>
 </template>
 
 <script lang="ts" setup>
+import { ElMessage } from "element-plus";
 import { Plus } from "lucide-vue-next";
 import type { CreateMaterialDto, MaterialResponseDto } from "shared";
 
@@ -57,12 +59,15 @@ const handleCreateMaterial = async (payload: CreateMaterialDto) => {
 
     if (created) {
       createOpen.value = false;
-      companyStore.fetchSiteDetails(companyId, siteId);
+      await companyStore.fetchSiteDetails(companyId, siteId);
+      ElMessage.success("Material created successfully");
     } else {
-      console.error("Failed to create user");
+      ElMessage.error("Failed to create material");
+      console.error("Failed to create material");
     }
   } catch (error) {
-    console.error("Error creating user:", error);
+    ElMessage.error("Error creating material");
+    console.error("Error creating material:", error);
   }
 };
 </script>

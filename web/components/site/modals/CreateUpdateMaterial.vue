@@ -51,7 +51,6 @@
     </template>
   </el-dialog>
 </template>
-
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 import type {
@@ -59,11 +58,12 @@ import type {
   MaterialResponseDto,
   UpdateMaterialDto,
 } from "shared";
+import type { PropType } from "vue";
 
 const props = defineProps({
   material: {
-    type: Object as PropType<MaterialResponseDto>,
-    required: false,
+    type: Object as PropType<MaterialResponseDto | null>,
+    default: null,
   },
 });
 
@@ -72,6 +72,7 @@ const emit = defineEmits(["close"]);
 const route = useRoute();
 const companyId = route.params.companyId as string;
 const siteId = route.params.siteId as string;
+
 const title = computed(() =>
   props.material ? `Edit ${props.material.name}` : "Create Material",
 );
@@ -80,31 +81,55 @@ const formRef = ref();
 
 const companyStore = useCompanyStore();
 
-const model = ref({
-  name: props.material?.name || "",
-  amount: props.material?.amount ?? 0,
-  unit: props.material?.unit || "",
-  threshold: props.material?.threshold ?? 0,
+const defaultForm = () => ({
+  name: "",
+  amount: 0,
+  unit: "",
+  threshold: 0,
 });
+
+const model = ref(defaultForm());
+
+// Initialize or reset model based on props.material
+const resetForm = () => {
+  if (props.material) {
+    model.value = {
+      name: props.material.name || "",
+      amount: props.material.amount ?? 0,
+      unit: props.material.unit || "",
+      threshold: props.material.threshold ?? 0,
+    };
+  } else {
+    model.value = defaultForm();
+  }
+};
+
+// Watch props.material changes and reset form accordingly
+watch(
+  () => props.material,
+  () => {
+    resetForm();
+  },
+  { immediate: true },
+);
+
+// Log model updates for debugging
+watch(
+  model,
+  (newVal) => {
+    console.log("Model updated:", newVal);
+  },
+  { deep: true },
+);
 
 const rules = {
   name: [
     { required: true, message: "Material name is required", trigger: "blur" },
   ],
-  amount: [
-    {
-      required: true,
-      message: "Amount is required",
-      trigger: "blur",
-    },
-  ],
+  amount: [{ required: true, message: "Amount is required", trigger: "blur" }],
   unit: [{ required: true, message: "Unit is required", trigger: "blur" }],
   threshold: [
-    {
-      required: true,
-      message: "Threshold is required",
-      trigger: "blur",
-    },
+    { required: true, message: "Threshold is required", trigger: "blur" },
   ],
 };
 
@@ -138,6 +163,8 @@ const handleSave = async () => {
       }
 
       await companyStore.fetchSiteDetails(companyId, siteId);
+
+      resetForm();
       emit("close");
     } catch (error) {
       console.error("Error saving material:", error);
@@ -147,6 +174,7 @@ const handleSave = async () => {
 };
 
 const onCancel = () => {
+  resetForm();
   emit("close");
 };
 </script>

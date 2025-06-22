@@ -48,7 +48,6 @@
         ease.
       </p>
 
-      <!-- CTA Buttons -->
       <div
         class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto"
       >
@@ -74,9 +73,7 @@
         </NuxtLink>
       </div>
 
-      <p class="text-sm text-gray-500 mt-5">
-        No credit card required • 14-day free trial
-      </p>
+      <p class="text-sm text-gray-500 mt-5">Uni Demo Version</p>
     </div>
   </section>
 </template>

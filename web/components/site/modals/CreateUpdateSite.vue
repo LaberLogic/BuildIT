@@ -100,31 +100,33 @@
       <el-checkbox v-model="includeAddress" data-cy="checkbox-include-address"
         >Include Address</el-checkbox
       >
-      <el-form-item label="Street" prop="address.streetNumber">
-        <el-input v-model="model.address.street" data-cy="input-street" />
-      </el-form-item>
+      <div v-if="includeAddress">
+        <el-form-item label="Street" prop="address.streetNumber">
+          <el-input v-model="model.address.street" data-cy="input-street" />
+        </el-form-item>
 
-      <el-form-item label="Street Number" prop="address.streetNumber">
-        <el-input
-          v-model="model.address.streetNumber"
-          data-cy="input-street-number"
-        />
-      </el-form-item>
+        <el-form-item label="Street Number" prop="address.streetNumber">
+          <el-input
+            v-model="model.address.streetNumber"
+            data-cy="input-street-number"
+          />
+        </el-form-item>
 
-      <el-form-item label="City" prop="address.city">
-        <el-input v-model="model.address.city" data-cy="input-city" />
-      </el-form-item>
+        <el-form-item label="City" prop="address.city">
+          <el-input v-model="model.address.city" data-cy="input-city" />
+        </el-form-item>
 
-      <el-form-item label="Postal Code" prop="address.postalCode">
-        <el-input
-          v-model="model.address.postalCode"
-          data-cy="input-postal-code"
-        />
-      </el-form-item>
+        <el-form-item label="Postal Code" prop="address.postalCode">
+          <el-input
+            v-model="model.address.postalCode"
+            data-cy="input-postal-code"
+          />
+        </el-form-item>
 
-      <el-form-item label="Country" prop="address.country">
-        <el-input v-model="model.address.country" data-cy="input-country" />
-      </el-form-item>
+        <el-form-item label="Country" prop="address.country">
+          <el-input v-model="model.address.country" data-cy="input-country" />
+        </el-form-item>
+      </div>
     </el-form>
 
     <template #footer>
@@ -180,8 +182,8 @@ const defaultForm = () => ({
   name: "",
   status: "",
   priority: "",
-  startDate: undefined as Date | undefined,
-  endDate: undefined as Date | undefined,
+  startDate: undefined as string | undefined,
+  endDate: undefined as string | undefined,
   users: [] as { userId: string; firstName: string; lastName: string }[],
   address: {
     street: "",
@@ -196,9 +198,30 @@ const defaultForm = () => ({
 const model = ref(defaultForm());
 
 const resetForm = () => {
-  model.value = defaultForm();
-  includeAddress.value = false;
+  if (props.site) {
+    model.value.name = props.site.name || "";
+    model.value.status = props.site.status || "";
+    model.value.priority = props.site.priority || "";
+    model.value.startDate =
+      (props.site.startDate as unknown as string) ?? undefined;
+    model.value.endDate =
+      (props.site.endDate as unknown as string) ?? undefined;
+    model.value.users = props.site.assignments || [];
+    model.value.notes = props.site.notes || "";
+    model.value.address = defaultForm().address;
+  } else {
+    model.value = defaultForm();
+    includeAddress.value = false;
+  }
 };
+
+watch(
+  model,
+  (newVal) => {
+    console.log("Model updated:", newVal);
+  },
+  { deep: true },
+);
 
 watch(
   () => props.site,
@@ -207,19 +230,14 @@ watch(
       resetForm();
       return;
     }
-
     model.value.name = newSite.name || "";
     model.value.status = newSite.status || "";
     model.value.priority = newSite.priority || "";
-    model.value.startDate = newSite.startDate
-      ? new Date(newSite.startDate)
-      : undefined;
-    model.value.endDate = newSite.endDate
-      ? new Date(newSite.endDate)
-      : undefined;
+    model.value.startDate =
+      (newSite.startDate as unknown as string) ?? undefined;
+    model.value.endDate = (newSite.endDate as unknown as string) ?? undefined;
     model.value.users = newSite.assignments || [];
     model.value.notes = newSite.notes || "";
-
     model.value.address = defaultForm().address;
   },
   { immediate: true },
@@ -232,8 +250,8 @@ watch(includeAddress, (val) => {
 });
 
 const onCancel = () => {
-  emit("close", false);
   resetForm();
+  emit("close", false);
 };
 
 const handleSave = async () => {
@@ -263,7 +281,6 @@ const handleSave = async () => {
         await companyStore.fetchSites(companyId);
         ElMessage.success("Site created successfully");
       }
-
       resetForm();
     } catch (err) {
       ElMessage.error("Site create/update failed");
