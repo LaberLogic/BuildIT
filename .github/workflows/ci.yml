@@ -152,5 +152,12 @@ jobs:
 
       - run: pnpm --filter web exec cypress run
 
+      - name: Upload Cypress screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: web/cypress/screenshots
+
       - if: always()
         run: docker compose down
