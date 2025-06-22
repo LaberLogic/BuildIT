@@ -148,7 +148,7 @@ jobs:
 
       - run: docker compose up -d --build
 
-      - run: pnpm --filter web schema:change
+      - run: pnpm --filter api schema:change
 
       - run: pnpm --filter web exec cypress install
 
