@@ -102,11 +102,11 @@ export const updateProfile = async (
 export const deleteUser = async (
   companyId: string,
   userId: string,
-): Promise<void> => {
+): Promise<{ id: string }> => {
   const authStore = useAuthStore();
   const config = useRuntimeConfig();
 
-  await $fetch<void>(
+  return await $fetch<{ id: string }>(
     `${config.public.API_BASE_URL}/companies/${companyId}/users/${userId}`,
     {
       method: "DELETE",
