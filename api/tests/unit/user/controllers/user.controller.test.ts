@@ -20,6 +20,17 @@ describe("User Controllers", () => {
     mockReply = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
+      log: {
+        error: jest.fn(),
+        child: jest.fn(),
+        fatal: jest.fn(),
+        debug: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        trace: jest.fn(),
+        level: "",
+        silent: jest.fn(),
+      },
     };
   });
 
