@@ -11,20 +11,20 @@ The prototype supports the following core features and workflows:
 ### Core Functional Requirements
 
 * **Company Registration**
-  Companies can self-register. Upon registration, the company is created along with the initial admin user account.
+  Companies can self-register. Upon registration, the company is created along with the initial manager user account.
 
 * **User and Role Management**
-  Admin users (Managers) can create, update, and remove users within their company and assign roles (e.g. Manager, Worker).
+  Managers can create, update, and remove users within their company and assign roles (e.g. Manager, Worker).
 
 * **Construction Site Management**
   Managers can create and maintain construction sites, assign users to sites, and manage site-related resources.
 
 * **Material Tracking**
-  Basic functionality to track materials per site, including used and required materials.
+  Basic functionality to track materials per site, including used and required materials. Show warning on threshold exceeded.
 
 * **Role-Based Access Control (RBAC)**
   Permissions are enforced as follows:
-
+   * **Admin**: Full access to manage users, sites, and materials, can also manage managers.
   * **Managers**: Full access to manage users, sites, and materials.
   * **Workers**: Read-only access to information for assigned sites.
 

@@ -33,8 +33,8 @@ export const sendInvitationMail = (user: {
   const actionUrl = `http://localhost:3000/set-password?token=${token}`;
 
   return sendEmail({
-    to: "jonas-labermeier@web.de", // Replace with `user.email` if dynamic
-    subject: "Welcome to Construx",
+    to: user.email,
+    subject: "Welcome to Construxx",
     template: "invitation",
     variables: {
       firstName: user.firstName,

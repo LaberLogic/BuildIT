@@ -2,7 +2,7 @@
   <el-dialog
     :model-value="true"
     :title="title"
-    width="425px"
+    class="w-[90vw] sm:w-[425px] max-w-full"
     data-cy="material-dialog"
     @close="onCancel"
   >

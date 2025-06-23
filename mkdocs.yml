@@ -2,6 +2,7 @@ site_name: Construx
 
 nav:
   - Home: index.md
+  - Demo: demo.md
   - Architecture:
       - "01. Introduction and Goals": architecture/01_introduction_and_goals.md
       - "02. Architecture Constraints": architecture/02_architecture_constraints.md

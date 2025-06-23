@@ -31,7 +31,7 @@ export const createMaterialController = async (
 ): Promise<void> => {
   const { siteId, companyId } = req.params;
   const data = req.body;
-  const currentUser = req.user as UserObject;
+  const currentUser = req.user;
 
   return createNewMaterial(currentUser, siteId, companyId, data).match(
     (material) => reply.status(httpStatus.CREATED).send(material),
@@ -55,7 +55,7 @@ export const updateMaterialController = async (
 ): Promise<void> => {
   const { siteId, materialId, companyId } = req.params;
   const data = req.body;
-  const currentUser = req.user as UserObject;
+  const currentUser = req.user;
 
   return updateMaterialProperties(
     currentUser,
@@ -74,7 +74,7 @@ export const updateMaterialController = async (
  *
  * @param {FastifyRequest<{ Params: { siteId: string; materialId: string; companyId: string } }>} req - Request containing material/site/company IDs.
  * @param {FastifyReply} reply - Fastify reply object.
- * @returns {Promise<void>} Sends no content on success or an error response.
+ * @returns {Promise<void>} Sends id  on success or an error response.
  */
 export const deleteMaterialController = async (
   req: FastifyRequest<{
@@ -83,7 +83,7 @@ export const deleteMaterialController = async (
   reply: FastifyReply,
 ): Promise<void> => {
   const { siteId, materialId, companyId } = req.params;
-  const currentUser = req.user as UserObject;
+  const currentUser = req.user;
 
   return deleteMaterialFromSite(
     currentUser,
@@ -112,7 +112,7 @@ export const adjustMaterialQuantityController = async (
 ): Promise<void> => {
   const { siteId, materialId, companyId } = req.params;
   const data = req.body;
-  const currentUser = req.user as UserObject;
+  const currentUser = req.user;
 
   return incrementDecrementMaterial(
     currentUser,

@@ -143,7 +143,6 @@
     </template>
   </el-dialog>
 </template>
-
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 import type {
@@ -164,6 +163,25 @@ const props = defineProps({
     required: true,
   },
 });
+const emit = defineEmits(["close"]);
+const defaultForm = () => {
+  return {
+    name: "",
+    status: "",
+    priority: "",
+    startDate: undefined as string | undefined,
+    endDate: undefined as string | undefined,
+    users: [] as { userId: string; firstName: string; lastName: string }[],
+    address: {
+      street: "",
+      streetNumber: "",
+      city: "",
+      postalCode: "",
+      country: "",
+    },
+    notes: "",
+  };
+};
 
 const formRef = ref();
 const route = useRoute();
@@ -171,31 +189,35 @@ const companyId = route.params.companyId as string;
 const companyStore = useCompanyStore();
 
 const includeAddress = ref(false);
-const emit = defineEmits(["close"]);
+const model = ref(defaultForm());
 
 const isEditMode = computed(() => !!props.site?.id);
 const title = computed(() =>
   isEditMode.value ? "Update Site" : "Create Site",
 );
 
-const defaultForm = () => ({
-  name: "",
-  status: "",
-  priority: "",
-  startDate: undefined as string | undefined,
-  endDate: undefined as string | undefined,
-  users: [] as { userId: string; firstName: string; lastName: string }[],
-  address: {
-    street: "",
-    streetNumber: "",
-    city: "",
-    postalCode: "",
-    country: "",
-  },
-  notes: "",
-});
+const rules = computed(() => {
+  const required = [{ required: true, message: "Required", trigger: "blur" }];
+  const dateRule = [
+    { required: true, message: "Pick a date", trigger: "change" },
+  ];
 
-const model = ref(defaultForm());
+  const addressRule = !isEditMode.value || includeAddress.value ? required : [];
+
+  return {
+    name: required,
+    status: required,
+    priority: required,
+    startDate: dateRule,
+    endDate: dateRule,
+    users: required,
+    "address.street": addressRule,
+    "address.streetNumber": addressRule,
+    "address.city": addressRule,
+    "address.postalCode": addressRule,
+    "address.country": addressRule,
+  };
+});
 
 const resetForm = () => {
   if (props.site) {
@@ -214,41 +236,6 @@ const resetForm = () => {
     includeAddress.value = true;
   }
 };
-
-watch(
-  model,
-  (newVal) => {
-    console.log("Model updated:", newVal);
-  },
-  { deep: true },
-);
-
-watch(
-  () => props.site,
-  (newSite) => {
-    if (!newSite) {
-      includeAddress.value = true;
-      resetForm();
-      return;
-    }
-    model.value.name = newSite.name || "";
-    model.value.status = newSite.status || "";
-    model.value.priority = newSite.priority || "";
-    model.value.startDate =
-      (newSite.startDate as unknown as string) ?? undefined;
-    model.value.endDate = (newSite.endDate as unknown as string) ?? undefined;
-    model.value.users = newSite.assignments || [];
-    model.value.notes = newSite.notes || "";
-    model.value.address = defaultForm().address;
-  },
-  { immediate: true },
-);
-
-watch(includeAddress, (val) => {
-  if (!val) {
-    model.value.address = defaultForm().address;
-  }
-});
 
 const onCancel = () => {
   resetForm();
@@ -291,27 +278,31 @@ const handleSave = async () => {
   });
 };
 
-const rules = computed(() => {
-  const required = [{ required: true, message: "Required", trigger: "blur" }];
-  const dateRule = [
-    { required: true, message: "Pick a date", trigger: "change" },
-  ];
+watch(
+  () => props.site,
+  (newSite) => {
+    if (!newSite) {
+      includeAddress.value = true;
+      resetForm();
+      return;
+    }
+    model.value.name = newSite.name || "";
+    model.value.status = newSite.status || "";
+    model.value.priority = newSite.priority || "";
+    model.value.startDate =
+      (newSite.startDate as unknown as string) ?? undefined;
+    model.value.endDate = (newSite.endDate as unknown as string) ?? undefined;
+    model.value.users = newSite.assignments || [];
+    model.value.notes = newSite.notes || "";
+    model.value.address = defaultForm().address;
+  },
+  { immediate: true },
+);
 
-  const addressRule = !isEditMode.value || includeAddress.value ? required : [];
-
-  return {
-    name: required,
-    status: required,
-    priority: required,
-    startDate: dateRule,
-    endDate: dateRule,
-    users: required,
-    "address.street": addressRule,
-    "address.streetNumber": addressRule,
-    "address.city": addressRule,
-    "address.postalCode": addressRule,
-    "address.country": addressRule,
-  };
+watch(includeAddress, (val) => {
+  if (!val) {
+    model.value.address = defaultForm().address;
+  }
 });
 
 onMounted(() => {
