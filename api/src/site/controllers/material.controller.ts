@@ -6,7 +6,6 @@ import {
   UpdateMaterialCountDto,
   UpdateMaterialDto,
 } from "shared";
-import { UserObject } from "types";
 
 import {
   createNewMaterial,
