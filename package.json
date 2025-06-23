@@ -24,6 +24,8 @@
     "dev": "cp api/.env.template api/.env && cp web/.env.template web/.env  && docker compose up db -d && pnpm --filter api  prisma:generate && pnpm -r run dev",
     "build": "pnpm run build --filter api && pnpm run build --filter web",
     "typecheck": "pnpm -r run typecheck",
-    "start:docker": "cp api/.env.template.docker api/.env && cp web/.env.template web/.env  && docker-compose up"
+    "start:docker": "cp api/.env.template.docker api/.env && cp web/.env.template web/.env  && docker-compose up",
+    "schema:change:docker": "docker exec -it $(docker-compose ps -q api) pnpm run schema:change",
+    "schema:change": "pnpm run --filter api schema:change"
   }
 }

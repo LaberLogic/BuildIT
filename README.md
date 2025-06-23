@@ -43,7 +43,7 @@ pnpm run dev
 pnpm run start:docker
 ```
 
-> Hot Module Reload (HMR) is not supported in Docker mode. This simulates how the app runs in CI/CD or production.
+> Hot Module Reload (HMR) is not supported in Docker mode. This simulates how the app runs in CI/CD or production. You will also need to run pnpm run schema:change:docker in root of repository to seed your database
 
 ---
 
@@ -79,7 +79,7 @@ The `api` package uses [**Prisma**](https://www.prisma.io/) as the ORM to intera
 
 ####  **`schema:change`** — For Development (Recommended)
 
-This is the **preferred command during active development**. It resets your database, regenerates Prisma client, and runs seeding all in one go.
+This is the **preferred command during active development**. It resets your database, regenerates Prisma client, and runs seeding all in one go. This will only work with run dev. Other wise either adjust the env var to point to the docker containers localhost address.
 
 ```bash
 pnpm run schema:change
