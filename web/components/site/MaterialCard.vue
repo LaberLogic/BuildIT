@@ -5,11 +5,12 @@
     data-cy="material-card"
   >
     <div
-      class="flex items-center justify-between p-3 border border-gray-200 rounded-md"
+      class="flex flex-wrap items-start justify-between p-3 border border-gray-200 rounded-md gap-2"
       data-cy="material-card-content"
     >
-      <div class="flex-1">
-        <div class="flex items-center">
+      <!-- Left: Material Info -->
+      <div class="flex-1 min-w-[200px]">
+        <div class="flex items-center flex-wrap">
           <span class="text-label" data-cy="material-name">
             {{ material.name }}
           </span>
@@ -17,7 +18,7 @@
             :type="getStatusBadge()"
             size="small"
             effect="light"
-            class="capitalize ml-1"
+            class="capitalize ml-1 mt-1"
             data-cy="material-status"
           >
             {{ getStatusName() }}
@@ -28,57 +29,68 @@
         </div>
       </div>
 
-      <div class="flex items-center space-x-2" data-cy="material-controls">
-        <el-button
-          class="btn-icon flex-shrink-0"
-          plain
-          :disabled="localAmount <= 0"
-          data-cy="material-decrement"
-          @mousedown="holdDecrement.start"
-          @mouseup="holdDecrement.stop"
-          @mouseleave="holdDecrement.stop"
-          @touchstart.prevent="holdDecrement.start"
-          @touchend="holdDecrement.stop"
-        >
-          <el-icon><Minus /></el-icon>
-        </el-button>
+      <!-- Right: Controls -->
+      <div
+        class="flex flex-wrap items-center justify-end gap-2 mt-2 sm:mt-0"
+        data-cy="material-controls"
+      >
+        <!-- Increment / Decrement -->
+        <div class="flex items-center space-x-2">
+          <el-button
+            class="btn-icon flex-shrink-0"
+            plain
+            :disabled="localAmount <= 0"
+            data-cy="material-decrement"
+            @mousedown="holdDecrement.start"
+            @mouseup="holdDecrement.stop"
+            @mouseleave="holdDecrement.stop"
+            @touchstart.prevent="holdDecrement.start"
+            @touchend="holdDecrement.stop"
+          >
+            <el-icon><Minus /></el-icon>
+          </el-button>
 
-        <span
-          class="mx-1 w-16 text-center text-sm font-medium"
-          data-cy="material-amount"
-        >
-          {{ localAmount }} {{ material.unit }}
-        </span>
+          <span
+            class="mx-1 w-16 text-center text-sm font-medium"
+            data-cy="material-amount"
+          >
+            {{ localAmount }} {{ material.unit }}
+          </span>
 
-        <el-button
-          class="btn-icon flex-shrink-0"
-          plain
-          data-cy="material-increment"
-          @mousedown="holdIncrement.start"
-          @mouseup="holdIncrement.stop"
-          @mouseleave="holdIncrement.stop"
-          @touchstart.prevent="holdIncrement.start"
-          @touchend="holdIncrement.stop"
-        >
-          <el-icon><Plus /></el-icon>
-        </el-button>
+          <el-button
+            class="btn-icon flex-shrink-0"
+            plain
+            data-cy="material-increment"
+            @mousedown="holdIncrement.start"
+            @mouseup="holdIncrement.stop"
+            @mouseleave="holdIncrement.stop"
+            @touchstart.prevent="holdIncrement.start"
+            @touchend="holdIncrement.stop"
+          >
+            <el-icon><Plus /></el-icon>
+          </el-button>
+        </div>
+
+        <!-- Edit & Delete -->
+        <div class="flex space-x-2">
+          <el-button
+            class="btn-icon"
+            data-cy="edit-material-button"
+            @click="editOpen = true"
+          >
+            <el-icon><Edit /></el-icon>
+          </el-button>
+
+          <el-button
+            v-if="isAdminOrManager"
+            class="btn-icon"
+            data-cy="delete-material-button"
+            @click="deleteOpen = true"
+          >
+            <el-icon><Trash /></el-icon>
+          </el-button>
+        </div>
       </div>
-
-      <el-button
-        class="btn-icon ml-4"
-        data-cy="edit-material-button"
-        @click="editOpen = true"
-      >
-        <el-icon><Edit /></el-icon>
-      </el-button>
-      <el-button
-        v-if="isAdminOrManager"
-        class="btn-icon"
-        data-cy="delete-material-button"
-        @click="deleteOpen = true"
-      >
-        <el-icon><Trash /></el-icon>
-      </el-button>
     </div>
 
     <site-modals-create-update-material

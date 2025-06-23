@@ -35,20 +35,13 @@ export function validateSitesResponse(res) {
 
 export function validateSiteResponse(res) {
   const site = res.json();
-  return (
-    typeof site.id === "string" &&
-    typeof site.name === "string"
-  );
+  return typeof site.id === "string" && typeof site.name === "string";
 }
 
 export function signIn(credentials, baseUrl) {
-  const res = http.post(
-    `${baseUrl}/auth/signin`,
-    JSON.stringify(credentials),
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  const res = http.post(`${baseUrl}/auth/signin`, JSON.stringify(credentials), {
+    headers: { "Content-Type": "application/json" },
+  });
 
   check(res, {
     "sign-in status is 200": (r) => r.status === 200,

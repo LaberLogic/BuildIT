@@ -28,6 +28,7 @@
       v-if="isAdminOrManager"
       v-model="createOpen"
       @save="handleCreateMaterial"
+      @close="createOpen = false"
     />
   </el-card>
 </template>

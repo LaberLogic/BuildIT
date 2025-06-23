@@ -88,10 +88,7 @@ describe("createMaterialController", () => {
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
-
-
 });
-
 
 describe("updateMaterialController", () => {
   const mockUser: UserObject = {
@@ -147,15 +144,16 @@ describe("updateMaterialController", () => {
         user: mockUser,
         params: { companyId: "c1", siteId: "site1", materialId: "mat1" },
         body: {},
-      } as FastifyRequest<{ Params: MaterialParams; Body: Partial<UpdateMaterialDto> }>;
+      } as FastifyRequest<{
+        Params: MaterialParams;
+        Body: Partial<UpdateMaterialDto>;
+      }>;
 
       await updateMaterialController(req, mockReply as FastifyReply);
 
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
-
-
 });
 
 describe("deleteMaterialController", () => {
@@ -215,8 +213,6 @@ describe("deleteMaterialController", () => {
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
-
-
 });
 
 describe("adjustMaterialQuantityController", () => {
@@ -247,7 +243,10 @@ describe("adjustMaterialQuantityController", () => {
         user: mockUser,
         params: { companyId: "c1", siteId: "site1", materialId: "mat1" },
         body: { delta: 5 },
-      } as FastifyRequest<{ Params: MaterialParams; Body: UpdateMaterialCountDto }>;
+      } as FastifyRequest<{
+        Params: MaterialParams;
+        Body: UpdateMaterialCountDto;
+      }>;
 
       await adjustMaterialQuantityController(req, mockReply as FastifyReply);
 
@@ -273,13 +272,14 @@ describe("adjustMaterialQuantityController", () => {
         user: mockUser,
         params: { companyId: "c1", siteId: "site1", materialId: "mat1" },
         body: { delta: -10 },
-      } as FastifyRequest<{ Params: MaterialParams; Body: UpdateMaterialCountDto }>;
+      } as FastifyRequest<{
+        Params: MaterialParams;
+        Body: UpdateMaterialCountDto;
+      }>;
 
       await adjustMaterialQuantityController(req, mockReply as FastifyReply);
 
       expect(sendChainedErrorReply).toHaveBeenCalledWith(mockReply, mockError);
     });
   });
-
-
 });

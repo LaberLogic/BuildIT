@@ -107,8 +107,7 @@ describe("createSiteController", () => {
     });
   });
 
-  describe("Edge Cases", () => {
-  });
+  describe("Edge Cases", () => {});
 });
 
 describe("updateSiteController", () => {
@@ -144,7 +143,7 @@ describe("updateSiteController", () => {
         mockUser,
         "site1",
         mockRequest.body,
-        "company-1"
+        "company-1",
       );
       expect(mockReply.status).toHaveBeenCalledWith(httpStatus.OK);
       expect(mockReply.send).toHaveBeenCalledWith(mockSite);

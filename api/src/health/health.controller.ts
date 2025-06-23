@@ -21,8 +21,8 @@ export const healthCheck = async (
 
   let mailgunHealthy = false;
   try {
-    const result = await mailgunClient.get("/domains");
-    mailgunHealthy = Array.isArray(result?.items);
+    const result = await mailgunClient.domains.list();
+    mailgunHealthy = Array.isArray(result);
   } catch {
     mailgunHealthy = false;
   }

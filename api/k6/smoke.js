@@ -1,8 +1,4 @@
-import {
-  getCurrentUser,
-  getSites,
-  signIn,
-} from "./common.js";
+import { getCurrentUser, getSites, signIn } from "./common.js";
 
 export const options = {
   vus: 1,

@@ -255,7 +255,7 @@ describe("material.service", () => {
 
       expect(result.isErr()).toBe(true);
       expect(result._unsafeUnwrapErr().message).toBe(
-       new ChainedError( "Material amount cannot be negative").message,
+        new ChainedError("Material amount cannot be negative").message,
       );
       expect(mockedUpdateMaterial).not.toHaveBeenCalled();
     });

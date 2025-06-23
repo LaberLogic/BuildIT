@@ -1,12 +1,20 @@
 import { env } from "@env";
 import { ChainedError } from "@utils/chainedError";
-import mailgun from "mailgun-js";
+import { fastify } from "fastify";
+import formData from "form-data";
+import Mailgun from "mailgun.js";
 import { okAsync, ResultAsync } from "neverthrow";
 import opossum from "opossum";
 
-export const mailgunClient = mailgun({
-  apiKey: env.MAILGUN_API_KEY,
-  domain: env.MAILGUN_DOMAIN,
+const logger = fastify().log;
+
+const mg = new Mailgun(formData);
+/**
+ * Mailgun client initialized with API key and username.
+ */
+export const mailgunClient = mg.client({
+  username: "api",
+  key: env.MAILGUN_API_KEY,
 });
 
 export type SendEmailParams = {
@@ -16,43 +24,86 @@ export type SendEmailParams = {
   template?: string;
   variables?: Record<string, unknown>;
 };
+
 /**
- * Builds and sends an email via Mailgun, optionally using a template and substitution variables.
+ * Builds the email payload and sends it using Mailgun.
  *
- * @param params - Email parameters including recipient, subject, and optional template settings.
- * @returns A Mailgun message sending promise.
+ * If a template is provided, it will use the template and variables.
+ * Otherwise, it requires non-empty text content.
+ *
+ * If environment variable `USE_DEFAULT_EMAIL_RECEIVER` is set, the email
+ * will be sent to the default receiver instead of the provided `to` address.
+ *
+ * @param {SendEmailParams} params - Email sending parameters.
+ * @throws Will throw an error if neither a template nor a non-empty text is provided, or if the email fails to send.
  */
-export const buildAndSendEmail = (params: SendEmailParams) => {
-  const { subject, template, variables } = params;
+export const buildAndSendEmail = async (params: SendEmailParams) => {
+  const { subject, text, template, variables } = params;
 
   const recipient = env.USE_DEFAULT_EMAIL_RECEIVER
     ? env.DEFAULT_RECEIVER_EMAIL
     : params.to;
 
-  const messagePayload: {
-    from: string;
-    to: string;
-    subject: string;
-    template?: string;
-    "h:X-Mailgun-Variables"?: string;
-  } = {
+  const basePayload = {
     from: `Construxx <no-reply@${env.MAILGUN_DOMAIN}>`,
     to: recipient,
     subject,
   };
 
+  let payload;
+
   if (template) {
-    messagePayload.template = template;
-    if (variables) {
-      messagePayload["h:X-Mailgun-Variables"] = JSON.stringify(variables);
-    }
+    payload = {
+      ...basePayload,
+      template,
+      "h:X-Mailgun-Variables": JSON.stringify(variables ?? {}),
+    };
+  } else if (text?.trim()) {
+    payload = {
+      ...basePayload,
+      text,
+    };
+  } else {
+    logger.error("Email rejected: Missing template or text content.");
+    throw new Error("Either 'template' or non-empty 'text' must be provided.");
   }
 
-  return mailgunClient.messages().send(messagePayload);
+  logger.info({
+    msg: "Sending email via Mailgun",
+    to: recipient,
+    subject,
+    template: template || undefined,
+    usingTemplate: Boolean(template),
+  });
+
+  try {
+    const response = await mailgunClient.messages.create(
+      env.MAILGUN_DOMAIN,
+      payload,
+    );
+    logger.info({ msg: "Email sent successfully", id: response?.id });
+    return response;
+  } catch (error: any) {
+    logger.error(
+      {
+        msg: "Mailgun email send failed",
+        error: error?.message,
+        status: error?.status,
+        body: error?.response?.body,
+      },
+      "Mailgun error",
+    );
+    throw error;
+  }
 };
 
 /**
- * Circuit breaker around the email sending logic, to prevent service flooding or overuse.
+ * Circuit breaker around the email sending function to improve resilience.
+ *
+ * Configured with:
+ * - timeout: 5000ms
+ * - errorThresholdPercentage: 50%
+ * - resetTimeout: 10000ms
  */
 export const mailBreaker = new opossum(buildAndSendEmail, {
   timeout: 5000,
@@ -61,18 +112,24 @@ export const mailBreaker = new opossum(buildAndSendEmail, {
 });
 
 /**
- * Sends an email using Mailgun with circuit breaker support and optional short-circuiting via config.
+ * Sends an email using the circuit breaker and returns a ResultAsync for safe error handling.
  *
- * @param params - Email sending parameters.
- * @returns A ResultAsync resolving to null on success, or a ChainedError on failure.
+ * If `SKIP_EMAIL_SENDING` is true in environment variables, resolves immediately with null.
+ *
+ * @param {SendEmailParams} params - Email sending parameters.
+ * @returns {ResultAsync<null, ChainedError>} ResultAsync resolving to null on success,
+ * or an error of type ChainedError on failure.
  */
 export const sendEmail = (
   params: SendEmailParams,
 ): ResultAsync<null, ChainedError> => {
-  if (env.SKIP_EMAIL_SENDING === true) return okAsync(null);
+  if (env.SKIP_EMAIL_SENDING === true) {
+    logger.info("Email sending skipped via SKIP_EMAIL_SENDING=true.");
+    return okAsync(null);
+  }
 
-  return ResultAsync.fromPromise(
-    mailBreaker.fire(params),
-    (e) => new ChainedError(e),
-  ).map(() => null);
+  return ResultAsync.fromPromise(mailBreaker.fire(params), (e) => {
+    logger.error({ msg: "Circuit breaker triggered", error: e });
+    return new ChainedError(e);
+  }).map(() => null);
 };
