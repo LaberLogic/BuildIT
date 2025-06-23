@@ -83,6 +83,7 @@ export const buildAndSendEmail = async (params: SendEmailParams) => {
     );
     logger.info({ msg: "Email sent successfully", id: response?.id });
     return response;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logger.error(
       {
