@@ -52,8 +52,8 @@ describe("sendInvitationMail", () => {
     );
 
     expect(sendEmail).toHaveBeenCalledWith({
-      to: "jonas-labermeier@web.de",
-      subject: "Welcome to Construx",
+      to: "invite@example.com",
+      subject: "Welcome to Construxx",
       template: "invitation",
       variables: {
         firstName: mockUser.firstName,
