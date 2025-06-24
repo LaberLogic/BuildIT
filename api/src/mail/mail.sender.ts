@@ -72,7 +72,7 @@ export const buildAndSendEmail = async (params: SendEmailParams) => {
     msg: "Sending email via Mailgun",
     to: recipient,
     subject,
-    template: template || undefined,
+    template: template ?? undefined,
     usingTemplate: Boolean(template),
   });
 
