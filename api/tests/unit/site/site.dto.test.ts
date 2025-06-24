@@ -64,7 +64,7 @@ describe("toSiteDTO", () => {
       expect.objectContaining({
         id: "site-123",
         name: "Test Site",
-        address: "100 Main St, New York, USA 10001",
+        address: "Main St 100, 10001 New York, USA",
         status: SITE_STATUS.ACTIVE,
         priority: "medium",
         hoursLogged: 0,

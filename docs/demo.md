@@ -29,17 +29,7 @@
 
 > Die Architektur wird mit einem C4-Modell vorgestellt. Die Diagramme basieren auf Mermaid da structurizr Account notwendig
 
-### 4.1 System Context Diagram
-![System Context Diagram](./diagrams/system_context_diagram.png)
-*Übersicht der externen Akteure und Systeme*
 
-### 4.2 Container Diagram
-![Container Diagram](./diagrams/container_diagram.png)
-*Aufteilung in Web-Frontend, API, Datenbank*
-
-### 4.3 Component Diagram
-![Component Diagram](./diagrams/component_diagram.png)
-*Wichtige Module: Auth, Materials, Projects, Roles*
 
 ### Technologiestack
 

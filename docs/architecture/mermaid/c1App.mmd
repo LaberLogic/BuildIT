@@ -1,0 +1,17 @@
+
+C4Context
+title System Context - Construxx Web Application
+
+Person(companyUser, "Company User", "A representative of a company using Construxx")
+Person(companyWorker, "Company Worker", "An employee of a company using Construxx")
+
+System_Ext(mailgun, "Mailgun", "External email delivery service used by Construxx")
+
+Boundary(construxxBoundary, "Construxx Web Application") {
+    System(construxx, "Construxx", "A web application for companies and their workers to manage operations")
+}
+
+Rel(companyUser, construxx, "Uses via web browser")
+Rel(companyWorker, construxx, "Uses via web browser")
+
+Rel(construxx, mailgun, "Sends transactional emails using")

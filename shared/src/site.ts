@@ -6,8 +6,8 @@ import { companyAddressSchema } from "./auth";
 export const createSiteSchema = z.object({
   name: z.string().min(1),
   address: companyAddressSchema,
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
+  startDate: z.date(),
+  endDate: z.date(),
   notes: z.string().optional(),
   users: z.array(z.string()),
 });
@@ -16,8 +16,8 @@ export const updateSiteSchema = z
   .object({
     name: z.string().min(1),
     address: companyAddressSchema,
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date(),
+    startDate: z.string().datetime(),
+    endDate: z.string().datetime(),
     notes: z.string(),
     users: z.array(z.string()),
     priority: z.string(),

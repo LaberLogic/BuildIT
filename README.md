@@ -145,3 +145,49 @@ Use this command when making schema changes **without wiping your data**.
 * For **incremental schema updates**, use `migrate:dev` to create migration scripts without data loss.
 * After running migrations, always ensure the Prisma client is up-to-date with `prisma:generate` (this is automated in `migrate:dev`).
 * Never run `schema:change` on production or environments with important data — it wipes the database.
+
+Certainly! Here's a suggested **Testing** section you can add to your README, following your existing style and instructions:
+
+---
+
+## Testing
+
+### API Tests
+
+Run all backend API tests from the `/api` directory with:
+
+```bash
+pnpm run test
+```
+
+You can also filter tests specific to the API by using test name patterns or your test runner’s filtering options.
+
+---
+
+### Web Tests
+
+To run frontend tests, first start your Docker environment:
+
+```bash
+pnpm run start:docker
+```
+
+Then, in another terminal, run:
+
+```bash
+pnpm run test --filter web
+```
+
+This ensures the backend API and database are running and accessible for frontend integration tests.
+
+---
+
+### Load and Performance Tests (K6)
+
+Before running K6 tests, make sure your API and database are running — either in development mode (`pnpm run dev`) or via Docker (`pnpm run start:docker`).
+
+Run a K6 test with:
+
+```bash
+pnpm run test:k6
+```

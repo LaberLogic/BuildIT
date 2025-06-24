@@ -26,7 +26,7 @@ export const toSiteDTO = (site: Site, user: UserObject): SiteResponseDto => {
   return {
     id: site.id,
     name: site.name,
-    address: `${site.address.streetNumber} ${site.address.street}, ${site.address.city}, ${site.address.country} ${site.address.postalCode}`,
+    address: `${site.address.street} ${site.address.streetNumber}, ${site.address.postalCode} ${site.address.city}, ${site.address.country}`,
     progress,
     //DUMMY DATA
     hoursLogged: 0,

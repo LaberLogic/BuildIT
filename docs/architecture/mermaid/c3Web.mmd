@@ -1,0 +1,31 @@
+C4Container
+title Level 3 - Nuxt Frontend (Nuxt Web App)
+
+Person(user, "User", "Uses the app via browser")
+
+System_Ext(api, "API Backend", "Fastify server providing business logic")
+System_Ext(mailgun, "Mailgun", "External SaaS for transactional email")
+System_Ext(db, "Postgres Database", "Persistent data storage")
+
+Container_Boundary(frontend, "Nuxt Web App") {
+    Container(pages, "Pages", "Vue/Nuxt", "Route-driven views")
+    Container(components, "Components", "Vue Components", "Reusable UI building blocks")
+    Container(layouts, "Layouts", "Vue Layouts", "Page wrappers/layout shells")
+    Container(middleware, "Middleware", "Nuxt Middleware", "Guards & access control logic")
+    Container(plugins, "Plugins", "Nuxt Plugins", "Runtime feature extensions")
+    Container(composables, "Composables", "Vue Composables", "Reusable logic (API fetching, utilities)")
+    Container(stores, "Stores", "Pinia", "Global shared state management")
+}
+
+Rel(user, pages, "Navigates and interacts with")
+Rel(pages, layouts, "Uses for layout")
+Rel(pages, components, "Composed of")
+Rel(pages, middleware, "Passes through for access control")
+Rel(components, composables, "Use for logic and utilities")
+Rel(pages, stores, "Reads from and writes to")
+Rel(composables, api, "Sends API requests to")
+
+Rel(api, mailgun, "Sends emails via")
+Rel(api, db, "Reads and writes data")
+
+UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

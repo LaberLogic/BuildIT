@@ -1,0 +1,22 @@
+C4Container
+title Level 2 - Construxx System Containers
+
+Person(user, "User", "A company user or worker")
+
+System_Ext(mailgun, "Mailgun", "External SaaS for sending transactional emails")
+
+Container_Boundary(construxx, "Construxx") {
+  Container(nuxtFrontend, "Nuxt Frontend", "Vue/Nuxt", "Web UI for users")
+  Container(fastifyAPI, "Fastify API", "Node.js/Fastify", "Handles business logic and API requests")
+  Container(sharedPackage, "Shared Package", "Shared Zod schemas and DTO types")
+  Container(postgres, "Postgres Database", "PostgreSQL", "Stores persistent data")
+}
+
+Rel(user, nuxtFrontend, "Uses")
+Rel(nuxtFrontend, fastifyAPI, "Sends API requests to")
+Rel(fastifyAPI, sharedPackage, "Uses for validation and shared types")
+Rel(nuxtFrontend, sharedPackage, "Uses for validation and shared types")
+Rel(fastifyAPI, postgres, "Reads and writes data")
+Rel(fastifyAPI, mailgun, "Sends transactional emails via")
+
+UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")

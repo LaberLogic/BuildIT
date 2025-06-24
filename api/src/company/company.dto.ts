@@ -9,7 +9,7 @@ export const toCompanyDTO = (company: Company): CompanyResponseDto => {
     name,
     createdAt: createdAt.toISOString(),
     updatedAt: updatedAt.toISOString(),
-    address: `${company.address.streetNumber} ${company.address.street}, ${company.address.city}, ${company.address.country} ${company.address.postalCode}`,
+    address: `${company.address.street} ${company.address.streetNumber}, ${company.address.postalCode} ${company.address.city}, ${company.address.country}`,
 
     siteCount: company.sites.length,
     userCount: company.users.length,

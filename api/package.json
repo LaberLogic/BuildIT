@@ -19,7 +19,9 @@
     "prisma:generate": "prisma generate",
     "migrate:data": "tsx prisma/seed-run.ts",
     "schema:change": "pnpm run migrate:reset && pnpm run prisma:generate && pnpm run migrate:data",
-    "test:k6": "k6 run ./k6/spike.js"
+    "test:k6": "k6 run ./k6/spike.js",
+    "test:k6:load": "k6 run ./k6/load.js",
+    "test:k6:all": "npm run test:k6 && npm run test:k6:load"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.1",

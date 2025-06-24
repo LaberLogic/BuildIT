@@ -1,0 +1,32 @@
+%%{ init: { 'theme': 'default', 'flowchart': { 'curve': 'linear' } } }%%
+C4Container
+title Level 3 - API Backend (Fastify)
+
+Person(user, "User", "Uses the application")
+
+System_Ext(frontend, "Nuxt Frontend", "Web UI in browser")
+System_Ext(mailgun, "Mailgun", "External email delivery service")
+SystemDb(database, "Database", "Postgres Database")
+System_Ext(sharedSchemas, "Shared Schemas", "Shared Zod schemas and DTO types")
+
+Container_Boundary(api, "Fastify API") {
+  Container(routes, "Routes", "Fastify", "Handles HTTP endpoints, validates input using schemas")
+  Container(services, "Services", "Node.js", "Business logic layer")
+  Container(repositories, "Repositories", "Prisma", "Database access layer")
+  Container(mail, "Mail", "Mailgun Client", "Email sending utility")
+  Container(scopeCheck, "ScopeCheck", "Utility", "Permission and access control checks")
+  Container(dto, "DTOs", "Transformers", "Transforms and formats response data")
+}
+
+Rel(user, frontend, "Uses")
+Rel(frontend, routes, "Sends HTTP requests to")
+Rel(routes, sharedSchemas, "Validates inputs using")
+Rel(routes, services, "Calls")
+Rel(services, repositories, "Reads from and writes to")
+Rel(services, mail, "Sends emails via")
+Rel(services, scopeCheck, "Checks permissions with")
+Rel(services, dto, "Maps data to response formats")
+Rel(repositories, database, "Queries")
+Rel(mail, mailgun, "Delivers emails via")
+
+UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

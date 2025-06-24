@@ -1,0 +1,69 @@
+
+C4Container
+title Level 4 - API Backend User Domain
+
+System_Ext(sharedSchemas, "Shared Schemas", "Validation schemas")
+
+Container_Boundary(api, "Fastify API") {
+
+  Container_Boundary(userDomain, "User Domain") {
+
+    Container_Boundary(pluginLayer, "Plugin Layer") {
+      Container(pluginsJWT, "jwt.ts", "Middleware", "JWT token handling")
+      Container(pluginsRoleGuards, "roleGuards.ts", "Middleware", "Role-based access control")
+    }
+
+    Container_Boundary(routesLayer, "Routes Layer") {
+      Container(authRoutes, "auth.routes.ts", "Fastify", "Authentication routes")
+      Container(companyUserRoutes, "company.user.routes.ts", "Fastify", "Company user routes")
+      Container(userRoutes, "user.routes.ts", "Fastify", "User routes")
+    }
+
+    Container_Boundary(controllerLayer, "Controller Layer") {
+      Container(authController, "auth.controller.ts", "Node.js", "Handles authentication endpoints")
+      Container(userController, "user.controller.ts", "Node.js", "Handles user management endpoints")
+    }
+
+    Container_Boundary(serviceLayer, "Service Layer") {
+      Container(authService, "auth.service.ts", "Node.js", "Authentication business logic")
+      Container(userService, "user.service.ts", "Node.js", "User business logic")
+    }
+
+    Container_Boundary(dtoLayer, "DTO Layer") {
+      Container(userDTO, "user.dto.ts", "TypeScript + Zod", "Transforms and validates user data")
+    }
+
+    Container_Boundary(repositoryLayer, "Repository Layer") {
+      Container(userRepository, "user.repository.ts", "Prisma", "User data access")
+    }
+  }
+
+  Container(companyDomain, "Company Domain", "Node.js", "Company domain modules (controller, service, repo)")
+  Container(mailDomain, "Mail Domain", "Node.js", "Mail related services")
+  Container(healthDomain, "Health Domain", "Node.js", "Health check modules")
+  Container(siteDomain, "Site Domain", "Node.js", "Site and Material related modules")
+}
+
+Rel(companyUserRoutes, pluginsJWT, "Uses")
+Rel(userRoutes, pluginsJWT, "Uses")
+
+Rel(companyUserRoutes, pluginsRoleGuards, "Uses")
+Rel(userRoutes, pluginsRoleGuards, "Uses")
+
+Rel(authRoutes, authController, "Routes to")
+Rel(companyUserRoutes, userController, "Routes to")
+Rel(userRoutes, userController, "Routes to")
+
+Rel(authController, authService, "Calls")
+Rel(userController, userService, "Calls")
+
+Rel(userService, userRepository, "Reads/Writes")
+
+Rel(userService, mailDomain, "Sends email")
+Rel(authService, mailDomain, "Sends email")
+
+Rel(companyUserRoutes, sharedSchemas, "Uses")
+Rel(userRoutes, sharedSchemas, "Uses")
+
+Rel(authService, userDTO, "Uses for data transformation")
+Rel(userService, userDTO, "Uses for data transformation")

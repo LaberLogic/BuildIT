@@ -248,8 +248,13 @@ const handleSave = async () => {
     const { address, ...rest } = model.value;
     const payload = {
       ...rest,
-      startDate: model.value.startDate,
-      endDate: model.value.endDate,
+      startDate: model.value.startDate
+        ? new Date(model.value.startDate).toISOString()
+        : undefined,
+
+      endDate: model.value.endDate
+        ? new Date(model.value.endDate).toISOString()
+        : undefined,
       users: model.value.users.map((u) => u.userId),
       ...((includeAddress.value || !isEditMode.value) && {
         address,

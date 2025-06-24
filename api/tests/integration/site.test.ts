@@ -94,7 +94,7 @@ describe("Sites API", () => {
         expect(res.body).toHaveProperty("id");
         expect(res.body.name).toBe("New Admin Site");
         expect(res.body.address).toBe(
-          "100 Admin St, Admin City, Countryland 11111",
+          "Admin St 100, 11111 Admin City, Countryland",
         );
 
         expect(
@@ -126,7 +126,7 @@ describe("Sites API", () => {
         expect(res.status).toBe(201);
         expect(res.body.name).toBe("Manager Site");
         expect(res.body.address).toBe(
-          "200 Manager Rd, Manageville, Countryland 22222",
+          "Manager Rd 200, 22222 Manageville, Countryland",
         );
 
         expect(
@@ -273,7 +273,7 @@ describe("Sites API", () => {
 
         expect(res.status).toBe(200);
         expect(res.body.name).toBe("Updated Site Name");
-        expect(res.body.address).toContain("200 New Blvd");
+        expect(res.body.address).toContain("New Blvd 200");
         expect(res.body.priority).toBe("medium");
         expect(res.body.status).toBe("ACTIVE");
       });
