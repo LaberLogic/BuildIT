@@ -18,7 +18,10 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     setToken(token: string) {
       this.token = token;
-      useCookie("token", { maxAge: 60 * 60 * 24 * 7 }).value = token;
+      useCookie("token", {
+        maxAge: 60 * 60 * 24 * 7,
+        secure: true,
+      }).value = token;
     },
 
     setUser(user: UserResponseDto) {

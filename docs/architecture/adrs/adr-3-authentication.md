@@ -59,5 +59,5 @@ Authentication tokens will be **stored in HTTP-only cookies** on the frontend fo
 
 * [JWT Best Practices](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/)
 * [Fastify JWT Plugin](https://github.com/fastify/fastify-jwt)
-* [Nuxt Auth with Cookies Guide](https://auth.nuxtjs.org/recipes/cookies/)
+* [Nuxt Auth with Cookies Guide](https://nuxt.com/docs/api/composables/use-cookie)
 * [OWASP JWT Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)

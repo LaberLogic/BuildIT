@@ -67,5 +67,4 @@ Use **PostgreSQL** as the primary relational database, and **Prisma ORM** for da
 
 * [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 * [Prisma Documentation](https://www.prisma.io/docs/)
-* [Prisma vs TypeORM Comparison](https://www.prisma.io/docs/comparisons/prisma-vs-typeorm)
-* [Multi-Tenancy with PostgreSQL](https://www.citusdata.com/blog/2017/10/12/five-ways-to-scale-postgresql/)
+* [Prisma vs TypeORM Comparison](https://www.prisma.io/docs/orm/more/comparisons/prisma-and-typeorm)

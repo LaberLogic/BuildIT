@@ -1,114 +1,127 @@
 # Building Block View
 
-## Whitebox Overall System
+## Level 1 — Whitebox Overall System
 
 ![SystemOverview](./images/C1App.png)
 
 **Motivation**
-This system is a modular, full-stack web application supporting multi-tenant company management, role-based access control, site and material tracking, and email-based authentication. The architecture separates concerns clearly into frontend, backend, shared validation, and third-party integrations.
+This system is a modular, full-stack web application supporting multi-tenant company management, role-based access control, site and material tracking, and email-based authentication.
 
 **Contained Building Blocks**
-* **Web Frontend (Nuxt)**
-* **API Backend (Fastify)** — includes controllers, services, repositories, routes, and DTOs for domain mapping
-* **PostgreSQL Database**
-* **Shared Zod Schemas and TypeScript Types**
-* **Mailgun Integration**
+- **Web Frontend (Nuxt)**
+- **API Backend (Fastify)** — includes controllers, services, repositories, routes, and DTOs for domain mapping
+- **PostgreSQL Database**
+- **Shared Zod Schemas and TypeScript Types**
+- **Mailgun Integration**
 
 **Important Interfaces**
-* REST API between frontend and backend
-* Prisma ORM between backend and database
-* Mailgun HTTP API integration
-* Shared validation schemas (Zod) used across frontend and backend
+- REST API between frontend and backend
+- Prisma ORM between backend and database
+- Mailgun HTTP API
+- Shared validation schemas (Zod) used across frontend and backend
 
 ---
 
-## Level 2
-
-### Web Frontend (Nuxt)
+## Level 2 — Internal Composition of Main Building Blocks
 
 ![Level 2 Web](./images/c2App.png)
 
-* File-based routing with pages for auth, company, user, site, and profile
-* Modular components grouped by domain (Auth, Company, Users, Site)
-* Uses shared Zod types for form validation and props
+### Web Frontend (Nuxt)
 
----
+
+
+- File-based routing with pages for auth, company, user, site, and profile
+- Modular components grouped by domain (Auth, Company, Users, Site)
+- Uses shared Zod types for form validation and props
+- Components are reused across views, promoting consistency
 
 ### API Backend (Fastify)
 
-![Level 2 API](./images/c2App.png)
 
-* Plugins for JWT authentication and role-based guards
-* Mail module including mail.service.ts and mail.sender.ts
-* Health check module
-* Company, User, Site modules with nested Material submodule — all layers: controllers, services, repositories, DTOs, and routes
-* DTO layer maps shared schema types to domain models and response shapes
-
----
+- Layered architecture: Routes → Controllers → Services → DTOs → Repositories
+- Domain modules: Auth, User, Company, Site, Material
+- Plugins: JWT authentication, role-based guards, health checks
+- Mail module for sending transactional emails (e.g. verification, password reset)
+- Prisma ORM used for data access
 
 ### Shared Zod Schema Module
 
-![Level 2 Shared](./images/c2App.png)
-
-* Defines and exports Zod schemas and inferred types for validation
-* Shared by both backend and frontend for consistency and developer experience
+- Zod schemas and TypeScript types shared across backend and frontend
+- Domain-specific schema files:
+  - `auth.ts`, `user.ts`, `company.ts`, `site.ts`, `material.ts`
+- Promotes consistency in validation and data structure
 
 ---
 
-## Level 3
+## Level 3 — Deep Dive: Domain Structures
 
-### User Domain API (Fastify)
+### User Domain — API Backend
 
 ![Level 3 API](./images/c3Api.png)
 
-* **Layered architecture for User Domain:**
-  * **Routes:** `auth.routes.ts`, `user.routes.ts`, `company.user.routes.ts` — define HTTP endpoints with middleware (JWT, role guards)
-  * **Controllers:** `auth.controller.ts`, `user.controller.ts` — handle HTTP requests and responses
-  * **Services:** `auth.service.ts`, `user.service.ts` — business logic for authentication and user management
-  * **DTOs:** `user.dto.ts` — data transformation and validation using Zod and TypeScript
-  * **Repositories:** `user.repository.ts` — Prisma-based data access
-* **Integration:**
-  * Mail service for transactional emails (password reset, verification)
-  * Middleware enforces security and authorization
-* Decoupled design supports modular feature development and maintenance
+- **Routes**
+  - `auth.routes.ts`, `user.routes.ts`, `company.user.routes.ts`
+- **Controllers**
+  - `auth.controller.ts`, `user.controller.ts`
+- **Services**
+  - Business logic for auth and user management
+- **Repositories**
+  - Data access via Prisma (`user.repository.ts`)
+- **DTOs**
+  - Data transformation and Zod-based validation
+- **Security**
+  - Middleware: JWT auth, role guards
+- **Integration**
+  - Mail service for notifications and authentication flows
 
----
-
-### Component Structure Web (Nuxt)
+### Component Structure — Web Frontend (Nuxt)
 
 ![Level 3 Web](./images/c3Web.png)
 
-* File-based routing for auth, company, user, site, and profile pages
-* Modular components grouped by domain:
-  * **Auth:** LoginForm, RegisterUserForm, RegisterCompanyForm, HeaderWithIcon
-  * **Company:** OverviewCard, CompanyDetailsCard
-  * **User:** UserStatistics, UserDashboardActions, UserCard, modals for creating/updating users
-  * **Site:** BasicInfo, Tabs, SiteCard, modals, nested material tracking components
-  * **General:** ConfirmAction modal dialogs
-* Pages compose views from these domain components
-* Uses shared Zod schemas for validation and strong typing
-* Frontend communicates with backend API for business logic and data persistence
+- Modular component grouping:
+  - **Auth:** LoginForm, RegisterUserForm, RegisterCompanyForm
+  - **Company:** OverviewCard, CompanyDetailsCard
+  - **User:** DashboardActions, UserCard, Modals
+  - **Site:** Info sections, SiteCard, Material tracking
+- Pages composed from modular domain components
+- Uses shared Zod schemas for strong typing and validation
+- Communicates with Fastify API for data persistence and logic
 
----
-
-### Shared Module (Zod Schemas & DTO Types)
+### Shared Module
 
 ![Level 3 Shared](./images/c3Shared.png)
 
-* Domain-specific shared schema files:
-  * `company.ts`
-  * `material.ts`
-  * `site.ts`
-  * `user.ts`
-  * `auth.ts`
-* Ensures consistent validation and type safety across frontend and backend
-* Consumed by both API backend and Nuxt frontend for input validation and type inference
+- Domain-specific schema files:
+  - `auth.ts`, `user.ts`, `company.ts`, `site.ts`, `material.ts`
+- Types inferred from Zod schemas
+- DTOs in backend map these schemas to domain models and API responses
 
 ---
-## Level 4
 
-### API Backend — User Domain Detailed Structure
+## Level 4 — Detailed View: User Domain API Backend
 
-This level details the User Domain within the Fastify API Backend, showing how the domain is organized into plugin middleware, routes, controllers, services, DTOs, and repositories, and how it integrates with shared validation schemas and mail services. This clear layering supports modularity, separation of concerns, and maintainability.
+![Level 4 API](./images/c4Api.png)
 
-![Level 4 APi](./images/c4Api.png)
+**Detailed Breakdown**
+- **Middleware Plugins**
+  - JWT authentication, role-based guards
+- **Routes**
+  - Entry points with middleware applied
+- **Controllers**
+  - Delegate logic to services
+- **Services**
+  - Handle business rules and interaction with repositories
+- **Repositories**
+  - Encapsulate Prisma-based data access
+- **DTOs**
+  - Translate between internal models and external schemas
+- **Integration**
+  - Mail services (e.g., `mail.service.ts`, `mail.sender.ts`)
+  - Shared schema usage for validation
+
+**Benefits**
+- Clear separation of concerns
+- Easy to test and maintain
+- Aligned with domain-driven design principles
+
+---

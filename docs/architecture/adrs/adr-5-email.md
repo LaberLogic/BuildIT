@@ -68,7 +68,5 @@ Use **Mailgun** as the third-party email service provider for all **transactiona
 
 ## References
 
-* [Mailgun EU Region Documentation](https://documentation.mailgun.com/en/latest/quickstart-eu.html)
 * [Mailgun Free Tier Overview](https://www.mailgun.com/pricing/)
 * [Mailgun API Docs](https://documentation.mailgun.com/en/latest/api-sending.html)
-* [GDPR and Email Services Comparison](https://www.emailvendorselection.com/gdpr-compliance-email-service-providers/)

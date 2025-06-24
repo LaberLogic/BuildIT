@@ -70,4 +70,4 @@ To ensure **scalability, maintainability, performance**, and **developer product
 * [Nuxt 3 Documentation](https://nuxt.com/docs)
 * [Fastify Documentation](https://www.fastify.io/docs/latest/)
 * [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-* [Nuxt vs Next.js Comparison](https://www.infoworld.com/article/3664012/nuxt-vs-nextjs-which-javascript-framework-is-best.html)
+* [Nuxt vs Next.js Comparison](https://daily.dev/blog/nextjs-vs-nuxtjs-whats-best)
