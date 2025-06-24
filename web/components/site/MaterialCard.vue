@@ -98,7 +98,10 @@
       :material="material"
       @close="editOpen = false"
     />
-    <general-confirm-action v-model="deleteOpen" />
+    <general-confirm-action
+      v-model="deleteOpen"
+      @save="deleteMaterialHandler"
+    />
   </div>
 </template>
 
@@ -194,5 +197,11 @@ const getStatusName = (): string => {
   if (localAmount.value === 0) return "Out of Stock";
   if (localAmount.value <= props.material.threshold) return "Low Stock";
   return "In Stock";
+};
+
+const deleteMaterialHandler = async () => {
+  await deleteMaterial({ companyId, siteId, materialId: props.material.id });
+
+  await companyStore.fetchSiteDetails(companyId, siteId);
 };
 </script>

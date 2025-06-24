@@ -104,12 +104,8 @@ const companyId = useRoute().params.companyId as string;
 const handleDelete = async () => {
   if (!user.value?.id) return;
 
-  const deleted = await deleteUser(companyId, user.value.id);
+  await deleteUser(companyId, user.value.id);
 
-  if (deleted) {
-    await companyStore.fetchUsers(companyId);
-  } else {
-    console.error("Failed to delete user");
-  }
+  await companyStore.fetchUsers(companyId);
 };
 </script>

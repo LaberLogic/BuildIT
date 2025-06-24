@@ -100,3 +100,33 @@ export const updateMaterial = async ({
     throw err;
   }
 };
+
+export const deleteMaterial = async ({
+  companyId,
+  siteId,
+  materialId,
+}: {
+  companyId: string;
+  siteId: string;
+  materialId: string;
+}) => {
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
+
+  try {
+    const response = await $fetch<{ id: string }>(
+      `${config.public.API_BASE_URL}/companies/${companyId}/sites/${siteId}/materials/${materialId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      },
+    );
+
+    return response;
+  } catch (err) {
+    console.error("Error updating material", err);
+    throw err;
+  }
+};
