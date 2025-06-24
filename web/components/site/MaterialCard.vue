@@ -137,6 +137,7 @@ const deleteOpen = ref(false);
 const localAmount = ref(props.material.amount);
 
 const authStore = useAuthStore();
+const companyStore = useCompanyStore();
 
 const isAdminOrManager = computed(() => authStore.isManagerOrAdmin);
 
@@ -150,6 +151,7 @@ const debouncedAdjust = debounce(async () => {
       materialId: props.material.id,
       delta: accumulatedDelta,
     });
+    await companyStore.fetchSiteDetails(companyId, siteId);
     accumulatedDelta = 0;
   } catch (err) {
     console.error("Failed to adjust quantity", err);

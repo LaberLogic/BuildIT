@@ -1,107 +1,198 @@
-# Vorstellung der Projektarbeit – Construxx
+---
+marp: true
+theme: default
+paginate: true
+headingDivider: 2
+---
 
-## 1. Einleitung
+# Vorstellung der Projektarbeit
+## **Construxx – Bauverwaltungsplattform**
 
-- **Projektname**: Construxx – Bauverwaltungsplattform
-- **Kontext**: Hochschulprojekt in Kooperation mit [Fliesen Hönle](https://www.fliesen-hoenle.de/)
-- **Ziel**: Entwicklung eines Prototyps zur Verwaltung von Baustellen, Materialien und Nutzerrollen
-- **Entwickler**: Jonas Labermeier
+**Entwickler:** Jonas Labermeier
+**Kooperationspartner:** [Fliesen Hönle](https://www.fliesen-hoenle.de/)
+**Format:** Hochschulprojekt
+**Ziel:** Prototyp zur Verwaltung von Baustellen, Materialien und Nutzerrollen
 
-## 2. Live-Demo: Kernfunktionalität
+---
 
-- **Benutzerverwaltung** (Erstellen, Rollen zuweisen, E-Mail-Versand)
-- **Baustellenmanagement** (Erstellen, Zuweisung von Mitarbeitern)
-- **Materialverfolgung** mit Schwellenwert-Alarmierung
-- **Rollenbasierter Zugriff** (Admin, Manager, Worker)
+## 🔹 Einleitung
 
-## 3. Codeanalyse: Statische Codeanalyse
+**Projektname:** Construxx
+**Kontext:** Hochschulprojekt (Kooperation mit Fliesen Hönle)
+**Ziel:**
+- Verwaltung von Baustellen
+- Material-Tracking
+- Benutzer- und Rollenmanagement
+- Multi-Tenant Support
 
-### Backend (API)
-- Tools: ESLint, TypeScript Compiler, SonarQube Cloud
-- Testabdeckung: ca. 90 %
-- Analyseziele: Wartbarkeit, Duplikate, Sicherheitsprobleme
+**Technologien:** Webplattform (Frontend + Backend)
 
-### Frontend (Web)
-- Tools: ESLint, Nuxt Typecheck, optional Sonar-Scanner
-- Alle automatisch erkannten Probleme wurden behoben
+---
 
-## 4. Projektstruktur & Architektur
+## 🔹 Live-Demo: Kernfunktionen
 
-> Die Architektur wird mit einem C4-Modell vorgestellt. Die Diagramme basieren auf Mermaid da structurizr Account notwendig
+- 👥 **Benutzerverwaltung**
+  - Nutzer anlegen, Rollen zuweisen
+  - E-Mail-Versand bei Erstellung
+
+- 🏗️ **Baustellenmanagement**
+  - Erstellung von Projekten
+  - Zuweisung von Mitarbeitenden
+
+- 📦 **Materialverfolgung**
+  - Schwellenwerte & automatische Warnung
+  - Übersichtlicher Materialstatus
+
+- 🔐 **Rollenkonzept**
+  - Admin, Manager, Worker
+  - Zugriffsbeschränkungen je Rolle
+
+---
+
+## 🔹 Codeanalyse: Backend
+
+- **Tools:** ESLint, TypeScript Compiler, SonarQube Cloud
+- **Testabdeckung:** ~90 %
+- **Analyseziele:**
+  - Wartbarkeit sicherstellen
+  - Sicherheitslücken erkennen
+  - Duplikate vermeiden
+
+---
+
+## 🔹 Codeanalyse: Frontend
+
+- **Tools:** ESLint, Nuxt Typecheck, optional SonarScanner
+- **Ergebnisse:**
+  - Alle automatisch erkannten Probleme behoben
+  - Fokus auf saubere, stabile Codebasis
+
+---
+
+## 🔹 Architektur & Struktur
+
+**Visualisierung:** C4-Modell (Diagramme via Mermaid)
+**Aufbau in mehreren Ebenen:**
+
+| Ebene            | Technologien                                       |
+|------------------|----------------------------------------------------|
+| **Frontend**      | Nuxt 3 (Vue 3), Tailwind CSS, Element Plus         |
+| **Backend**       | Fastify, Prisma ORM, Zod, PostgreSQL, neverthrow   |
+| **Shared Lib**    | Monorepo mit `shared`-Paket (Typen, Schemas)       |
+| **Auth**          | JWT, CUIDs, Multi-Tenant Isolation                 |
+
+---
+
+## 🔹 Testkonzept – Überblick
+
+**Testansatz:** Mehrstufig, Backend & Frontend
+**Ziel:** Absicherung zentraler Logik & User-Flows
+
+**Schwerpunkte:**
+- Isolierte Komponenten
+- Echte Schnittstellen
+- Performanzkritische Endpunkte
+
+---
+
+## 🔹 Backend-Tests (Details)
+
+### ✅ Unit-Tests mit Jest
+- Fokus: Business-Logik (Services, Validierungen)
+- Nutzung von Mocks (`jest.mock()`)
+- Vorteile: Schnell, deterministisch
+
+### 🌐 Integrationstests mit Supertest
+- Echte HTTP-Anfragen gegen Fastify
+- Nutzung von Testdatenbank & Rollbacks
+- Beispiel: Registrierungsflow
+
+---
+
+## 🔹 Performance-Tests mit K6
+
+**Ablauf:**
+1. Authentifizierung (z. B. signIn)
+2. Datenabruf (z. B. getSites, getCurrentUser)
+3. Nutzerverhalten simuliert (Wartezeiten, Ramp-up)
+
+**Teststufen:**
+- Ramp-Up: 0 → 10 User in 30s
+- Konstante Phase
+- Cooldown
+
+**Ziele:**
+- 95%-Antwortzeit < **20 ms**
+- Fehlerquote < **0,5 %**
+
+---
+
+## 🔹 Frontend-Tests
+
+### 🧪 End-to-End mit Cypress
+- Login, Materialverwaltung, User Management
+- Ausführung lokal mit Dev-Server
+- Fokus auf User-Flows & UI-Stabilität
+
+### 🔍 Typechecks & Linting
+- `nuxt typecheck`
+- `eslint` für Codequalität & Stil
+
+---
+
+## 🔹 Fehlerhandling: ChainedError & ErrorCodeMapper
+
+### 🧱 `ChainedError` – Strukturierte Fehlerverkettung
+- Verkettet mehrere Fehlerursachen (DB → Service → API)
+- Speichert `messageStack` und optionalen `errorCode`
+- Automatische Formatierung für Logs & Debugging
+
+```ts
+throw new ChainedError()
+  .chain("Failed to assign user")
+  .chain(originalError);
+🔄 ErrorCode Mapping
+PrismaClientKnownRequestError → HTTP-Status
+
+P2002 → 409 Conflict
+
+P2003 → 400 Bad Request
+
+P2025 → 404 Not Found
+
+sonst → 400 Bad Request
+
+sendChainedErrorReply liefert:
+
+Status aus error.errorCode oder 500
+
+JSON { error: message }
+
+Automatisches Logging via Fastify```
 
 
+## 🔹 CI-Integration
 
-### Technologiestack
+**Automatisierung via GitHub Actions:**
+- Unit-Tests, Integrationstests, Linting
 
-| Ebene           | Technologie                                      |
-| --------------- | ------------------------------------------------ |
-| Frontend        | Nuxt 3 (Vue 3), Tailwind CSS, Element Plus       |
-| Backend         | Fastify, Prisma ORM, Zod, PostgreSQL, neverthrow |
-| Gemeinsame Lib  | Monorepo: `shared`-Paket mit Typen & Schemas     |
-| Authentifizierung | JWT-basiert, CUIDs als IDs, Multi-Tenant Isolation |
+**Codequalität mit SonarQube:**
+- Analyse & Quality Gates
+- Coverage-Reports im CI-Prozess
 
-## 5. Testkonzept & Testtools
+---
 
-Das Testkonzept von *Construxx* basiert auf einem mehrstufigen Ansatz und deckt Backend- und Frontend-Komponenten ab. Ziel ist die Absicherung zentraler Logik und das Testen von End-to-End-Funktionalitäten.
+## ✅ Zusammenfassung & Fazit
 
-### 5.1 Backend (API)
+**Construxx bietet:**
+- 🛠️ Modernen Tech-Stack
+- ✅ Hohe Testabdeckung (~90 %)
+- 🔐 Robustes Rollensystem
+- 📦 Materialverwaltung mit Warnung
 
-- **Unit-Tests mit Jest**
-  - Fokus auf isolierte Business-Logik (z. B. Services, Validierungen)
-  - Externe Abhängigkeiten wie Datenbank oder Mailgun werden **gemockt** (z. B. `vi.mock()` oder eigene Test-Factories)
-  - Vorteil: schnelle, deterministische Tests
+---
 
-- **Integrationstests mit Supertest**
-  - Tests laufen gegen gestartete Fastify-Instanz im Testmodus
-  - Kommunikation über echte HTTP-Requests (`supertest(app.server)`)
-  - Verwendung von Testdatenbanken mit `transactional rollback` bzw. `setup/teardown`
-  - Beispiel: vollständige Registrierungs- und Login-Flows
+## ❓ Fragen & Diskussion
 
-- **Performance-Tests mit K6**
-  - Simulierte Last auf zentrale Endpunkte (z. B. `/login`, `/materials`)
-  - Ziel: Antwortzeiten < 500 ms unter Normalbelastung
-
-- **Testabdeckung**
-  - Aktuell ca. **90 %** Coverage, Schwerpunkt auf kritischen Pfaden
-  - Coverage-Reports automatisiert im CI
-
-### Performance-Tests mit K6
-
-- **Ablauf**:
-  - Anmeldung als Manager (`signIn`)
-  - Abruf von Nutzer- und Baustelleninformationen (`getCurrentUser`, `getSites`, `getSiteById`)
-  - Wartezeiten simulieren reales Nutzerverhalten
-
-- **Teststufen (Stages)**:
-  - Nutzerzahl steigt von 0 auf bis zu 10 in 30 Sekunden
-  - Konstante Lastphase
-  - Kontrolliertes Runterfahren
-
-- **Ziele (Thresholds)**:
-  - 95%-Perzentil Antwortzeit < 20 ms
-  - Fehlerrate < 0,5 %
-
-- **Technisches**:
-  - Tests gegen lokale API (`http://localhost:3001`)
-  - JWT-Authentifizierung genutzt
-  - Gemeinsame Hilfsfunktionen in `common.js`
-
-### 5.2 Frontend (Web)
-
-- **End-to-End-Tests mit Cypress**
-  - Testen zentraler User-Stories (Login, Materialmanagement, User Management und Scopes)
-  - Ausführung gegen lokal laufenden Dev-Server
-  - Fokus auf Benutzerführung und Stabilität
-
-- **Typechecks & Linting**
-  - `nuxt typecheck` für statische Typprüfung
-  - `eslint` für Codequalität und konsistenten Stil
-
-### 5.3 CI-Integration
-
-- Automatisierte Ausführung von Unit- und Integrationstests sowie Linting via **GitHub Actions**
-- Qualitätssicherung durch SonarQube Quality Gates
-
-## 6. Fragen & Diskussion
-
-- Zeit für Fragen von Dozent*innen und Mitstudierenden (5 Minuten)
+Vielen Dank für Ihre Aufmerksamkeit!
+→ Ich freue mich auf Ihre Fragen.
